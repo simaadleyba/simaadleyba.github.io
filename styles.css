@@ -2,6 +2,11 @@ html {
     font-family: 'Pilowlava', 'Montserrat', sans-serif;
 }
 
+@font-face {
+    font-family: 'Pilowlava';
+    src: url("Fonts/pilowlava-woff/Pilowlava-Regular-dbb353b1c53447295b516f49aefc2135.woff");
+}
+
 body {
     margin-left: 15px;
 }
