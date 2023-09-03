@@ -4,7 +4,7 @@ html {
 
 @font-face {
     font-family: 'Pilowlava';
-    src: url("Fonts/pilowlava-woff/Pilowlava-Regular-dbb353b1c53447295b516f49aefc2135.woff");
+    src: url("pilowlava/Pilowlava-Regular.woff") format(woff);
 }
 
 body {
