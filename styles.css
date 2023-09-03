@@ -105,6 +105,11 @@ h4 {
     margin-top: 1rem;
 }
 
+::selection {
+    background-color: #000;
+    color: #fff;
+}
+
 /* mobile / small layout */
 
 @media (max-width: 500px) {
