@@ -10,7 +10,7 @@ body {
 /* navigation stuff */
 
 .navbar-brand {
-    font-family: 'Pilowlava';
+    font-family: 'Pilowlava' !important;
     box-sizing: border-box;
     margin-left: 15px;
 }
