@@ -1,6 +1,5 @@
 html {
-    font-family: 'Montserrat', sans-serif !important;
-    font-family: 'Pilowlava', 'Montserrat', sans-serif !important;
+    font-family: 'Pilowlava', 'Montserrat', sans-serif;
 }
 
 body {
@@ -45,7 +44,7 @@ section {
 }
 
 .special-word {
-    font-family: 'Pilowlava', 'Montserrat';
+    font-family: 'Pilowlava', 'Montserrat', sans-serif;
 }
 
 a {
