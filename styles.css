@@ -10,7 +10,7 @@ body {
 /* navigation stuff */
 
 .navbar-brand {
-    font-family: 'Pilowlava' !important;
+    font-family: 'Pilowlava', 'Montserrat' !important;
     box-sizing: border-box;
     margin-left: 15px;
 }
@@ -45,7 +45,7 @@ section {
 }
 
 .special-word {
-    font-family: 'Pilowlava-Regular';
+    font-family: 'Pilowlava', 'Montserrat';
 }
 
 a {
