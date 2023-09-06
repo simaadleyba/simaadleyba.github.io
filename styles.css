@@ -9,9 +9,14 @@ html {
 
 body {
     margin-left: 15px;
+    backrgound-color: #fff;
 }
 
 /* navigation stuff */
+
+.navbar {
+    background-color: #fff;
+}
 
 .navbar-brand {
     font-family: 'Pilowlava', 'Montserrat' !important;
@@ -63,7 +68,11 @@ a:hover {
 }
 
 .display-4 {
-    font-size: 2.5rem;
+    font-size: 3rem;
+}
+
+h1 {
+    margin-bottom: 0;
 }
 
 .written-stuff {
