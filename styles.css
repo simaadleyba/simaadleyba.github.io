@@ -125,4 +125,8 @@ h4 {
     .profile-image {
         opacity: 0;
     }
+
+    .display-4 {
+        font-size: 2rem;
+    }
 }
