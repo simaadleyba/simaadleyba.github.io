@@ -30,7 +30,7 @@ body {
 }
 
 .nav-link:last-of-type {
-    font-family: 'Montserrat', sans-serif !important;
+    font-family: 'Montserrat'!important;
     margin-right: 30px;
 }
 
