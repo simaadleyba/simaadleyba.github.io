@@ -126,6 +126,10 @@ body {
     width: 100px;
 }
 
+.nav-link.active {
+    font-weight: bold;
+}
+
 .custom-nav-link-last {
     margin-right: 2.5em;
 }
