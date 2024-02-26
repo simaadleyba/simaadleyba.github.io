@@ -97,13 +97,13 @@ body {
     justify-content: space-between;
     font-family: "IBM Plex Mono";
     font-weight: 500;
-    /* Optional for spacing */
 }
 
 .navbar {
-    background-color: rgba(255, 255, 255, 0.5) !important; /* Adjust the last value (0.5) to change transparency */
-    backdrop-filter: blur(5px)!important; /* Adjust the blur value as needed */
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
 }
+
 
 .navbar-brand {
     font-family: "IBM Plex Mono";
@@ -121,13 +121,13 @@ body {
 
 .nav-link {
     display: flex;
-    justify-content: flex-end; /* Align links to the right */
-    margin-right: 1em; /* Adjust spacing if needed */
+    justify-content: flex-end;
+    margin-right: 1em;
     width: 100px;
 }
 
 .custom-nav-link-last {
-    margin-right: 2.5em; /* Adjust this value as needed */
+    margin-right: 2.5em;
 }
 
 
@@ -274,7 +274,7 @@ h4 {
 
 .contact-section a {
     text-decoration: underline;
-    color: inherit; /* This will make the links inherit the color of the surrounding text */
+    color: inherit;
     font-weight: normal!important;
 }
 
@@ -314,6 +314,16 @@ h4 {
 
 .contact-section .col-lg-8 {
     margin-left: 0.5em;
+}
+
+.card-body a {
+    font-weight: normal;
+    text-decoration: none;
+}
+
+.card-body a:hover {
+    font-weight: normal;
+    text-decoration: none;
 }
 
 /* mobile / small layout */
