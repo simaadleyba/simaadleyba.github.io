@@ -17,29 +17,48 @@
 </head>
 
 <body>
-    <!-- navigation bar -->
-    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-light sticky-top border-bottom">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">Sima Adleyba</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav ms-auto">
-                    <a class="nav-link active" href="projects.html">Projects</a>
-                    <a class="nav-link custom-nav-link-last" href="about.html">About</a>
-                </div>
+<!-- navigation bar -->
+<nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-light sticky-top border-bottom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">Sima Adleyba</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link active" href="projects.html">Projects</a>
+                <a class="nav-link custom-nav-link-last" href="about.html">About</a>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <section class="container-fluid project-section">
-        <div class="col-lg-8">
-            <h2>Projects</h2>
+<section class="container-fluid project-section">
+    <div class="col-lg-8">
+        <h2>Projects</h2>
+    </div>
+
+    <!-- Links to different project categories -->
+    <div class="row project-category-row">
+        <div class="col">
+            <a href="#ux-ui-development" class="project-category-link">UX/UI Design and Development</a>
         </div>
+        <div class="col">
+            <a href="#ml-data-science" class="project-category-link">ML and Data Science</a>
+        </div>
+        <div class="col">
+            <a href="#creative-works" class="project-category-link">Creative Works</a>
+        </div>
+    </div>
 
+    <!-- UX/UI and Development Section -->
+    <section id="ux-ui-development">
+        <h3>UX/UI Design and Development</h3>
         <div class="row justify-content-center">
+
+            <!-- Left Column-->
             <div class="col-md-6">
+                <!-- Cards for UX/UI and Development projects -->
                 <div class="card border-primary">
                     <img src="iLab_project_ana_sayfa.png" class="card-img-top" alt="...">
                     <div class="card-body border-top">
@@ -52,12 +71,22 @@
                     <img src="tv_show_search_app.png" class="card-img-top" alt="...">
                     <div class="card-body border-top">
                         <h5 class="card-title">TV Show Search App</h5>
-                        <p class="card-text">A basic JavaScript project that allows users to search TV shows.</p>
+                        <p class="card-text">A basic JavaScript project that allows users to search TV shows</p>
+                    </div>
+                </div>
+
+                <div class="card border-primary">
+                    <img src="daily_ui.png" class="card-img-top" alt="...">
+                    <div class="card-body border-top">
+                        <h5 class="card-title">Daily UI Challenge</h5>
+                        <a href="#" class="card-text stretched-link">Designing 100 UI for the Daily UI Challenge</a>
                     </div>
                 </div>
             </div>
 
+            <!-- Right Column-->
             <div class="col-md-6">
+                <!-- Cards for UX/UI and Development projects -->
                 <div class="card border-primary">
                     <img src="skilled_mobilities_ana_sayfa.png" class="card-img-top" alt="...">
                     <div class="card-body border-top">
@@ -70,17 +99,75 @@
                     <img src="stats_for_spotify_ana_sayfa.png" class="card-img-top" alt="...">
                     <div class="card-body border-top">
                         <h5 class="card-title">Stats for Spotify Website Redesign</h5>
-                        <p class="card-text">Refreshing redesign of Stats For Spotify</p>
+                        <a href="#" class="card-text stretched-link">Refreshing redesign of Stats For Spotify</a>
+                    </div>
+                </div>
+
+                <div class="card border-primary">
+                    <img src="Culinary_Odyssey_Navigation_Diagram.jpg" class="card-img-top" alt="...">
+                    <div class="card-body border-top">
+                        <h5 class="card-title">Culinary Odyssey</h5>
+                        <a href="#" class="card-text stretched-link">A recipe searching app for Android</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <!-- ML and Data Science Section -->
+    <section id="ml-data-science">
+        <h3>Machine Learning and Data Science</h3>
+        <div class="row justify-content-center">
+
+            <!-- Left Column-->
+            <div class="col-md-6">
+                <!-- Cards for ML and Data Science projects -->
+                <div class="card border-primary">
+                    <img src="crime_and_currency.png" class="card-img-top" alt="...">
+                    <div class="card-body border-top">
+                        <h5 class="card-title">Crime and Currency</h5>
+                        <p class="card-text">Correlation Analysis of Total Crime Rates and Socioeconomic Factors</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column-->
+            <div class="col-md-6">
+                <!-- Cards for ML and Data Science projects -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Creative Works Section -->
+    <section id="creative-works">
+        <h3>Creative Works</h3>
+        <div class="row justify-content-center">
+
+            <!-- Left Column-->
+            <div class="col-md-6">
+                <!-- Cards for Creative Works projects -->
+                <div class="card border-primary">
+                    <img src="candarli.jpeg" class="card-img-top" alt="...">
+                    <div class="card-body border-top">
+                        <h5 class="card-title">Urban and Rural Photography</h5>
+                        <a href="#" class="card-text stretched-link">Urban and rural photography showcasing everyday moments and landscapes.</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <!-- Cards for Creative Works projects -->
+            </div>
+        </div>
+    </section>
+</section>
+
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 
 </body>
 </html>

@@ -102,6 +102,7 @@ body {
 .navbar {
     background-color: rgba(255, 255, 255, 0.5) !important;
     -webkit-backdrop-filter: blur(5px) !important;
+    backdrop-filter: blur(5px) !important;
 }
 
 
@@ -200,10 +201,27 @@ h1 {
     align-items: center;
 }
 
+.card-text {
+    font-size: large;
+}
+
 /* Adjustments for the Projects and About sections */
 .col-auto {
     display: inline;
     width: auto;
+}
+
+.project-category-row {
+    width: 100%;
+}
+
+.project-category-link {
+    text-decoration: none;
+    font-weight: 400;
+}
+
+.project-category-link:hover {
+    text-decoration: underline;
 }
 
 .section-divider {
@@ -271,7 +289,7 @@ h4 {
     text-align: left;
 }
 
-.project-section .col-lg-8 {
+.project-section .col-lg-8 .h3 {
     text-align: left;
     margin-left: 2em;
 }
@@ -286,21 +304,13 @@ h4 {
     font-weight: bold!important;
 }
 
-.project-section {
-    width: 90%;
-    margin-top: 3em;
-}
-
 .about-section .row {
     padding-left: 0.5em;
 }
 
-.project-section .col-md-6 {
-    flex: 0 0 auto;
-    width: 45%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 4em;
+.project-category-row {
+    margin-top: 1.5em;
+    margin-bottom: 3em;
 }
 
 .border-primary {
@@ -328,6 +338,39 @@ h4 {
 .card-body a:hover {
     font-weight: normal;
     text-decoration: none;
+}
+
+/* Adjustments for the Projects and About sections */
+.project-section {
+    width: 90%;
+    margin-top: 3em;
+    padding-left: 1em;
+    padding-right: 1em;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.project-section .col-md-6 {
+    flex: 0 0 calc(50% - 2em);
+    margin-top: 1.5em;
+    margin-right: 2em;
+    margin-bottom: 2em;
+}
+
+.section-header-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.project-section h3 {
+    margin-right: 1em;
+}
+
+#ux-ui-development,
+#ml-data-science,
+#creative-works {
+    scroll-margin-top: 3.5em;
 }
 
 /* mobile / small layout */
