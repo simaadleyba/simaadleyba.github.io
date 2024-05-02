@@ -1,0 +1,3 @@
+/Users/sima/Desktop/School/2023:2024/Fall/CS300/Homeworks/HW2/cmake-build-debug/CMakeFiles/HW2.dir
+/Users/sima/Desktop/School/2023:2024/Fall/CS300/Homeworks/HW2/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/sima/Desktop/School/2023:2024/Fall/CS300/Homeworks/HW2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
