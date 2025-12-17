@@ -90,6 +90,18 @@ p {
   margin-bottom: 1.2rem;
 }
 
+/* ---------- LINKS ---------- */
+
+.content a {
+  color: #0f224d;
+  text-decoration: none;
+}
+
+.content a:hover {
+  text-decoration: underline; /* optional, but recommended for affordance */
+}
+
+
 /* ---------- DETAILS ---------- */
 
 details {
