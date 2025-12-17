@@ -1,67 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sima | Data Science & Network Research</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,450;0,600;1,300&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css"></head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sima</title>
+
+  <!-- IBM Plex Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
 <body>
+  <main class="container">
 
-    <nav class="nav-minimal">
-        <div class="logo">SIMA</div>
-        <div class="nav-links">
-            <a href="#research">Research</a>
-            <a href="#about">About</a>
-            <a href="https://github.com/yourusername">GitHub</a>
+    <header>
+      <h1>Sima</h1>
+      <p class="subtitle">
+        Data science · networks · fairness · thinking in public
+      </p>
+    </header>
+
+    <section class="content">
+      <p>
+        I’m a data science master’s student interested in recommender systems,
+        network science, and how algorithmic choices shape visibility, bias,
+        and social structure.
+      </p>
+
+      <p>
+        I work at the intersection of empirical analysis and conceptual clarity.
+        I like systems that are interpretable, scalable, and ethically legible.
+      </p>
+
+      <details>
+        <summary>research & academic work</summary>
+        <div class="details-content">
+          <p>
+            My current work focuses on network effects, fairness-aware modeling,
+            and platform dynamics. I’m particularly interested in how design
+            decisions (e.g., defaults, recommendations, curated lists) influence
+            long-term structure.
+          </p>
+          <p>
+            Topics I keep circling back to:
+            recommender systems, bias propagation, network topology,
+            and user modeling.
+          </p>
         </div>
-    </nav>
+      </details>
 
-    <main class="wrapper">
-        <header class="hero">
-            <h1 class="split-text">
-                <span>Data Science</span>
-                <span class="indent">Recommender Systems</span>
-                <span>Network Science</span>
-            </h1>
-            <p class="intro-statement">
-                Master’s student at Sabancı University. Researching how algorithms shape 
-                social structures, visibility, and fairness in automated systems.
-            </p>
-        </header>
+      <details>
+        <summary>interests & side curiosities</summary>
+        <div class="details-content">
+          <p>
+            Beyond formal research, I’m drawn to thought-provoking writing,
+            music, photography, and projects that sit somewhere between
+            analysis and art.
+          </p>
+          <p>
+            I enjoy exploring ideas slowly and publicly, without optimizing
+            for engagement metrics.
+          </p>
+        </div>
+      </details>
 
-        <section id="research" class="grid-section">
-            <div class="section-label">01 / Research focus</div>
-            <div class="section-content">
-                <details open>
-                    <summary>Responsible Algorithmic Systems</summary>
-                    <p>Exploring the intersection of network topology and bias propagation. My work aims to make recommendation engines not just accurate, but ethically legible.</p>
-                </details>
-                <details>
-                    <summary>User Modeling & Network Effects</summary>
-                    <p>Analyzing how platform defaults and curated lists influence long-term structural inequality within digital networks.</p>
-                </details>
-            </div>
-        </section>
+      <details>
+        <summary>writing (eventually)</summary>
+        <div class="details-content">
+          <p>
+            This space may host essays, notes, or reflections.
+            For now, it’s intentionally sparse.
+          </p>
+        </div>
+      </details>
 
-        <section id="about" class="grid-section">
-            <div class="section-label">02 / Introspections</div>
-            <div class="section-content">
-                <p>I value order and clarity. When I'm not auditing algorithms for fairness, I'm likely exploring music, reading, or practicing photography.</p>
-                <p class="muted">Currently based in Istanbul, TR.</p>
-            </div>
-        </section>
+      <p class="links">
+        <a href="https://github.com/yourusername">GitHub</a>
+        ·
+        <a href="#">Email</a>
+      </p>
+    </section>
 
-        <footer>
-            <div class="footer-line"></div>
-            <div class="footer-bottom">
-                <span>© 2025 Sima</span>
-                <span>Analytical. Detail-oriented. Introspective.</span>
-            </div>
-        </footer>
-    </main>
+    <footer>
+      <p>© Sima</p>
+    </footer>
 
+  </main>
 </body>
 </html>
