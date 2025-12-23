@@ -54,6 +54,13 @@ body {
   text-decoration: underline;
 }
 
+/* Divider in navigation */
+.nav-divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  margin: 0.5rem 0;
+}
+
 /* ---------- MAIN ---------- */
 
 .main {
@@ -63,7 +70,8 @@ body {
 
 .content {
   max-width: 720px;
-  margin: 0 auto;   /* ← horizontal centering only */
+  margin: 0 auto;
+  /* ← horizontal centering only */
 }
 
 
@@ -98,7 +106,8 @@ p {
 }
 
 .content a:hover {
-  text-decoration: underline; /* optional, but recommended for affordance */
+  text-decoration: underline;
+  /* optional, but recommended for affordance */
 }
 
 
