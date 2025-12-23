@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Intuition Calibration - Sima</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="project.css" />
+</head>
+
+<body>
+
+    <div class="layout">
+
+        <aside class="sidebar">
+            <nav>
+                <a href="../index.html">home</a>
+                <a href="../interests.html">interests</a>
+                <a href="../writing.html">writing</a>
+                <div class="nav-divider"></div>
+                <a href="../fair-clustering/index.html">fairness warps geometry</a>
+                <a href="#" class="active">intuition calibration</a>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <div class="content">
+
+                <header>
+                    <h1>Intuition Calibration</h1>
+                    <p class="subtitle">
+                        Scale intuition for AI environmental impact
+                    </p>
+                </header>
+
+                <p>
+                    This tool helps build intuition for the <em>scale</em> of environmental impact by comparing AI usage
+                    (LLM inference) with everyday activities.
+                    Results are <strong>estimates</strong> based on median values.
+                </p>
+
+                <!-- Calculator UI -->
+                <div class="calculator-card">
+
+                    <!-- Controls -->
+                    <div class="controls-section">
+                        <div class="slider-group">
+                            <label for="llm-slider">Number of LLM Messages <span class="range-hint">(0 -
+                                    50k)</span></label>
+                            <div class="slider-val-row">
+                                <input type="range" id="llm-slider" min="0" max="50000" step="100" value="1000">
+                                <span id="llm-val" class="highlight-val">1000</span>
+                            </div>
+                        </div>
+
+                        <div class="toggle-group">
+                            <span class="label">Estimate Uncertainty:</span>
+                            <div class="toggles">
+                                <button class="toggle-btn" data-level="low">Low</button>
+                                <button class="toggle-btn active" data-level="median">Median</button>
+                                <button class="toggle-btn" data-level="high">High</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Equivalents -->
+                    <div class="equivalents-section">
+                        <h2>Equivalents</h2>
+                        <div class="eq-grid">
+                            <div class="eq-card">
+                                <span class="eq-icon">🚗</span>
+                                <div class="eq-content">
+                                    <span class="eq-val" id="val-drive">0</span>
+                                    <span class="eq-unit">km driven</span>
+                                    <span class="eq-sub">ICE passenger car</span>
+                                </div>
+                            </div>
+                            <div class="eq-card">
+                                <span class="eq-icon">☕</span>
+                                <div class="eq-content">
+                                    <span class="eq-val" id="val-coffee">0</span>
+                                    <span class="eq-unit">cups of coffee</span>
+                                    <span class="eq-sub">black, no milk</span>
+                                </div>
+                            </div>
+                            <div class="eq-card">
+                                <span class="eq-icon">🍔</span>
+                                <div class="eq-content">
+                                    <span class="eq-val" id="val-burger">0</span>
+                                    <span class="eq-unit">beef burgers</span>
+                                    <span class="eq-sub">single patty</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Raw Impact -->
+                    <div class="impact-section">
+                        <h3>Estimated Physical Impact</h3>
+                        <div class="impact-grid">
+                            <div class="impact-item">
+                                <span class="impact-label">Electricity</span>
+                                <span class="impact-val" id="raw-elec">0 Wh</span>
+                            </div>
+                            <div class="impact-item">
+                                <span class="impact-label">Carbon</span>
+                                <span class="impact-val" id="raw-co2">0 g CO₂e</span>
+                            </div>
+                            <div class="impact-item">
+                                <span class="impact-label">Water</span>
+                                <span class="impact-val" id="raw-water">0 mL</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="disclaimer">
+                        <strong>Disclaimer:</strong> All values are estimates. Actual environmental impact varies by
+                        model size, infrastructure, energy grid, agricultural practices, and geography.
+                    </div>
+
+                </div>
+
+                <footer>
+                    <h3>Sources</h3>
+                    <ul class="sources-list">
+                        <li><strong>LLM Inference:</strong> Google Cloud (2024), arXiv (2025) "How Hungry Is AI?"</li>
+                        <li><strong>Driving:</strong> US EPA, Our World in Data</li>
+                        <li><strong>Food:</strong> Water Footprint Network, FAO, Our World in Data</li>
+                    </ul>
+                </footer>
+
+            </div>
+        </main>
+
+    </div>
+
+    <script src="js/logic.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
