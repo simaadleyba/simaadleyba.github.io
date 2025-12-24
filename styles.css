@@ -66,6 +66,17 @@ body {
 .main {
   flex: 1;
   padding: 2.5rem 2rem;
+  /* flex column for sticky footer */
+  display: flex;
+  flex-direction: column;
+}
+
+.site-footer {
+  margin-top: auto;
+  text-align: center;
+  padding-top: 3rem;
+  width: 100%;
+  border-top: none;
 }
 
 .content {
@@ -148,6 +159,17 @@ details[open] summary::before {
   color: var(--muted);
 }
 
+/* Nested details */
+details details {
+  margin: 0.5rem 0;
+  border-top: none;
+  padding: 0.2rem 0;
+}
+
+details details:last-of-type {
+  border-bottom: none;
+}
+
 /* ---------- FOOTER ---------- */
 
 footer {
@@ -165,14 +187,42 @@ footer {
 
   .sidebar {
     width: 100%;
+    /* Thinner top bar */
+    padding: 1rem;
+    /* Optional: stick to top if desired, but relative is fine for now */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   }
 
   .sidebar nav {
     flex-direction: row;
-    gap: 1.5rem;
+    align-items: center;
+    gap: 1.2rem;
+
+    /* Allow horizontal scroll if items don't fit */
+    overflow-x: auto;
+    white-space: nowrap;
+
+    /* Hide scrollbar for cleaner look */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .sidebar nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-divider {
+    /* Change divider to vertical line in horizontal layout */
+    width: 1px;
+    height: 1.2em;
+    background: rgba(0, 0, 0, 0.1);
+    margin: 0 0.2rem;
   }
 
   .main {
+    padding: 1.5rem 1.2rem;
     align-items: flex-start;
   }
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fairness Warps Geometry - Sima</title>
+    <title>fairness warps geometry - sima</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,6 +28,7 @@
                 <div class="nav-divider"></div>
                 <a href="#" class="active">fairness warps geometry</a>
                 <a href="../impact-calibration/index.html">intuition calibration</a>
+                <a href="../skeleton.html">skeleton</a>
             </nav>
         </aside>
 
@@ -36,66 +37,70 @@
                 <!-- Visualization Fixed/Sticky Container -->
                 <div id="vis-container">
                     <div id="controls">
-                        <label for="fairness-slider">Fairness Constraint (α): <span id="alpha-value">0.0</span></label>
+                        <label for="fairness-slider">fairness constraint (α): <span id="alpha-value">0.0</span></label>
                         <input type="range" id="fairness-slider" min="0" max="0.5" step="0.01" value="0">
                         <div id="chart-container"></div>
                     </div>
                     <div id="canvas-container"></div>
                     <div id="legend">
-                        <span class="dot group-a"></span> Group A
-                        <span class="dot group-b"></span> Group B
+                        <span class="dot group-a"></span> group a
+                        <span class="dot group-b"></span> group b
                     </div>
                 </div>
 
                 <!-- Scrollytelling Sections -->
                 <div class="scroll-sections">
                     <section id="act-1" class="step">
-                        <h1>Fairness Warps Geometry</h1>
-                        <p>Clustering algorithms are often presented as neutral, geometry-driven tools fitting data into
+                        <h1>fairness warps geometry</h1>
+                        <p>clustering algorithms are often presented as neutral, geometry-driven tools fitting data into
                             neat groups.</p>
-                        <p>But what happens when we demand "fairness"?</p>
+                        <p>but what happens when we demand "fairness"?</p>
                         <div class="spacer"></div>
                     </section>
 
                     <section id="act-2" class="step">
-                        <h2>The Hidden Imbalance</h2>
-                        <p>Here is a dataset of people.</p>
-                        <p>When color-coded by a sensitive attribute (like efficiency or demographics), we see the
+                        <h2>the hidden imbalance</h2>
+                        <p>here is a dataset of people.</p>
+                        <p>when color-coded by a sensitive attribute (like efficiency or demographics), we see the
                             natural geometric clusters are not balanced.</p>
                         <div class="spacer"></div>
                     </section>
 
                     <section id="act-3" class="step">
-                        <h2>Imposing Fairness</h2>
-                        <p>Let's introduce a constraint: Each cluster must contain at least a certain proportion (α) of
+                        <h2>imposing fairness</h2>
+                        <p>let's introduce a constraint: each cluster must contain at least a certain proportion (α) of
                             each group.</p>
-                        <p>Try moving the slider.</p>
+                        <p>try moving the slider.</p>
                         <div class="spacer"></div>
                     </section>
 
                     <section id="act-4" class="step">
-                        <h2>The Cost</h2>
-                        <p>As you increase fairness, watch the <strong>Cost Curve</strong>.</p>
-                        <p>Points are forced into clusters that are further away. The "natural" geometry is warped to
+                        <h2>the cost</h2>
+                        <p>as you increase fairness, watch the <strong>cost curve</strong>.</p>
+                        <p>points are forced into clusters that are further away. the "natural" geometry is warped to
                             satisfy the ethical constraint.</p>
                         <div class="spacer"></div>
                     </section>
 
                     <section id="act-5" class="step">
-                        <h2>Reflection</h2>
-                        <p>Fairness is not a free lunch. It changes the solution space.</p>
-                        <p>The question isn't just "is it fair?", but "what geometry do we accept?"</p>
+                        <h2>reflection</h2>
+                        <p>fairness is not a free lunch. it changes the solution space.</p>
+                        <p>the question isn't just "is it fair?", but "what geometry do we accept?"</p>
                         <div class="spacer"></div>
                     </section>
 
-                    <section class="step">
+                    <section class="step-footer">
                         <p style="margin-top: 5rem; color: var(--muted); font-size: 0.9em;">
-                            <a href="../index.html">← Back to Home</a>
+                            <a href="../index.html">← back to home</a>
                         </p>
                     </section>
                 </div>
 
             </div>
+
+            <footer class="site-footer">
+                <p>made by sima 𖤐ˎˊ˗</p>
+            </footer>
         </main>
 
     </div>

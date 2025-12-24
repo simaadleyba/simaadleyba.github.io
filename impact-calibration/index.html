@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Intuition Calibration - Sima</title>
+    <title>intuition calibration - sima</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,6 +27,7 @@
                 <div class="nav-divider"></div>
                 <a href="../fair-clustering/index.html">fairness warps geometry</a>
                 <a href="#" class="active">intuition calibration</a>
+                <a href="../skeleton.html">skeleton</a>
             </nav>
         </aside>
 
@@ -34,16 +35,16 @@
             <div class="content">
 
                 <header>
-                    <h1>Intuition Calibration</h1>
+                    <h1>intuition calibration</h1>
                     <p class="subtitle">
-                        Scale intuition for AI environmental impact
+                        scale intuition for ai environmental impact
                     </p>
                 </header>
 
                 <p>
-                    This tool helps build intuition for the <em>scale</em> of environmental impact by comparing AI usage
-                    (LLM inference) with everyday activities.
-                    Results are <strong>estimates</strong> based on median values.
+                    this tool helps build intuition for the <em>scale</em> of environmental impact by comparing ai usage
+                    (llm inference) with everyday activities.
+                    results are <strong>estimates</strong> based on median values.
                 </p>
 
                 <!-- Calculator UI -->
@@ -52,7 +53,7 @@
                     <!-- Controls -->
                     <div class="controls-section">
                         <div class="slider-group">
-                            <label for="llm-slider">Number of LLM Messages <span class="range-hint">(0 -
+                            <label for="llm-slider">number of llm messages <span class="range-hint">(0 -
                                     50k)</span></label>
                             <div class="slider-val-row">
                                 <input type="range" id="llm-slider" min="0" max="50000" step="100" value="1000">
@@ -61,18 +62,18 @@
                         </div>
 
                         <div class="toggle-group">
-                            <span class="label">Estimate Uncertainty:</span>
+                            <span class="label">estimate uncertainty:</span>
                             <div class="toggles">
-                                <button class="toggle-btn" data-level="low">Low</button>
-                                <button class="toggle-btn active" data-level="median">Median</button>
-                                <button class="toggle-btn" data-level="high">High</button>
+                                <button class="toggle-btn" data-level="low">low</button>
+                                <button class="toggle-btn active" data-level="median">median</button>
+                                <button class="toggle-btn" data-level="high">high</button>
                             </div>
                         </div>
                     </div>
 
                     <!-- Equivalents -->
                     <div class="equivalents-section">
-                        <h2>Equivalents</h2>
+                        <h2>equivalents</h2>
                         <div class="eq-grid">
                             <div class="eq-card">
                                 <span class="eq-icon">🚗</span>
@@ -103,40 +104,48 @@
 
                     <!-- Raw Impact -->
                     <div class="impact-section">
-                        <h3>Estimated Physical Impact</h3>
+                        <h3>estimated physical impact</h3>
                         <div class="impact-grid">
                             <div class="impact-item">
-                                <span class="impact-label">Electricity</span>
+                                <span class="impact-label">electricity</span>
                                 <span class="impact-val" id="raw-elec">0 Wh</span>
                             </div>
                             <div class="impact-item">
-                                <span class="impact-label">Carbon</span>
+                                <span class="impact-label">carbon</span>
                                 <span class="impact-val" id="raw-co2">0 g CO₂e</span>
                             </div>
                             <div class="impact-item">
-                                <span class="impact-label">Water</span>
+                                <span class="impact-label">water</span>
                                 <span class="impact-val" id="raw-water">0 mL</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="disclaimer">
-                        <strong>Disclaimer:</strong> All values are estimates. Actual environmental impact varies by
+                        <strong>disclaimer:</strong> all values are estimates. actual environmental impact varies by
                         model size, infrastructure, energy grid, agricultural practices, and geography.
                     </div>
 
                 </div>
 
                 <footer>
-                    <h3>Sources</h3>
+                    <h3>sources</h3>
                     <ul class="sources-list">
-                        <li><strong>LLM Inference:</strong> Google Cloud (2024), arXiv (2025) "How Hungry Is AI?"</li>
-                        <li><strong>Driving:</strong> US EPA, Our World in Data</li>
-                        <li><strong>Food:</strong> Water Footprint Network, FAO, Our World in Data</li>
+                        <li><strong>llm inference:</strong> google cloud (2024), arxiv (2025) "how hungry is ai?"</li>
+                        <li><strong>driving:</strong> us epa, our world in data</li>
+                        <li><strong>food:</strong> water footprint network, fao, our world in data</li>
                     </ul>
+
+                    <p style="margin-top: 3rem; color: var(--muted); font-size: 0.9em;">
+                        <a href="../index.html">← back to home</a>
+                    </p>
                 </footer>
 
             </div>
+
+            <footer class="site-footer">
+                <p>made by sima 𖤐ˎˊ˗</p>
+            </footer>
         </main>
 
     </div>

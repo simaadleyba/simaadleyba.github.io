@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>...</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-family: "IBM Plex Mono", monospace;
+        }
+
+        #skeleton {
+            position: absolute;
+            bottom: 0;
+            left: -300px;
+            /* Start off-screen left */
+            height: 300px;
+            width: auto;
+            pointer-events: none;
+        }
+
+        #message {
+            font-family: "Comic Sans MS", "Comic Sans", cursive;
+            font-size: 2.5rem;
+            color: #111;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+            text-align: center;
+        }
+
+        /* Animation class to be added via JS */
+        .walking {
+            animation: walk-across 5s linear forwards;
+        }
+
+        @keyframes walk-across {
+            from {
+                left: -300px;
+            }
+
+            to {
+                left: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="message">wait? did you guys see that</div>
+
+    <img id="skeleton" src="https://media.tenor.com/5iAMiJ-3Yj0AAAAM/creeping-skeleton.gif" alt="suspicious skeleton">
+
+    <script>
+        window.addEventListener('load', () => {
+            const skeleton = document.getElementById('skeleton');
+            const message = document.getElementById('message');
+
+            // 1. Wait 6 seconds (blank screen)
+            setTimeout(() => {
+                // 2. Start walking animation
+                skeleton.classList.add('walking');
+
+                // 3. When animation ends (skeleton leaves layout), show text
+                skeleton.addEventListener('animationend', () => {
+                    // Small buffer before text appears
+                    setTimeout(() => {
+                        message.style.opacity = '1';
+                    }, 500);
+                });
+
+            }, 6000);
+        });
+    </script>
+
+</body>
+
+</html>

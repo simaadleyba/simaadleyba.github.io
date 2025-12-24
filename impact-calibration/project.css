@@ -201,6 +201,10 @@ input[type=range] {
 }
 
 @media (max-width: 600px) {
+    .calculator-card {
+        padding: 1.2rem;
+    }
+
     .slider-val-row {
         flex-direction: column;
         align-items: stretch;
@@ -209,15 +213,41 @@ input[type=range] {
 
     .highlight-val {
         text-align: left;
+        font-size: 1.2rem;
+        /* Reduce size slightly to prevent overflow */
     }
 
     .toggle-group {
         flex-direction: column;
         align-items: flex-start;
-        gap: 0.5rem;
+        gap: 0.8rem;
+    }
+
+    .toggles {
+        width: 100%;
+        display: flex;
+    }
+
+    .toggle-btn {
+        flex: 1;
+        text-align: center;
+        padding: 0.5rem 0.2rem;
+        font-size: 0.8rem;
     }
 
     .impact-grid {
         grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .eq-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 1.5rem;
+    }
+
+    .eq-content {
+        align-items: center;
     }
 }
