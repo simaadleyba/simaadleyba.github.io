@@ -42,31 +42,7 @@
             gap: 2rem;
         }
 
-        .feed-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
 
-        .feed-title h1 {
-            font-size: 1.8rem;
-            margin: 0;
-            font-weight: 500;
-        }
-
-        .feed-subtitle {
-            color: var(--muted);
-            font-size: 0.9rem;
-            margin-top: 0.2rem;
-        }
-
-        .sort-controls {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.85rem;
-            color: var(--muted);
-        }
 
         .sort-btn {
             background: none;
@@ -303,6 +279,166 @@
             pointer-events: none;
         }
 
+        /* Categories & Filters */
+
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            padding: 0.35rem 0.9rem;
+            border-radius: 2px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: var(--text);
+            font-family: inherit;
+            transition: all 0.2s;
+            text-transform: lowercase;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* --- New Header Layout --- */
+        .feed-header-block {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .header-title-group {
+            /* Title + Subtitle */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Scrollable Category Tabs */
+        .category-scroll-container {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            /* Multiline on desktop if many */
+        }
+
+        .sort-row {
+            display: flex;
+            justify-content: flex-start;
+            /* Aligned left as per stacking request */
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        @media (max-width: 800px) {
+            .category-scroll-container {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+                /* space for scrollbar if any */
+                -webkit-overflow-scrolling: touch;
+                margin-right: -1.5rem;
+                /* Bleed to edge */
+                padding-right: 1.5rem;
+                /* Hide scrollbar visually but allow scroll */
+                scrollbar-width: none;
+            }
+
+            .category-scroll-container::-webkit-scrollbar {
+                display: none;
+            }
+
+            .filter-btn {
+                flex-shrink: 0;
+                /* Don't squash buttons */
+            }
+
+            .feed-header-block {
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        .food-badge {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.2rem 0.6rem;
+            background: #f0f0f0;
+            border-radius: 100px;
+            color: #666;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.03);
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: var(--muted);
+            opacity: 0.6;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .action-btn:hover {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .action-btn.delete:hover {
+            color: #d32f2f;
+            background: rgba(211, 47, 47, 0.05);
+        }
+
+        /* Edit Mode Styles */
+        .side-panel.edit-mode {
+            border: 1px solid var(--accent);
+        }
+
+        .edit-notice {
+            display: none;
+            background: rgba(var(--accent-rgb), 0.1);
+            /* assuming accent can be used, or just hardcode a color */
+            background: #fff8e1;
+            color: #f57c00;
+            padding: 0.6rem;
+            font-size: 0.85rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            text-align: center;
+            border: 1px solid #ffe0b2;
+        }
+
+        .side-panel.edit-mode .edit-notice {
+            display: block;
+        }
+
+        .side-panel.edit-mode .hide-on-edit {
+            display: none;
+        }
+
         /* Interactive Stars */
         .star-input-row {
             display: flex;
@@ -401,13 +537,26 @@
 
         <!-- MAIN FEED COLUMN -->
         <div class="feed-column">
-            <div class="feed-header">
-                <div class="feed-title">
-                    <h1>konbini log</h1>
-                    <div class="feed-subtitle">tracking the good, the bad, and the crispy</div>
+            <div class="feed-header-block">
+                <!-- 1. Title & Subtitle -->
+                <div class="header-title-group">
+                    <h1 style="font-size: 1.8rem; font-weight: 500; margin:0;">konbini log</h1>
+                    <div class="feed-subtitle" style="color:var(--muted); font-size:0.9rem; margin-top:0.2rem;">
+                        tracking the good, the bad, and the crispy
+                    </div>
                 </div>
 
-                <div class="sort-controls">
+                <!-- 2. Category Tabs (Scrollable on Mobile) -->
+                <div class="category-scroll-container">
+                    <button class="filter-btn active" onclick="setCategory('All')">All</button>
+                    <button class="filter-btn" onclick="setCategory('Sweet')">Sweet</button>
+                    <button class="filter-btn" onclick="setCategory('Savory')">Savory</button>
+                    <button class="filter-btn" onclick="setCategory('Drink')">Drink</button>
+                    <button class="filter-btn" onclick="setCategory('Others')">Others</button>
+                </div>
+
+                <!-- 3. Sort Filters -->
+                <div class="sort-row">
                     <span>sort by:</span>
                     <button class="sort-btn active" onclick="setSort('date')">newest</button>
                     <button class="sort-btn" onclick="setSort('rating')">highest</button>
@@ -456,10 +605,32 @@
             <div class="panel-content">
                 <form id="ratingForm">
 
+                    <div class="edit-notice">
+                        <strong>Edit Mode</strong><br>
+                        Updating an existing rating. Image & date are preserved.
+                        <div style="margin-top:0.4rem;">
+                            <button type="button" class="action-btn" onclick="cancelEdit()"
+                                style="text-decoration:underline;">Cancel Edit</button>
+                        </div>
+                    </div>
+
                     <!-- Item Name -->
                     <div class="form-group">
                         <label for="itemName">Item Name *</label>
                         <input type="text" id="itemName" placeholder="e.g. Spicy Famichiki" required>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="form-group">
+                        <label for="categoryInput">Category *</label>
+                        <select id="categoryInput" required
+                            style="width:100%; padding:0.8rem; border:1px solid rgba(0,0,0,0.1); border-radius:4px; background:#fcfcfc; font-family:inherit; font-size:0.9rem;">
+                            <option value="" disabled selected>Select a category...</option>
+                            <option value="Sweet">Sweet</option>
+                            <option value="Savory">Savory</option>
+                            <option value="Drink">Drink</option>
+                            <option value="Others">Others</option>
+                        </select>
                     </div>
 
                     <!-- Rating -->
@@ -480,14 +651,14 @@
                         <textarea id="review" placeholder="How was it?"></textarea>
                     </div>
 
-                    <!-- Date -->
-                    <div class="form-group">
+                    <!-- Date (Hidden on Edit) -->
+                    <div class="form-group hide-on-edit">
                         <label for="dateInput">Date</label>
                         <input type="date" id="dateInput" required>
                     </div>
 
-                    <!-- Image Upload -->
-                    <div class="form-group">
+                    <!-- Image Upload (Hidden on Edit) -->
+                    <div class="form-group hide-on-edit">
                         <label>Image (Optional)</label>
                         <div class="file-wrapper">
                             <span class="file-status" id="fileStatus">+ Click to upload photo</span>
@@ -530,6 +701,8 @@
         // ==========================================
         let entries = [];
         let activeSort = 'date'; // 'date' | 'rating'
+        let activeCategory = 'All'; // 'All' | 'Sweet' | 'Savory' | 'Drink' | 'Others'
+        let editingId = null; // If set, we are in edit mode
 
         const API = {
             cloudinary: (name) => `https://api.cloudinary.com/v1_1/${name}/image/upload`,
@@ -575,12 +748,14 @@
                 const raw = Array.isArray(data.record) ? data.record : [];
 
                 // MAP OLD DATA TO NEW MODEL IF NEEDED
-                entries = raw.map(e => ({
+                entries = raw.map((e, idx) => ({
+                    id: e.id || `entry_${Date.now()}_${idx}`, // Ensure ID for stable editing
                     itemName: e.itemName || e.name || 'Unknown Item',
                     rating: parseFloat(e.rating),
                     review: e.review || e.comment || '',
                     imageUrl: e.imageUrl || null,
-                    date: e.date // already ISO string
+                    date: e.date,
+                    category: e.category || 'Others' // Default category
                 }));
 
                 renderFeed();
@@ -592,29 +767,48 @@
 
         function setSort(type) {
             activeSort = type;
-
-            // Update buttons styling
-            document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector(`.sort-btn[onclick*="${type}"]`).classList.add('active');
-
+            renderControls();
             renderFeed();
+        }
+
+        function setCategory(cat) {
+            activeCategory = cat;
+            renderControls();
+            renderFeed();
+        }
+
+        function renderControls() {
+            // Sort buttons
+            document.querySelectorAll('.sort-btn').forEach(b => {
+                b.classList.toggle('active', b.onclick.toString().includes(activeSort));
+            });
+            // Category buttons
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                const cat = b.textContent;
+                b.classList.toggle('active', cat === activeCategory);
+            });
         }
 
         function renderFeed() {
             feedList.innerHTML = '';
 
-            if (entries.length === 0) {
+            let filtered = entries;
+            if (activeCategory !== 'All') {
+                filtered = entries.filter(e => e.category === activeCategory);
+            }
+
+            if (filtered.length === 0) {
                 feedList.innerHTML = `
                     <div class="empty-state">
-                        <h3>No ratings yet</h3>
-                        <p>Be the first to track a delicious konbini find!</p>
+                        <h3>No ratings found</h3>
+                        <p>Try changing filters or add a new one!</p>
                     </div>
                 `;
                 return;
             }
 
             // Client side sort
-            const sorted = [...entries].sort((a, b) => {
+            const sorted = [...filtered].sort((a, b) => {
                 const dateA = new Date(a.date);
                 const dateB = new Date(b.date);
 
@@ -633,12 +827,12 @@
                 // Stars HTML
                 const stars = getStarSvg(item.rating);
 
-                // Image HTML (conditional)
+                // Image HTML
                 const imgHtml = item.imageUrl ?
                     `<img src="${item.imageUrl}" class="food-img" alt="${item.itemName}" loading="lazy">` :
                     '';
 
-                // Date formatting
+                // Date
                 const dateStr = new Date(item.date).toLocaleDateString(undefined, {
                     year: 'numeric', month: 'short', day: 'numeric'
                 });
@@ -646,15 +840,100 @@
                 card.innerHTML = `
                     ${imgHtml}
                     <div class="food-header">
-                        <span class="food-name">${item.itemName}</span>
+                        <div style="flex:1;">
+                            <span class="food-badge">${item.category || 'Others'}</span>
+                            <div class="food-name">${item.itemName}</div>
+                        </div>
                         <div class="food-rating">${stars}</div>
                     </div>
                     ${item.review ? `<p class="food-comment">${item.review}</p>` : ''}
-                    <div class="food-date">${dateStr}</div>
+                    
+                    <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                        <div class="food-date">${dateStr}</div>
+                    </div>
+
+                    <div class="card-actions">
+                        <button class="action-btn" onclick="startEdit('${item.id}')">Edit</button>
+                        <button class="action-btn delete" onclick="deleteEntry('${item.id}')">Delete</button>
+                    </div>
                 `;
 
                 feedList.appendChild(card);
             });
+        }
+
+        // ==========================================
+        // ACTIONS (Edit / Delete)
+        // ==========================================
+
+        function startEdit(id) {
+            const entry = entries.find(e => e.id === id);
+            if (!entry) return;
+
+            editingId = id;
+            sidePanel.classList.add('edit-mode');
+            sidePanel.classList.add('expanded');
+
+            // Populate Form
+            document.getElementById('itemName').value = entry.itemName;
+            document.getElementById('categoryInput').value = entry.category || 'Others';
+            document.getElementById('review').value = entry.review;
+
+            // Set stars
+            ratingInput.value = entry.rating;
+            updateStarVisuals(entry.rating);
+            ratingText.textContent = entry.rating + (entry.rating === 1 ? ' Star' : ' Stars');
+
+            document.getElementById('submitBtn').textContent = 'Update Rating';
+            document.querySelector('.panel-title').textContent = 'Edit Rating';
+
+            // Scroll to top of panel on mobile if needed
+            if (window.innerWidth < 800) {
+                // sidePanel.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function cancelEdit() {
+            editingId = null;
+            sidePanel.classList.remove('edit-mode');
+            form.reset();
+
+            // Reset visuals
+            ratingInput.value = 0;
+            updateStarVisuals(0);
+            ratingText.textContent = '';
+            document.getElementById('dateInput').valueAsDate = new Date();
+            document.getElementById('submitBtn').textContent = 'Post Rating';
+            document.querySelector('.panel-title').textContent = 'Add your rating';
+        }
+
+        async function deleteEntry(id) {
+            if (!confirm("Are you sure you want to delete this rating?")) return;
+
+            const idx = entries.findIndex(e => e.id === id);
+            if (idx === -1) return;
+
+            // Optimistic Remove
+            const oldEntries = [...entries];
+            entries.splice(idx, 1);
+            renderFeed();
+
+            try {
+                // Sync
+                await fetch(API.jsonBin(CONFIG.jsonBinId), {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': CONFIG.jsonBinKey
+                    },
+                    body: JSON.stringify(entries)
+                });
+            } catch (err) {
+                console.error(err);
+                alert("Failed to delete. Reverting.");
+                entries = oldEntries;
+                renderFeed();
+            }
         }
 
         // ==========================================
@@ -763,6 +1042,7 @@
             const itemName = document.getElementById('itemName').value;
             const rating = parseFloat(document.getElementById('ratingValue').value);
             const review = document.getElementById('review').value;
+            const category = document.getElementById('categoryInput').value;
             const dateVal = document.getElementById('dateInput').value;
             const fileInput = document.getElementById('imageInput');
 
@@ -771,14 +1051,19 @@
                 alert("Please add a rating by tapping the stars!");
                 return;
             }
+            if (!category) {
+                alert("Please select a category.");
+                return;
+            }
 
             try {
                 btn.disabled = true;
-                btn.textContent = 'Publishing...';
+                btn.textContent = editingId ? 'Updating...' : 'Publishing...';
 
-                // -- 1. Upload Image (If any) --
+                // -- 1. Upload Image (If any, AND not editing mode) --
+                // In edit mode, we hide the file input, so files.length should be 0 anyway usually
                 let finalImageUrl = null;
-                if (fileInput.files.length > 0) {
+                if (!editingId && fileInput.files.length > 0) {
                     const formData = new FormData();
                     formData.append('file', fileInput.files[0]);
                     formData.append('upload_preset', CONFIG.cloudinaryPreset);
@@ -789,26 +1074,57 @@
                     finalImageUrl = upData.secure_url;
                 }
 
-                // -- 2. Construct New Object --
-                const newRating = {
-                    itemName: itemName,
-                    rating: rating,
-                    review: review,
-                    imageUrl: finalImageUrl || null,
-                    date: dateVal ? new Date(dateVal).toISOString() : new Date().toISOString()
-                };
+                // -- 2. Re-fetch latest to avoid conflicts --
+                // NOTE: simpler logic for now: just trust current state + optimistic update + push?
+                // But risk of overwrite. Let's do the safe fetch.
 
-                // -- 3. Sync --
-                // Optimistic UI update or wait? Let's wait to be safe with sync.
-                // Re-fetch current state to avoid race conditions (simple approach)
                 const getRes = await fetch(API.jsonBinLatest(CONFIG.jsonBinId), {
                     headers: { 'X-Master-Key': CONFIG.jsonBinKey }
                 });
                 const getData = await getRes.json();
                 let currentEntries = Array.isArray(getData.record) ? getData.record : [];
 
-                const updatedList = [...currentEntries, newRating];
+                // If ID is missing in cloud data, patch it
+                currentEntries = currentEntries.map((e, idx) => ({
+                    ...e,
+                    id: e.id || `entry_legacy_${idx}`
+                }));
 
+                let updatedList;
+
+                if (editingId) {
+                    // EDIT MODE
+                    const index = currentEntries.findIndex(e => e.id === editingId);
+                    if (index !== -1) {
+                        // Preserve original fields that shouldn't change
+                        const original = currentEntries[index];
+                        updatedList = [...currentEntries];
+                        updatedList[index] = {
+                            ...original,
+                            itemName: itemName,
+                            rating: rating,
+                            review: review,
+                            category: category
+                            // date, imageUrl, id preserved from original
+                        };
+                    } else {
+                        throw new Error("Entry not found (maybe deleted elsewhere?)");
+                    }
+                } else {
+                    // NEW ENTRY
+                    const newRating = {
+                        id: `entry_${Date.now()}`,
+                        itemName: itemName,
+                        rating: rating,
+                        review: review,
+                        imageUrl: finalImageUrl || null,
+                        date: dateVal ? new Date(dateVal).toISOString() : new Date().toISOString(),
+                        category: category
+                    };
+                    updatedList = [...currentEntries, newRating];
+                }
+
+                // -- 3. Push --
                 await fetch(API.jsonBin(CONFIG.jsonBinId), {
                     method: 'PUT',
                     headers: {
@@ -818,37 +1134,19 @@
                     body: JSON.stringify(updatedList)
                 });
 
-                // -- 4. Update Local State --
-                // Use the new fields directly
-                entries = updatedList.map(e => ({
-                    itemName: e.itemName || e.name || 'Unknown Item',
-                    rating: parseFloat(e.rating),
-                    review: e.review || e.comment || '',
-                    imageUrl: e.imageUrl || null,
-                    date: e.date
-                }));
-
+                // -- 4. Update Local State (from our calculated list to be instant) --
+                entries = updatedList;
                 renderFeed();
 
-                // Reset Form
-                form.reset();
-                ratingInput.value = 0;
-                updateStarVisuals(0);
-                ratingText.textContent = '';
-                document.getElementById('fileStatus').textContent = '+ Click to upload photo';
-                document.getElementById('fileStatus').style.color = 'var(--muted)';
-                // Keep date as today
-                document.getElementById('dateInput').valueAsDate = new Date();
-
-                // Collapse panel
-                sidePanel.classList.remove('expanded');
+                // Reset
+                cancelEdit(); // Helper to reset form & mode
 
             } catch (err) {
                 console.error(err);
-                alert('Error posting rating. Please try again.');
+                alert('Error processing rating. Please try again.');
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Post Rating';
+                btn.textContent = editingId ? 'Update Rating' : 'Post Rating';
             }
         });
 
