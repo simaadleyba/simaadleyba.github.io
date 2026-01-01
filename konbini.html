@@ -26,13 +26,13 @@
 
         /* Layout Grid */
         .konbini-layout {
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 2rem;
-            max-width: 1200px;
+            display: block;
+            max-width: 800px;
+            /* Center focused feed */
             margin: 0 auto;
             padding: 2rem;
             min-height: 100vh;
+            position: relative;
         }
 
         /* --- Main Feed Column --- */
@@ -40,6 +40,116 @@
             display: flex;
             flex-direction: column;
             gap: 2rem;
+            width: 100%;
+        }
+
+        /* ... feed header ... */
+
+        /* --- Modal / Slide Panel Shared --- */
+        .side-panel {
+            position: fixed;
+            z-index: 2000;
+            background: #fff;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Desktop Modal Style */
+        @media (min-width: 801px) {
+            .side-panel {
+                top: 50%;
+                left: 50%;
+                width: 480px;
+                max-height: 85vh;
+                border-radius: 12px;
+                padding: 0;
+
+                /* Hidden State */
+                opacity: 0;
+                pointer-events: none;
+                transform: translate(-50%, -45%) scale(0.96);
+            }
+
+            .side-panel.expanded {
+                opacity: 1;
+                pointer-events: auto;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            .panel-header {
+                padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: default;
+            }
+
+            .panel-content {
+                padding: 0 1.5rem 1.5rem 1.5rem;
+                overflow-y: auto;
+                display: block !important;
+                /* Always show content in modal */
+                margin-top: 0;
+            }
+
+            /* Floating "Add Rating" Button */
+            .desktop-fab {
+                position: fixed;
+                bottom: 2rem;
+                right: 2rem;
+                background: var(--text);
+                color: #fff;
+                border: none;
+                padding: 0.8rem 1.5rem;
+                border-radius: 50px;
+                font-family: inherit;
+                font-weight: 500;
+                font-size: 0.95rem;
+                cursor: pointer;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                transition: transform 0.2s, box-shadow 0.2s;
+                z-index: 100;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .desktop-fab:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Backdrop */
+            .modal-backdrop {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.4);
+                backdrop-filter: blur(2px);
+                z-index: 1999;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s;
+            }
+
+            .modal-backdrop.active {
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+
+        /* Hide desktop FAB on mobile */
+        @media (max-width: 800px) {
+
+            .desktop-fab,
+            .modal-backdrop {
+                display: none;
+            }
         }
 
 
@@ -144,66 +254,7 @@
         }
 
 
-        /* --- Right Side Panel --- */
-        .side-panel {
-            /* Desktop: Sticky */
-            position: sticky;
-            top: 2rem;
-            height: fit-content;
-            background: #fff;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            border-radius: 8px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-            z-index: 100;
-        }
 
-        .panel-header {
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .panel-title {
-            font-weight: 500;
-            font-size: 1rem;
-            color: var(--text);
-        }
-
-        .panel-preview-stars {
-            display: flex;
-            gap: 2px;
-            opacity: 0.3;
-        }
-
-        .panel-content {
-            display: none;
-            /* Collapsed by default */
-            margin-top: 1.5rem;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .side-panel.expanded .panel-content {
-            display: block;
-        }
-
-        .side-panel.expanded .panel-preview-stars {
-            display: none;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(5px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
 
         /* Form Styles */
         .form-group {
@@ -229,7 +280,8 @@
             font-family: inherit;
             border-radius: 4px;
             transition: border-color 0.2s, background 0.2s;
-            font-size: 0.9rem;
+            font-size: 16px;
+            /* Prevent iOS zoom */
         }
 
         input[type="text"]:focus,
@@ -481,6 +533,12 @@
             cursor: wait;
         }
 
+        /* --- Desktop Defaults (Hide Mobile Elements) --- */
+        .mobile-fab-icon,
+        .panel-close-btn {
+            display: none;
+        }
+
         /* --- Mobile Responsive --- */
         @media (max-width: 800px) {
             .konbini-layout {
@@ -503,18 +561,75 @@
 
             .side-panel {
                 position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
+                bottom: 1rem;
+                right: 1rem;
+                left: auto;
                 top: auto;
-                width: 100%;
+                width: 56px;
+                height: 56px;
                 margin: 0;
+                border-radius: 50%;
+                border: none;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                background: var(--accent);
+                color: white;
+                overflow: hidden;
+                transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                padding: 0;
+            }
+
+            .side-panel.expanded {
+                width: 100%;
+                height: 85vh;
+                bottom: 0;
+                right: 0;
                 border-radius: 16px 16px 0 0;
-                border-bottom: none;
-                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
-                /* Collapsed state basically just showing header */
-                transform: translateY(calc(100% - 65px));
-                transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                background: #fff;
+                color: var(--text);
+                padding: 1.5rem;
+                overflow-y: auto;
+                display: block;
+            }
+
+            /* Mobile Trigger Icon */
+            .mobile-fab-icon {
+                font-size: 24px;
+                line-height: 1;
+                display: block;
+            }
+
+            .side-panel.expanded .mobile-fab-icon {
+                display: none;
+            }
+
+            /* Header tweaks for mobile expanded */
+            .panel-header {
+                display: none;
+                /* Hidden in FAB state */
+            }
+
+            .side-panel.expanded .panel-header {
+                display: flex;
+                padding-bottom: 1rem;
+            }
+
+            .panel-close-btn {
+                display: none;
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                color: var(--muted);
+                padding: 0.5rem;
+                cursor: pointer;
+                line-height: 1;
+            }
+
+            .side-panel.expanded .panel-close-btn {
+                display: block;
             }
 
             .side-panel.expanded {
@@ -569,36 +684,25 @@
         </div>
 
 
-        <!-- RIGHT SIDE PANEL (FORM) -->
-        <aside class="side-panel" id="sidePanel">
-            <!-- Header (always visible) -->
-            <div class="panel-header" onclick="togglePanel()">
-                <span class="panel-title">Add your rating</span>
+        <!-- Desktop Add Rating FAB & Backdrop -->
+        <button class="desktop-fab" onclick="togglePanel()">
+            <svg style="width:20px;height:20px;fill:currentColor" viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            Add Rating
+        </button>
+        <div class="modal-backdrop" onclick="togglePanel()"></div>
 
-                <!-- Preview stars (visual cue to rate) -->
-                <div class="panel-preview-stars">
-                    <!-- 5 default stars -->
-                    <svg class="star-svg" viewBox="0 0 24 24" style="width:20px;height:20px;fill:#ddd">
-                        <path
-                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                    <svg class="star-svg" viewBox="0 0 24 24" style="width:20px;height:20px;fill:#ddd">
-                        <path
-                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                    <svg class="star-svg" viewBox="0 0 24 24" style="width:20px;height:20px;fill:#ddd">
-                        <path
-                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                    <svg class="star-svg" viewBox="0 0 24 24" style="width:20px;height:20px;fill:#ddd">
-                        <path
-                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                    <svg class="star-svg" viewBox="0 0 24 24" style="width:20px;height:20px;fill:#ddd">
-                        <path
-                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                </div>
+        <!-- RIGHT SIDE PANEL (FORM / MODAL) -->
+        <aside class="side-panel" id="sidePanel">
+            <!-- Mobile FAB Icon -->
+            <span class="mobile-fab-icon" onclick="togglePanel()">+</span>
+
+            <!-- Header (always visible in modal/expanded state) -->
+            <div class="panel-header">
+                <span class="panel-title">Add your rating</span>
+                <button class="panel-close-btn" onclick="togglePanel()"
+                    style="display:block; color:var(--text); font-size:1.5rem;">&times;</button>
             </div>
 
             <!-- Content (collapsible) -->
@@ -748,15 +852,35 @@
                 const raw = Array.isArray(data.record) ? data.record : [];
 
                 // MAP OLD DATA TO NEW MODEL IF NEEDED
-                entries = raw.map((e, idx) => ({
-                    id: e.id || `entry_${Date.now()}_${idx}`, // Ensure ID for stable editing
-                    itemName: e.itemName || e.name || 'Unknown Item',
-                    rating: parseFloat(e.rating),
-                    review: e.review || e.comment || '',
-                    imageUrl: e.imageUrl || null,
-                    date: e.date,
-                    category: e.category || 'Others' // Default category
-                }));
+                let hasLegacyData = false;
+
+                entries = raw.map((e, idx) => {
+                    const isLegacy = !e.id;
+                    if (isLegacy) hasLegacyData = true;
+
+                    return {
+                        id: e.id || `entry_legacy_${Date.now()}_${idx}`, // Generate stable ID if missing
+                        itemName: e.itemName || e.name || 'Unknown Item',
+                        rating: parseFloat(e.rating),
+                        review: e.review || e.comment || '',
+                        imageUrl: e.imageUrl || null,
+                        date: e.date,
+                        category: e.category || 'Others'
+                    };
+                });
+
+                // --- CRITICAL FIX: Persist generated IDs immediately ---
+                if (hasLegacyData) {
+                    console.log("Backfilling missing IDs for legacy items...");
+                    await fetch(API.jsonBin(CONFIG.jsonBinId), {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': CONFIG.jsonBinKey
+                        },
+                        body: JSON.stringify(entries)
+                    });
+                }
 
                 renderFeed();
             } catch (err) {
@@ -896,6 +1020,12 @@
         function cancelEdit() {
             editingId = null;
             sidePanel.classList.remove('edit-mode');
+
+            // Close the panel/modal and backdrop
+            sidePanel.classList.remove('expanded');
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.classList.remove('active');
+
             form.reset();
 
             // Reset visuals
@@ -941,8 +1071,14 @@
         // ==========================================
 
         function togglePanel() {
-            sidePanel.classList.toggle('expanded');
+            const isExpanded = sidePanel.classList.toggle('expanded');
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.classList.toggle('active', isExpanded);
+            }
         }
+
+        // (Old click-outside logic removed as backdrop handles it now)
 
         // File Input Logic
         document.getElementById('imageInput').addEventListener('change', (e) => {
@@ -1075,19 +1211,16 @@
                 }
 
                 // -- 2. Re-fetch latest to avoid conflicts --
-                // NOTE: simpler logic for now: just trust current state + optimistic update + push?
-                // But risk of overwrite. Let's do the safe fetch.
-
                 const getRes = await fetch(API.jsonBinLatest(CONFIG.jsonBinId), {
                     headers: { 'X-Master-Key': CONFIG.jsonBinKey }
                 });
                 const getData = await getRes.json();
                 let currentEntries = Array.isArray(getData.record) ? getData.record : [];
 
-                // If ID is missing in cloud data, patch it
-                currentEntries = currentEntries.map((e, idx) => ({
+                // Sanity check: ensure all loaded entries have IDs (should be fixed by loadEntries, but be safe)
+                currentEntries = currentEntries.map((e) => ({
                     ...e,
-                    id: e.id || `entry_legacy_${idx}`
+                    id: e.id || `entry_gen_${Math.random().toString(36).substr(2, 9)}` // Fallback random ID if still missing
                 }));
 
                 let updatedList;
@@ -1096,7 +1229,7 @@
                     // EDIT MODE
                     const index = currentEntries.findIndex(e => e.id === editingId);
                     if (index !== -1) {
-                        // Preserve original fields that shouldn't change
+                        // Preserve original fields
                         const original = currentEntries[index];
                         updatedList = [...currentEntries];
                         updatedList[index] = {
@@ -1104,16 +1237,19 @@
                             itemName: itemName,
                             rating: rating,
                             review: review,
-                            category: category
-                            // date, imageUrl, id preserved from original
+                            category: category,
+                            // Ensure strict preservation of specific fields
+                            id: original.id,
+                            date: original.date,
+                            imageUrl: original.imageUrl
                         };
                     } else {
-                        throw new Error("Entry not found (maybe deleted elsewhere?)");
+                        throw new Error(`Entry with ID ${editingId} not found in cloud data. Sync error.`);
                     }
                 } else {
                     // NEW ENTRY
                     const newRating = {
-                        id: `entry_${Date.now()}`,
+                        id: `entry_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
                         itemName: itemName,
                         rating: rating,
                         review: review,
@@ -1134,7 +1270,11 @@
                     body: JSON.stringify(updatedList)
                 });
 
-                // -- 4. Update Local State (from our calculated list to be instant) --
+                // -- 4. Update Local State (Refetching is safest to guarantee sync) --
+                // But for speed, we can plain set it.
+                // Let's re-run loadEntries to be 100% sure we have what the server has (including any patches)
+                // However, loadEntries is async and renders.
+                // Let's just update local state manually to match updatedList for instant feedback.
                 entries = updatedList;
                 renderFeed();
 
