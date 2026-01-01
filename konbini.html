@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>konbini log</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css" />
+
+    <style>
+        /* =========================================
+           KONBINI SPECIFIC STYLES
+           ========================================= */
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            /* Remove default sorting/margins if any interference */
+            overflow-x: hidden;
+        }
+
+        /* Layout Grid */
+        .konbini-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        /* --- Main Feed Column --- */
+        .feed-column {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .feed-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .feed-title h1 {
+            font-size: 1.8rem;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .feed-subtitle {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .sort-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            font-family: inherit;
+            color: var(--muted);
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .sort-btn.active {
+            opacity: 1;
+            font-weight: 500;
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--muted);
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 8px;
+            border: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+
+        /* Feed Cards */
+        .feed-grid {
+            display: grid;
+            gap: 2rem;
+            /* 1 col on mobile, 2 on wide screens if space permits? 
+               Prompt says "Main center column: ratings feed". 
+               Let's keep it simple list or grid. Grid is nicer. */
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+
+        .food-card {
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            background: #fff;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            border-radius: 4px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .food-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .food-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            background: #eee;
+            border-radius: 2px;
+        }
+
+        .food-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+            gap: 1rem;
+        }
+
+        .food-name {
+            font-weight: 500;
+            font-size: 1.1rem;
+            line-height: 1.3;
+        }
+
+        .food-rating {
+            color: var(--accent);
+            display: inline-flex;
+            gap: 1px;
+            flex-shrink: 0;
+        }
+
+        .food-comment {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .food-date {
+            margin-top: auto;
+            font-size: 0.75rem;
+            color: #bbb;
+            text-align: right;
+            border-top: 1px solid rgba(0, 0, 0, 0.03);
+            padding-top: 0.8rem;
+        }
+
+
+        /* --- Right Side Panel --- */
+        .side-panel {
+            /* Desktop: Sticky */
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            z-index: 100;
+        }
+
+        .panel-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-weight: 500;
+            font-size: 1rem;
+            color: var(--text);
+        }
+
+        .panel-preview-stars {
+            display: flex;
+            gap: 2px;
+            opacity: 0.3;
+        }
+
+        .panel-content {
+            display: none;
+            /* Collapsed by default */
+            margin-top: 1.5rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .side-panel.expanded .panel-content {
+            display: block;
+        }
+
+        .side-panel.expanded .panel-preview-stars {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.8rem;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: #fcfcfc;
+            color: var(--text);
+            font-family: inherit;
+            border-radius: 4px;
+            transition: border-color 0.2s, background 0.2s;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: #fff;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* File Input Styled */
+        .file-wrapper {
+            position: relative;
+            overflow: hidden;
+            border: 1px dashed rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            padding: 1rem;
+            text-align: center;
+            background: #fafafa;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .file-wrapper:hover {
+            border-color: var(--accent);
+            background: #fff;
+        }
+
+        .file-wrapper input[type=file] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-status {
+            font-size: 0.85rem;
+            color: var(--muted);
+            pointer-events: none;
+        }
+
+        /* Interactive Stars */
+        .star-input-row {
+            display: flex;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .input-star-svg {
+            width: 28px;
+            height: 28px;
+            fill: #e0e0e0;
+            transition: transform 0.1s;
+        }
+
+        .input-star-svg:hover {
+            transform: scale(1.1);
+        }
+
+        button.submit-btn {
+            width: 100%;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 1rem;
+            font-family: inherit;
+            cursor: pointer;
+            font-weight: 500;
+            border-radius: 4px;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            transition: opacity 0.2s;
+        }
+
+        button.submit-btn:hover {
+            opacity: 0.9;
+        }
+
+        button.submit-btn:disabled {
+            background: var(--muted);
+            cursor: wait;
+        }
+
+        /* --- Mobile Responsive --- */
+        @media (max-width: 800px) {
+            .konbini-layout {
+                grid-template-columns: 1fr;
+                padding: 1.5rem;
+                padding-bottom: 100px;
+                /* Space for bottom panel trigger */
+            }
+
+            .feed-grid {
+                grid-template-columns: 1fr;
+                /* Single column on mobile usually looks better explicitly */
+            }
+
+            .side-panel {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                top: auto;
+                width: 100%;
+                margin: 0;
+                border-radius: 16px 16px 0 0;
+                border-bottom: none;
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+                /* Collapsed state basically just showing header */
+                transform: translateY(calc(100% - 65px));
+                transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            .side-panel.expanded {
+                transform: translateY(0);
+                max-height: 85vh;
+                overflow-y: auto;
+            }
+
+            .panel-header {
+                padding-bottom: 0;
+                /* Align nicer in small bar */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="konbini-layout">
+
+        <!-- MAIN FEED COLUMN -->
+        <div class="feed-column">
+            <div class="feed-header">
+                <div class="feed-title">
+                    <h1>konbini log</h1>
+                    <div class="feed-subtitle">tracking the good, the bad, and the crispy</div>
+                </div>
+
+                <div class="sort-controls">
+                    <span>sort by:</span>
+                    <button class="sort-btn active" onclick="setSort('date')">newest</button>
+                    <button class="sort-btn" onclick="setSort('rating')">highest</button>
+                </div>
+            </div>
+
+            <div id="feedList" class="feed-grid">
+                <div class="loading-msg">loading...</div>
+            </div>
+        </div>
+
+
+        <!-- RIGHT SIDE PANEL (FORM) -->
+        <aside class="side-panel" id="sidePanel">
+            <!-- Header (always visible) -->
+            <div class="panel-header" onclick="togglePanel()">
+                <span class="panel-title">Add your rating</span>
+
+                <!-- Preview stars (visual cue to rate) -->
+                <div class="panel-preview-stars">
+                    <!-- 5 default stars -->
+                    <svg class="star-svg" viewBox="0 0 24 24" style="width:20px;height:20px;fill:#ddd">
+                        <path
+                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                    <svg class="star-svg" viewBox="0 0 24 24" style="width:20px;height:20px;fill:#ddd">
+                        <path
+                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                    <svg class="star-svg" viewBox="0 0 24 24" style="width:20px;height:20px;fill:#ddd">
+                        <path
+                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                    <svg class="star-svg" viewBox="0 0 24 24" style="width:20px;height:20px;fill:#ddd">
+                        <path
+                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                    <svg class="star-svg" viewBox="0 0 24 24" style="width:20px;height:20px;fill:#ddd">
+                        <path
+                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Content (collapsible) -->
+            <div class="panel-content">
+                <form id="ratingForm">
+
+                    <!-- Item Name -->
+                    <div class="form-group">
+                        <label for="itemName">Item Name *</label>
+                        <input type="text" id="itemName" placeholder="e.g. Spicy Famichiki" required>
+                    </div>
+
+                    <!-- Rating -->
+                    <div class="form-group">
+                        <label>Rating *</label>
+                        <div id="starInputWidget" class="star-input-row">
+                            <!-- Injected via JS -->
+                        </div>
+                        <input type="hidden" id="ratingValue" value="0">
+                        <div id="ratingText"
+                            style="font-size:0.8rem; color:var(--accent); margin-top:0.4rem; height:1rem; font-weight:500;">
+                        </div>
+                    </div>
+
+                    <!-- Review -->
+                    <div class="form-group">
+                        <label for="review">Review</label>
+                        <textarea id="review" placeholder="How was it?"></textarea>
+                    </div>
+
+                    <!-- Date -->
+                    <div class="form-group">
+                        <label for="dateInput">Date</label>
+                        <input type="date" id="dateInput" required>
+                    </div>
+
+                    <!-- Image Upload -->
+                    <div class="form-group">
+                        <label>Image (Optional)</label>
+                        <div class="file-wrapper">
+                            <span class="file-status" id="fileStatus">+ Click to upload photo</span>
+                            <input type="file" id="imageInput" accept="image/*">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">Post Rating</button>
+
+                </form>
+            </div>
+        </aside>
+
+        <!-- Hidden SVG gradients -->
+        <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+            <linearGradient id="halfGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="50%" style="stop-color:var(--accent);stop-opacity:1" />
+                <stop offset="50%" style="stop-color:#e0e0e0;stop-opacity:1" />
+            </linearGradient>
+            <linearGradient id="fullGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="100%" style="stop-color:var(--accent);stop-opacity:1" />
+            </linearGradient>
+        </svg>
+
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURATION
+        // ==========================================
+        const CONFIG = {
+            cloudinaryName: 'dl8idsm2b',
+            cloudinaryPreset: 'konbini_preset',
+            jsonBinId: '6956864bd0ea881f404dc78a',
+            jsonBinKey: '$2a$10$1fbrHfX5pwDgFjfoAt9nqOWIMaLjvrsUSCJFqb4YLPqodjMSW1/3a'
+        };
+
+        // ==========================================
+        // STATE
+        // ==========================================
+        let entries = [];
+        let activeSort = 'date'; // 'date' | 'rating'
+
+        const API = {
+            cloudinary: (name) => `https://api.cloudinary.com/v1_1/${name}/image/upload`,
+            jsonBin: (id) => `https://api.jsonbin.io/v3/b/${id}`,
+            jsonBinLatest: (id) => `https://api.jsonbin.io/v3/b/${id}/latest`
+        };
+
+        // DOM Els
+        const feedList = document.getElementById('feedList');
+        const sidePanel = document.getElementById('sidePanel');
+        const form = document.getElementById('ratingForm');
+
+        // Stars
+        const starContainer = document.getElementById('starInputWidget');
+        const ratingInput = document.getElementById('ratingValue');
+        const ratingText = document.getElementById('ratingText');
+
+        // ==========================================
+        // INIT
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            loadEntries();
+
+            // Set default date to today
+            document.getElementById('dateInput').valueAsDate = new Date();
+
+            // Build Helper Stars
+            setupStarWidget();
+        });
+
+        // ==========================================
+        // LOGIC
+        // ==========================================
+
+        async function loadEntries() {
+            try {
+                const res = await fetch(API.jsonBinLatest(CONFIG.jsonBinId), {
+                    headers: { 'X-Master-Key': CONFIG.jsonBinKey }
+                });
+                if (!res.ok) throw new Error('API Error');
+
+                const data = await res.json();
+                const raw = Array.isArray(data.record) ? data.record : [];
+
+                // MAP OLD DATA TO NEW MODEL IF NEEDED
+                entries = raw.map(e => ({
+                    itemName: e.itemName || e.name || 'Unknown Item',
+                    rating: parseFloat(e.rating),
+                    review: e.review || e.comment || '',
+                    imageUrl: e.imageUrl || null,
+                    date: e.date // already ISO string
+                }));
+
+                renderFeed();
+            } catch (err) {
+                console.error(err);
+                feedList.innerHTML = `<div class="empty-state">Unable to load feed. Check API setup.</div>`;
+            }
+        }
+
+        function setSort(type) {
+            activeSort = type;
+
+            // Update buttons styling
+            document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.sort-btn[onclick*="${type}"]`).classList.add('active');
+
+            renderFeed();
+        }
+
+        function renderFeed() {
+            feedList.innerHTML = '';
+
+            if (entries.length === 0) {
+                feedList.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No ratings yet</h3>
+                        <p>Be the first to track a delicious konbini find!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Client side sort
+            const sorted = [...entries].sort((a, b) => {
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+
+                if (activeSort === 'date') {
+                    return dateB - dateA; // Newest first
+                } else if (activeSort === 'rating') {
+                    return b.rating - a.rating; // Highest first
+                }
+                return 0;
+            });
+
+            sorted.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'food-card';
+
+                // Stars HTML
+                const stars = getStarSvg(item.rating);
+
+                // Image HTML (conditional)
+                const imgHtml = item.imageUrl ?
+                    `<img src="${item.imageUrl}" class="food-img" alt="${item.itemName}" loading="lazy">` :
+                    '';
+
+                // Date formatting
+                const dateStr = new Date(item.date).toLocaleDateString(undefined, {
+                    year: 'numeric', month: 'short', day: 'numeric'
+                });
+
+                card.innerHTML = `
+                    ${imgHtml}
+                    <div class="food-header">
+                        <span class="food-name">${item.itemName}</span>
+                        <div class="food-rating">${stars}</div>
+                    </div>
+                    ${item.review ? `<p class="food-comment">${item.review}</p>` : ''}
+                    <div class="food-date">${dateStr}</div>
+                `;
+
+                feedList.appendChild(card);
+            });
+        }
+
+        // ==========================================
+        // UI INTERACTIONS
+        // ==========================================
+
+        function togglePanel() {
+            sidePanel.classList.toggle('expanded');
+        }
+
+        // File Input Logic
+        document.getElementById('imageInput').addEventListener('change', (e) => {
+            const status = document.getElementById('fileStatus');
+            if (e.target.files.length) {
+                status.textContent = `✓ ${e.target.files[0].name}`;
+                status.style.color = 'var(--accent)';
+                status.style.fontWeight = '500';
+            } else {
+                status.textContent = '+ Click to upload photo';
+                status.style.color = 'var(--muted)';
+                status.style.fontWeight = 'normal';
+            }
+        });
+
+        // ==========================================
+        // STAR INPUT WIDGET
+        // ==========================================
+        function setupStarWidget() {
+            for (let i = 1; i <= 5; i++) {
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute('viewBox', '0 0 24 24');
+                svg.setAttribute('class', 'input-star-svg');
+                svg.dataset.idx = i;
+                svg.innerHTML = `<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>`;
+
+                // Events
+                svg.addEventListener('mousemove', handleStarHover);
+                svg.addEventListener('click', handleStarClick);
+
+                starContainer.appendChild(svg);
+            }
+            starContainer.addEventListener('mouseleave', () => updateStarVisuals(parseFloat(ratingInput.value)));
+        }
+
+        function handleStarHover(e) {
+            const idx = parseInt(e.currentTarget.dataset.idx);
+            const rect = e.currentTarget.getBoundingClientRect();
+            const isHalf = (e.clientX - rect.left) < (rect.width / 2);
+
+            const val = isHalf ? idx - 0.5 : idx;
+            updateStarVisuals(val);
+            ratingText.textContent = val + (val === 1 ? ' Star' : ' Stars');
+        }
+
+        function handleStarClick(e) {
+            const idx = parseInt(e.currentTarget.dataset.idx);
+            const rect = e.currentTarget.getBoundingClientRect();
+            const isHalf = (e.clientX - rect.left) < (rect.width / 2);
+
+            const val = isHalf ? idx - 0.5 : idx;
+            ratingInput.value = val;
+            updateStarVisuals(val);
+            ratingText.textContent = val + (val === 1 ? ' Star' : ' Stars');
+
+            // Auto-expand panel if not already
+            if (!sidePanel.classList.contains('expanded')) {
+                sidePanel.classList.add('expanded');
+            }
+        }
+
+        function updateStarVisuals(val) {
+            Array.from(starContainer.children).forEach((svg, i) => {
+                const starVal = i + 1;
+                if (val >= starVal) {
+                    svg.style.fill = 'var(--accent)'; // Full
+                } else if (val >= starVal - 0.5) {
+                    svg.style.fill = 'url(#halfGradient)'; // Half
+                } else {
+                    svg.style.fill = '#e0e0e0'; // Empty
+                }
+            });
+        }
+
+        // Helper for Read-Only stars in grid
+        function getStarSvg(rating) {
+            let html = '';
+            for (let i = 1; i <= 5; i++) {
+                let fill = '#ddd';
+                if (rating >= i) fill = 'var(--accent)';
+                else if (rating >= i - 0.5) fill = 'url(#halfGradient)';
+
+                html += `<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:${fill}"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+            }
+            return html;
+        }
+
+        // ==========================================
+        // SUBMIT
+        // ==========================================
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+
+            // -- Gather Data --
+            const itemName = document.getElementById('itemName').value;
+            const rating = parseFloat(document.getElementById('ratingValue').value);
+            const review = document.getElementById('review').value;
+            const dateVal = document.getElementById('dateInput').value;
+            const fileInput = document.getElementById('imageInput');
+
+            // Validators
+            if (rating === 0) {
+                alert("Please add a rating by tapping the stars!");
+                return;
+            }
+
+            try {
+                btn.disabled = true;
+                btn.textContent = 'Publishing...';
+
+                // -- 1. Upload Image (If any) --
+                let finalImageUrl = null;
+                if (fileInput.files.length > 0) {
+                    const formData = new FormData();
+                    formData.append('file', fileInput.files[0]);
+                    formData.append('upload_preset', CONFIG.cloudinaryPreset);
+
+                    const upRes = await fetch(API.cloudinary(CONFIG.cloudinaryName), { method: 'POST', body: formData });
+                    if (!upRes.ok) throw new Error('Image upload failed');
+                    const upData = await upRes.json();
+                    finalImageUrl = upData.secure_url;
+                }
+
+                // -- 2. Construct New Object --
+                const newRating = {
+                    itemName: itemName,
+                    rating: rating,
+                    review: review,
+                    imageUrl: finalImageUrl || null,
+                    date: dateVal ? new Date(dateVal).toISOString() : new Date().toISOString()
+                };
+
+                // -- 3. Sync --
+                // Optimistic UI update or wait? Let's wait to be safe with sync.
+                // Re-fetch current state to avoid race conditions (simple approach)
+                const getRes = await fetch(API.jsonBinLatest(CONFIG.jsonBinId), {
+                    headers: { 'X-Master-Key': CONFIG.jsonBinKey }
+                });
+                const getData = await getRes.json();
+                let currentEntries = Array.isArray(getData.record) ? getData.record : [];
+
+                const updatedList = [...currentEntries, newRating];
+
+                await fetch(API.jsonBin(CONFIG.jsonBinId), {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': CONFIG.jsonBinKey
+                    },
+                    body: JSON.stringify(updatedList)
+                });
+
+                // -- 4. Update Local State --
+                // Use the new fields directly
+                entries = updatedList.map(e => ({
+                    itemName: e.itemName || e.name || 'Unknown Item',
+                    rating: parseFloat(e.rating),
+                    review: e.review || e.comment || '',
+                    imageUrl: e.imageUrl || null,
+                    date: e.date
+                }));
+
+                renderFeed();
+
+                // Reset Form
+                form.reset();
+                ratingInput.value = 0;
+                updateStarVisuals(0);
+                ratingText.textContent = '';
+                document.getElementById('fileStatus').textContent = '+ Click to upload photo';
+                document.getElementById('fileStatus').style.color = 'var(--muted)';
+                // Keep date as today
+                document.getElementById('dateInput').valueAsDate = new Date();
+
+                // Collapse panel
+                sidePanel.classList.remove('expanded');
+
+            } catch (err) {
+                console.error(err);
+                alert('Error posting rating. Please try again.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Post Rating';
+            }
+        });
+
+    </script>
+
+</body>
+
+</html>
