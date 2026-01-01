@@ -45,53 +45,48 @@
 
         /* ... feed header ... */
 
-        /* --- Modal / Slide Panel Shared --- */
+        /* --- Slide Panel Shared --- */
         .side-panel {
             position: fixed;
             z-index: 2000;
             background: #fff;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow: hidden;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
         }
 
-        /* Desktop Modal Style */
+        /* Desktop: Slide-in from Right */
         @media (min-width: 801px) {
             .side-panel {
-                top: 50%;
-                left: 50%;
-                width: 480px;
-                max-height: 85vh;
-                border-radius: 12px;
+                top: 0;
+                right: 0;
+                width: 420px;
+                height: 100vh;
+                border-radius: 0;
                 padding: 0;
-
-                /* Hidden State */
-                opacity: 0;
-                pointer-events: none;
-                transform: translate(-50%, -45%) scale(0.96);
+                transform: translateX(100%);
+                /* Hidden offscreen */
             }
 
             .side-panel.expanded {
-                opacity: 1;
-                pointer-events: auto;
-                transform: translate(-50%, -50%) scale(1);
+                transform: translateX(0);
             }
 
             .panel-header {
-                padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+                padding: 1.5rem;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                cursor: default;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             }
 
             .panel-content {
-                padding: 0 1.5rem 1.5rem 1.5rem;
+                padding: 1.5rem;
                 overflow-y: auto;
+                flex: 1;
                 display: block !important;
-                /* Always show content in modal */
                 margin-top: 0;
             }
 
@@ -104,7 +99,8 @@
                 color: #fff;
                 border: none;
                 padding: 0.8rem 1.5rem;
-                border-radius: 50px;
+                border-radius: 4px;
+                /* Reduced from 50px */
                 font-family: inherit;
                 font-weight: 500;
                 font-size: 0.95rem;
@@ -122,15 +118,14 @@
                 box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
             }
 
-            /* Backdrop */
+            /* Backdrop (Overlay) */
             .modal-backdrop {
                 position: fixed;
                 top: 0;
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(0, 0, 0, 0.4);
-                backdrop-filter: blur(2px);
+                background: rgba(0, 0, 0, 0.3);
                 z-index: 1999;
                 opacity: 0;
                 pointer-events: none;
@@ -141,13 +136,84 @@
                 opacity: 1;
                 pointer-events: auto;
             }
+
+            .mobile-fab-icon {
+                display: none;
+            }
         }
 
-        /* Hide desktop FAB on mobile */
+        /* Mobile: Bottom Sheet with visible FAB */
         @media (max-width: 800px) {
 
             .desktop-fab,
             .modal-backdrop {
+                display: none;
+            }
+
+            .side-panel {
+                bottom: 0;
+                left: 0;
+                right: 0;
+                top: auto;
+                width: 100%;
+                max-height: 85vh;
+                border-radius: 12px 12px 0 0;
+                padding: 0;
+                transform: translateY(100%);
+                /* Hidden below screen */
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+            }
+
+            .side-panel.expanded {
+                transform: translateY(0);
+            }
+
+            .panel-header {
+                padding: 1rem 1.5rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .panel-content {
+                padding: 0 1.5rem 1.5rem 1.5rem;
+                overflow-y: auto;
+                display: block !important;
+            }
+
+            /* Mobile FAB - Always visible */
+            .mobile-fab-icon {
+                position: fixed;
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 56px;
+                height: 56px;
+                background: var(--accent);
+                color: #fff;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 32px;
+                font-weight: 300;
+                line-height: 1;
+                text-align: center;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                cursor: pointer;
+                z-index: 1000;
+                transition: transform 0.2s;
+                /* Ensure the + is perfectly centered */
+                padding-bottom: 2px;
+                /* Optical adjustment for + symbol */
+            }
+
+            .mobile-fab-icon:hover {
+                transform: scale(1.05);
+            }
+
+            /* Hide FAB when panel is open */
+            .side-panel.expanded~.mobile-fab-icon,
+            .side-panel.expanded .mobile-fab-icon {
                 display: none;
             }
         }
@@ -178,7 +244,7 @@
             padding: 4rem 2rem;
             color: var(--muted);
             background: rgba(255, 255, 255, 0.4);
-            border-radius: 8px;
+            border-radius: 4px;
             border: 1px dashed rgba(0, 0, 0, 0.1);
         }
 
@@ -425,7 +491,7 @@
             letter-spacing: 0.05em;
             padding: 0.2rem 0.6rem;
             background: #f0f0f0;
-            border-radius: 100px;
+            border-radius: 4px;
             color: #666;
             display: inline-block;
             margin-bottom: 0.5rem;
@@ -693,16 +759,14 @@
         </button>
         <div class="modal-backdrop" onclick="togglePanel()"></div>
 
-        <!-- RIGHT SIDE PANEL (FORM / MODAL) -->
+        <!-- RIGHT SIDE PANEL (FORM) -->
         <aside class="side-panel" id="sidePanel">
-            <!-- Mobile FAB Icon -->
-            <span class="mobile-fab-icon" onclick="togglePanel()">+</span>
 
-            <!-- Header (always visible in modal/expanded state) -->
+            <!-- Header -->
             <div class="panel-header">
                 <span class="panel-title">Add your rating</span>
                 <button class="panel-close-btn" onclick="togglePanel()"
-                    style="display:block; color:var(--text); font-size:1.5rem;">&times;</button>
+                    style="background:none; border:none; font-size:1.5rem; color:var(--muted); cursor:pointer;">&times;</button>
             </div>
 
             <!-- Content (collapsible) -->
@@ -775,6 +839,9 @@
                 </form>
             </div>
         </aside>
+
+        <!-- Mobile Add Rating FAB (Must be after side-panel for CSS sibling selector) -->
+        <span class="mobile-fab-icon" onclick="togglePanel()">+</span>
 
         <!-- Hidden SVG gradients -->
         <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
