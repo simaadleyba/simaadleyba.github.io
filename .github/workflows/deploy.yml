@@ -1,0 +1,44 @@
+name: Deploy static content to Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Inject Secrets
+        env:
+          CLOUDINARY_NAME: ${{ secrets.CLOUDINARY_NAME }}
+          CLOUDINARY_PRESET: ${{ secrets.CLOUDINARY_PRESET }}
+          JSONBIN_ID: ${{ secrets.JSONBIN_ID }}
+          JSONBIN_KEY: ${{ secrets.JSONBIN_KEY }}
+        run: |
+          sed -i "s|__CLOUDINARY_NAME__|$CLOUDINARY_NAME|g" konbini.html
+          sed -i "s|__CLOUDINARY_PRESET__|$CLOUDINARY_PRESET|g" konbini.html
+          sed -i "s|__JSONBIN_ID__|$JSONBIN_ID|g" konbini.html
+          sed -i "s|__JSONBIN_KEY__|$JSONBIN_KEY|g" konbini.html
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
