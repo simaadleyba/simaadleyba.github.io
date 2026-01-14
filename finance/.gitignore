@@ -1,1 +1,2 @@
-config.js
+# Allow config.js since it only contains public CSV URL now
+# config.js
