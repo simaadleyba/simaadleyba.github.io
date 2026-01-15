@@ -24,7 +24,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
-    align-items: flex-end;
+    align-items: flex-start;
 }
 
 .filter-group {
