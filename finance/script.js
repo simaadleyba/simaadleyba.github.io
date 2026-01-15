@@ -123,11 +123,22 @@ async function fetchData() {
         if (row[1]) {
             let val = row[1];
             if (typeof val === 'string') {
-                // Clean currency symbols, spaces
                 let clean = val.replace(/[^\d.,-]/g, '');
-                // Turkish format: dots are thousands, comma is decimal
-                // Remove dots, replace comma with dot
-                clean = clean.replace(/\./g, '').replace(',', '.');
+
+                // Heuristic: Check last occurrence of . and ,
+                // If comma appears after dot (or comma exists and dot doesn't), assume TR (1.234,56 or 123,45)
+                // If dot appears after comma (or dot exists and comma doesn't), assume US (1,234.56 or 123.45)
+                const lastDot = clean.lastIndexOf('.');
+                const lastComma = clean.lastIndexOf(',');
+
+                if (lastComma > lastDot) {
+                    // TR format: Remove dots, replace comma with dot
+                    clean = clean.replace(/\./g, '').replace(',', '.');
+                } else {
+                    // US format: Remove commas
+                    clean = clean.replace(/,/g, '');
+                }
+
                 amount = parseFloat(clean);
             } else {
                 amount = Number(val);
