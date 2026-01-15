@@ -77,6 +77,22 @@ async function init() {
     }
 }
 
+function setupFilters() {
+    const startIn = document.getElementById('startDate');
+    const endIn = document.getElementById('endDate');
+
+    if (startIn && state.filters.startDate) {
+        const date = new Date(state.filters.startDate);
+        date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+        startIn.value = date.toISOString().split('T')[0];
+    }
+    if (endIn && state.filters.endDate) {
+        const date = new Date(state.filters.endDate);
+        date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+        endIn.value = date.toISOString().split('T')[0];
+    }
+}
+
 // Data Fetching
 async function fetchData() {
     // Check if config exists and has the CSV URL
@@ -134,13 +150,12 @@ async function fetchData() {
 
     // Initialize filters
     if (!state.filters.startDate) {
-        state.filters.startDate = new Date('2020-01-01'); // Default to wide range for debugging
-        // state.filters.startDate.setDate(state.filters.startDate.getDate() - 30); 
+        state.filters.startDate = new Date();
+        state.filters.startDate.setDate(state.filters.startDate.getDate() - 30); // Last 30 days default
     }
-
-    console.log('Parsed Rows:', rows.slice(0, 5));
-    console.log('First Transaction:', state.transactions[0]);
-    console.log('Total Transactions:', state.transactions.length);
+    if (!state.filters.endDate) {
+        state.filters.endDate = new Date();
+    }
 
     // Populate unique sets
     const cards = new Set(state.transactions.map(t => t.card).filter(Boolean));
