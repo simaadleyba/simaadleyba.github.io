@@ -90,6 +90,7 @@ input[type="text"] {
 .dropdown-filters {
     display: flex;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .dropdown {
@@ -311,13 +312,24 @@ tbody tr:hover {
     .filters-container {
         flex-direction: column;
         align-items: stretch;
+        padding: 1rem;
+    }
+
+    .date-inputs {
+        flex-wrap: wrap;
+    }
+
+    .date-inputs input {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .quick-ranges {
+        flex-wrap: wrap;
     }
 
     .table-header-controls {
         flex-direction: column;
         align-items: stretch;
     }
-
-    /* Stack table on mobile if needed, or keep scrollable */
-    /* Keeping scrollable .table-responsive handle it */
 }
