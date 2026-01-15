@@ -242,20 +242,63 @@ function renderFilterOptions(cards, categories) {
 function renderSummary() {
     const data = state.filteredTransactions;
 
+    // 1. Total Spent
     const total = data.reduce((sum, t) => sum + t.amount, 0);
-    const count = data.length;
-    const avg = count > 0 ? total / count : 0;
 
-    // Top Category
+    // 2. Daily Average
+    let daysDiff = 1;
+    if (state.filters.startDate && state.filters.endDate) {
+        const diffTime = Math.abs(state.filters.endDate - state.filters.startDate);
+        daysDiff = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
+    }
+    const dailyAvg = total / daysDiff;
+
+    // 3. Trend
+    const duration = state.filters.endDate - state.filters.startDate;
+    const prevEnd = new Date(state.filters.startDate);
+    const prevStart = new Date(prevEnd.getTime() - duration);
+
+    const prevData = state.transactions.filter(t => {
+        const inDate = t.date >= prevStart && t.date < prevEnd;
+        const inCard = state.filters.cards.has(t.card);
+        const inCategory = state.filters.categories.has(t.category);
+        return inDate && inCard && inCategory;
+    });
+
+    const prevTotal = prevData.reduce((sum, t) => sum + t.amount, 0);
+    let trendText = '-';
+    let trendColor = 'var(--text)';
+
+    if (prevTotal > 0) {
+        const change = ((total - prevTotal) / prevTotal) * 100;
+        const symbol = change > 0 ? '+' : '';
+        trendText = `${symbol}${change.toFixed(1)}%`;
+        trendColor = change > 0 ? '#E76F51' : '#2A9D8F';
+    } else if (total > 0 && prevTotal === 0) {
+        trendText = '+Inf%';
+    }
+
+    // 4. Top Category
     const catTotals = {};
     data.forEach(t => {
         catTotals[t.category] = (catTotals[t.category] || 0) + t.amount;
     });
-    const topCat = Object.entries(catTotals).sort((a, b) => b[1] - a[1])[0];
+    const sortedCats = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
+    const topCat = sortedCats.length > 0 ? sortedCats[0] : null;
 
     document.getElementById('totalSpent').textContent = formatCurrency(total);
-    document.getElementById('avgTransaction').textContent = formatCurrency(avg);
-    document.getElementById('totalTransactions').textContent = count;
+
+    // Daily Average
+    const daEl = document.getElementById('dailyAverage');
+    if (daEl) daEl.textContent = formatCurrency(dailyAvg);
+
+    // Trend
+    const trendEl = document.getElementById('trendIndicator');
+    if (trendEl) {
+        trendEl.textContent = trendText;
+        trendEl.style.color = trendColor;
+    }
+
     document.getElementById('topCategory').textContent = topCat ? topCat[0] : '-';
 }
 
@@ -287,14 +330,25 @@ function renderTable() {
 }
 
 function renderCharts() {
+    // New Palette
+    const colors = [
+        '#16425B', // Yale Blue
+        '#2F6690', // Baltic Blue
+        '#3A7CA5', // Steel Blue
+        '#81C3D7', // Sky Blue (Light)
+        '#D9DCD6'  // Dust Grey
+    ];
+
     // 1. Category Pie Chart
     const catTotals = {};
     state.filteredTransactions.forEach(t => {
         catTotals[t.category] = (catTotals[t.category] || 0) + t.amount;
     });
 
-    const labels = Object.keys(catTotals);
-    const data = Object.values(catTotals);
+    // Sort by value desc
+    const sortedCats = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
+    const labels = sortedCats.map(x => x[0]);
+    const data = sortedCats.map(x => x[1]);
 
     const ctxCat = document.getElementById('categoryChart').getContext('2d');
 
@@ -306,10 +360,8 @@ function renderCharts() {
             labels: labels,
             datasets: [{
                 data: data,
-                backgroundColor: [
-                    '#102652', '#FF6B6B', '#4ECDC4', '#FFE66D', '#74C69D',
-                    '#9D4EDD', '#F4A261', '#E76F51', '#2A9D8F', '#264653'
-                ]
+                backgroundColor: colors,
+                borderWidth: 0
             }]
         },
         options: {
@@ -317,12 +369,12 @@ function renderCharts() {
             maintainAspectRatio: false,
             plugins: {
                 legend: { position: 'right' }
-            }
+            },
+            cutout: '60%'
         }
     });
 
     // 2. Trend Line Chart
-    // Group by Date
     const dateGroups = {};
     const sortedTrans = [...state.filteredTransactions].sort((a, b) => a.date - b.date);
 
@@ -345,19 +397,30 @@ function renderCharts() {
             datasets: [{
                 label: 'Spending',
                 data: amounts,
-                borderColor: '#102652',
+                borderColor: '#16425B',
                 tension: 0.3,
                 fill: true,
-                backgroundColor: 'rgba(16, 38, 82, 0.1)'
+                backgroundColor: 'rgba(47, 102, 144, 0.1)'
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
             scales: {
                 x: {
                     display: false // Hide long list of dates
+                },
+                y: {
+                    display: false,
+                    beginAtZero: true
                 }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
             }
         }
     });
@@ -462,22 +525,4 @@ function setupEventListeners() {
             renderTable();
         }
     });
-}
-
-function setupFilters() {
-    // Set initial values for date inputs
-    document.getElementById('startDate').valueAsDate = state.filters.startDate;
-    document.getElementById('endDate').valueAsDate = state.filters.endDate;
-}
-
-function showLoading(show) {
-    const el = document.getElementById('loadingIndicator');
-    if (show) el.classList.remove('hidden');
-    else el.classList.add('hidden');
-}
-
-function showError(msg) {
-    const el = document.getElementById('errorDisplay');
-    el.textContent = msg;
-    el.classList.remove('hidden');
 }
