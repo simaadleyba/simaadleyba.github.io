@@ -40,6 +40,24 @@ const formatDate = (dateString) => {
     }).format(date);
 };
 
+const showLoading = (isLoading) => {
+    const el = document.getElementById('loadingIndicator');
+    if (el) {
+        if (isLoading) el.classList.remove('hidden');
+        else el.classList.add('hidden');
+    }
+};
+
+const showError = (message) => {
+    const el = document.getElementById('errorDisplay');
+    if (el) {
+        el.textContent = message;
+        el.classList.remove('hidden');
+    }
+    // Also hide loading
+    showLoading(false);
+};
+
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
     init();
