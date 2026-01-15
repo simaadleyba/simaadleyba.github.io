@@ -13,704 +13,707 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" type="image/png" href="assets/icon.png">
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-title" content="sima">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
     <style>
-        /* =========================================
-           KONBINI SPECIFIC STYLES
-           ========================================= */
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            /* Remove default sorting/margins if any interference */
-            overflow-x: hidden;
-        }
-
-        /* Layout Grid */
-        .konbini-layout {
-            display: block;
-            max-width: 800px;
-            /* Center focused feed */
-            margin: 0 auto;
-            padding: 2rem;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        /* --- Main Feed Column --- */
-        .feed-column {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            width: 100%;
-        }
-
-        /* ... feed header ... */
-
-        /* --- Slide Panel Shared --- */
-        .side-panel {
-            position: fixed;
-            z-index: 2000;
-            background: #fff;
-            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Desktop: Slide-in from Right */
-        @media (min-width: 801px) {
-            .side-panel {
-                top: 0;
-                right: 0;
-                width: 420px;
-                height: 100vh;
-                border-radius: 0;
-                padding: 0;
-                transform: translateX(100%);
-                /* Hidden offscreen */
-            }
-
-            .side-panel.expanded {
-                transform: translateX(0);
-            }
-
-            .panel-header {
-                padding: 1.5rem;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            }
-
-            .panel-content {
-                padding: 1.5rem;
-                overflow-y: auto;
-                flex: 1;
-                display: block !important;
-                margin-top: 0;
-            }
-
-            /* Floating "Add Rating" Button */
-            .desktop-fab {
-                position: fixed;
-                bottom: 2rem;
-                right: 2rem;
-                background: var(--text);
-                color: #fff;
-                border: none;
-                padding: 0.8rem 1.5rem;
-                border-radius: 4px;
-                /* Reduced from 50px */
-                font-family: inherit;
-                font-weight: 500;
-                font-size: 0.95rem;
-                cursor: pointer;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                transition: transform 0.2s, box-shadow 0.2s;
-                z-index: 100;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-            }
-
-            .desktop-fab:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-            }
-
-            /* Backdrop (Overlay) */
-            .modal-backdrop {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.3);
-                z-index: 1999;
-                opacity: 0;
-                pointer-events: none;
-                transition: opacity 0.3s;
-            }
-
-            .modal-backdrop.active {
-                opacity: 1;
-                pointer-events: auto;
-            }
-
-            .mobile-fab-icon {
-                display: none;
-            }
-        }
-
-        /* Mobile: Bottom Sheet with visible FAB */
-        @media (max-width: 800px) {
-
-            .desktop-fab,
-            .modal-backdrop {
-                display: none;
-            }
-
-            .side-panel {
-                bottom: 0;
-                left: 0;
-                right: 0;
-                top: auto;
-                width: 100%;
-                max-height: 85vh;
-                border-radius: 12px 12px 0 0;
-                padding: 0;
-                transform: translateY(100%);
-                /* Hidden below screen */
-                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-            }
-
-            .side-panel.expanded {
-                transform: translateY(0);
-            }
-
-            .panel-header {
-                padding: 1rem 1.5rem;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .panel-content {
-                padding: 0 1.5rem 1.5rem 1.5rem;
-                overflow-y: auto;
-                display: block !important;
-            }
-
-            /* Mobile FAB - Always visible */
-            .mobile-fab-icon {
-                position: fixed;
-                bottom: 1.5rem;
-                right: 1.5rem;
-                width: 56px;
-                height: 56px;
-                background: var(--accent);
-                color: #fff;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 32px;
-                font-weight: 300;
-                line-height: 1;
-                text-align: center;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-                cursor: pointer;
-                z-index: 1000;
-                transition: transform 0.2s;
-                /* Ensure the + is perfectly centered */
-                padding-bottom: 2px;
-                /* Optical adjustment for + symbol */
-            }
-
-            .mobile-fab-icon:hover {
-                transform: scale(1.05);
-            }
-
-            /* Hide FAB when panel is open */
-            .side-panel.expanded~.mobile-fab-icon,
-            .side-panel.expanded .mobile-fab-icon {
-                display: none;
-            }
-        }
-
-
-
-        .sort-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            font-family: inherit;
-            color: var(--muted);
-            opacity: 0.6;
-            transition: opacity 0.2s;
-        }
-
-        .sort-btn.active {
-            opacity: 1;
-            font-weight: 500;
-            color: var(--accent);
-            text-decoration: underline;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--muted);
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 4px;
-            border: 1px dashed rgba(0, 0, 0, 0.1);
-        }
-
-        /* Feed Cards */
-        .feed-grid {
-            display: grid;
-            gap: 2rem;
-            /* 1 col on mobile, 2 on wide screens if space permits? 
-               Prompt says "Main center column: ratings feed". 
-               Let's keep it simple list or grid. Grid is nicer. */
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        }
-
-        .food-card {
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            background: #fff;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            border-radius: 4px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .food-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        .food-img {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            margin-bottom: 1rem;
-            background: #eee;
-            border-radius: 2px;
-        }
-
-        .food-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.5rem;
-            gap: 1rem;
-        }
-
-        .food-name {
-            font-weight: 500;
-            font-size: 1.1rem;
-            line-height: 1.3;
-        }
-
-        .food-rating {
-            color: var(--accent);
-            display: inline-flex;
-            gap: 1px;
-            flex-shrink: 0;
-        }
-
-        .food-comment {
-            font-size: 0.9rem;
-            color: var(--muted);
-            margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-
-        .food-date {
-            margin-top: auto;
-            font-size: 0.75rem;
-            color: #bbb;
-            text-align: right;
-            border-top: 1px solid rgba(0, 0, 0, 0.03);
-            padding-top: 0.8rem;
-        }
-
-
-
-
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.4rem;
-            font-size: 0.8rem;
-            color: var(--muted);
-            font-weight: 500;
-        }
-
-        input[type="text"],
-        input[type="date"],
-        textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            background: #fcfcfc;
-            color: var(--text);
-            font-family: inherit;
-            border-radius: 4px;
-            transition: border-color 0.2s, background 0.2s;
-            font-size: 16px;
-            /* Prevent iOS zoom */
-        }
-
-        input[type="text"]:focus,
-        input[type="date"]:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-            background: #fff;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        /* File Input Styled */
-        .file-wrapper {
-            position: relative;
-            overflow: hidden;
-            border: 1px dashed rgba(0, 0, 0, 0.2);
-            border-radius: 4px;
-            padding: 1rem;
-            text-align: center;
-            background: #fafafa;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .file-wrapper:hover {
-            border-color: var(--accent);
-            background: #fff;
-        }
-
-        .file-wrapper input[type=file] {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .file-status {
-            font-size: 0.85rem;
-            color: var(--muted);
-            pointer-events: none;
-        }
-
-        /* Categories & Filters */
-
-
-        .filter-btn {
-            background: transparent;
-            border: 1px solid rgba(0, 0, 0, 0.15);
-            padding: 0.35rem 0.9rem;
-            border-radius: 2px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            color: var(--text);
-            font-family: inherit;
-            transition: all 0.2s;
-            text-transform: lowercase;
-        }
-
-        .filter-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .filter-btn.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #fff;
-            font-weight: 500;
-        }
-
-        /* --- New Header Layout --- */
-        .feed-header-block {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .header-title-group {
-            /* Title + Subtitle */
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Scrollable Category Tabs */
-        .category-scroll-container {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            /* Multiline on desktop if many */
-        }
-
-        .sort-row {
-            display: flex;
-            justify-content: flex-start;
-            /* Aligned left as per stacking request */
-            gap: 1rem;
-            font-size: 0.85rem;
-            color: var(--muted);
-        }
-
-        @media (max-width: 800px) {
-            .category-scroll-container {
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                padding-bottom: 0.5rem;
-                /* space for scrollbar if any */
-                -webkit-overflow-scrolling: touch;
-                margin-right: -1.5rem;
-                /* Bleed to edge */
-                padding-right: 1.5rem;
-                /* Hide scrollbar visually but allow scroll */
-                scrollbar-width: none;
-            }
-
-            .category-scroll-container::-webkit-scrollbar {
-                display: none;
-            }
-
-            .filter-btn {
-                flex-shrink: 0;
-                /* Don't squash buttons */
-            }
-
-            .feed-header-block {
-                gap: 1rem;
-                margin-bottom: 1rem;
-            }
-        }
-
-        .food-badge {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            padding: 0.2rem 0.6rem;
-            background: #f0f0f0;
-            border-radius: 4px;
-            color: #666;
-            display: inline-block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .card-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            padding-top: 0.8rem;
-            border-top: 1px solid rgba(0, 0, 0, 0.03);
-            justify-content: flex-end;
-        }
-
-        .action-btn {
-            background: none;
-            border: none;
-            font-size: 0.8rem;
-            cursor: pointer;
-            color: var(--muted);
-            opacity: 0.6;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-
-        .action-btn:hover {
-            opacity: 1;
-            background: rgba(0, 0, 0, 0.04);
-        }
-
-        .action-btn.delete:hover {
-            color: #d32f2f;
-            background: rgba(211, 47, 47, 0.05);
-        }
-
-        /* Edit Mode Styles */
-        .side-panel.edit-mode {
-            border: 1px solid var(--accent);
-        }
-
-        .edit-notice {
-            display: none;
-            background: rgba(var(--accent-rgb), 0.1);
-            /* assuming accent can be used, or just hardcode a color */
-            background: #fff8e1;
-            color: #f57c00;
-            padding: 0.6rem;
-            font-size: 0.85rem;
-            border-radius: 4px;
-            margin-bottom: 1rem;
-            text-align: center;
-            border: 1px solid #ffe0b2;
-        }
-
-        .side-panel.edit-mode .edit-notice {
-            display: block;
-        }
-
-        .side-panel.edit-mode .hide-on-edit {
-            display: none;
-        }
-
-        /* Interactive Stars */
-        .star-input-row {
-            display: flex;
-            gap: 4px;
-            cursor: pointer;
-        }
-
-        .input-star-svg {
-            width: 28px;
-            height: 28px;
-            fill: #e0e0e0;
-            transition: transform 0.1s;
-        }
-
-        .input-star-svg:hover {
-            transform: scale(1.1);
-        }
-
-        button.submit-btn {
-            width: 100%;
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            padding: 1rem;
-            font-family: inherit;
-            cursor: pointer;
-            font-weight: 500;
-            border-radius: 4px;
-            margin-top: 1rem;
-            font-size: 0.95rem;
-            transition: opacity 0.2s;
-        }
-
-        button.submit-btn:hover {
-            opacity: 0.9;
-        }
-
-        button.submit-btn:disabled {
-            background: var(--muted);
-            cursor: wait;
-        }
-
-        /* --- Desktop Defaults (Hide Mobile Elements) --- */
-        .mobile-fab-icon,
-        .panel-close-btn {
-            display: none;
-        }
-
-        /* --- Mobile Responsive --- */
-        @media (max-width: 800px) {
-            .konbini-layout {
-                grid-template-columns: 1fr;
-                padding: 1.5rem;
-                padding-bottom: 100px;
-                /* Space for bottom panel trigger */
-            }
-
-            .feed-grid {
-                grid-template-columns: 1fr;
-                /* Single column on mobile usually looks better explicitly */
-            }
-
-            .feed-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .side-panel {
-                position: fixed;
-                bottom: 1rem;
-                right: 1rem;
-                left: auto;
-                top: auto;
-                width: 56px;
-                height: 56px;
-                margin: 0;
-                border-radius: 50%;
-                border: none;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-                background: var(--accent);
-                color: white;
-                overflow: hidden;
-                transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 1000;
-                padding: 0;
-            }
-
-            .side-panel.expanded {
-                width: 100%;
-                height: 85vh;
-                bottom: 0;
-                right: 0;
-                border-radius: 16px 16px 0 0;
-                background: #fff;
-                color: var(--text);
-                padding: 1.5rem;
-                overflow-y: auto;
-                display: block;
-            }
-
-            /* Mobile Trigger Icon */
-            .mobile-fab-icon {
-                font-size: 24px;
-                line-height: 1;
-                display: block;
-            }
-
-            .side-panel.expanded .mobile-fab-icon {
-                display: none;
-            }
-
-            /* Header tweaks for mobile expanded */
-            .panel-header {
-                display: none;
-                /* Hidden in FAB state */
-            }
-
-            .side-panel.expanded .panel-header {
-                display: flex;
-                padding-bottom: 1rem;
-            }
-
-            .panel-close-btn {
-                display: none;
-                background: none;
-                border: none;
-                font-size: 1.5rem;
-                color: var(--muted);
-                padding: 0.5rem;
-                cursor: pointer;
-                line-height: 1;
-            }
-
-            .side-panel.expanded .panel-close-btn {
-                display: block;
-            }
-
-            .side-panel.expanded {
-                transform: translateY(0);
-                max-height: 85vh;
-                overflow-y: auto;
-            }
-
-            .panel-header {
-                padding-bottom: 0;
-                /* Align nicer in small bar */
-            }
-        }
+    /* =========================================
+    KONBINI SPECIFIC STYLES
+    ========================================= */
+
+    body {
+    background-color: var(--bg);
+    color: var(--text);
+    /* Remove default sorting/margins if any interference */
+    overflow-x: hidden;
+    }
+
+    /* Layout Grid */
+    .konbini-layout {
+    display: block;
+    max-width: 800px;
+    /* Center focused feed */
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 100vh;
+    position: relative;
+    }
+
+    /* --- Main Feed Column --- */
+    .feed-column {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+    }
+
+    /* ... feed header ... */
+
+    /* --- Slide Panel Shared --- */
+    .side-panel {
+    position: fixed;
+    z-index: 2000;
+    background: #fff;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    }
+
+    /* Desktop: Slide-in from Right */
+    @media (min-width: 801px) {
+    .side-panel {
+    top: 0;
+    right: 0;
+    width: 420px;
+    height: 100vh;
+    border-radius: 0;
+    padding: 0;
+    transform: translateX(100%);
+    /* Hidden offscreen */
+    }
+
+    .side-panel.expanded {
+    transform: translateX(0);
+    }
+
+    .panel-header {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .panel-content {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+    display: block !important;
+    margin-top: 0;
+    }
+
+    /* Floating "Add Rating" Button */
+    .desktop-fab {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--text);
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    /* Reduced from 50px */
+    font-family: inherit;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    }
+
+    .desktop-fab:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Backdrop (Overlay) */
+    .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    }
+
+    .modal-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+    }
+
+    .mobile-fab-icon {
+    display: none;
+    }
+    }
+
+    /* Mobile: Bottom Sheet with visible FAB */
+    @media (max-width: 800px) {
+
+    .desktop-fab,
+    .modal-backdrop {
+    display: none;
+    }
+
+    .side-panel {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto;
+    width: 100%;
+    max-height: 85vh;
+    border-radius: 12px 12px 0 0;
+    padding: 0;
+    transform: translateY(100%);
+    /* Hidden below screen */
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .side-panel.expanded {
+    transform: translateY(0);
+    }
+
+    .panel-header {
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    }
+
+    .panel-content {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+    overflow-y: auto;
+    display: block !important;
+    }
+
+    /* Mobile FAB - Always visible */
+    .mobile-fab-icon {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 56px;
+    height: 56px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 300;
+    line-height: 1;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    z-index: 1000;
+    transition: transform 0.2s;
+    /* Ensure the + is perfectly centered */
+    padding-bottom: 2px;
+    /* Optical adjustment for + symbol */
+    }
+
+    .mobile-fab-icon:hover {
+    transform: scale(1.05);
+    }
+
+    /* Hide FAB when panel is open */
+    .side-panel.expanded~.mobile-fab-icon,
+    .side-panel.expanded .mobile-fab-icon {
+    display: none;
+    }
+    }
+
+
+
+    .sort-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+    color: var(--muted);
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    }
+
+    .sort-btn.active {
+    opacity: 1;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: underline;
+    }
+
+    /* Empty State */
+    .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 4px;
+    border: 1px dashed rgba(0, 0, 0, 0.1);
+    }
+
+    /* Feed Cards */
+    .feed-grid {
+    display: grid;
+    gap: 2rem;
+    /* 1 col on mobile, 2 on wide screens if space permits? 
+    Prompt says "Main center column: ratings feed". 
+    Let's keep it simple list or grid. Grid is nicer. */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    .food-card {
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    background: #fff;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .food-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .food-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    background: #eee;
+    border-radius: 2px;
+    }
+
+    .food-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+    gap: 1rem;
+    }
+
+    .food-name {
+    font-weight: 500;
+    font-size: 1.1rem;
+    line-height: 1.3;
+    }
+
+    .food-rating {
+    color: var(--accent);
+    display: inline-flex;
+    gap: 1px;
+    flex-shrink: 0;
+    }
+
+    .food-comment {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    }
+
+    .food-date {
+    margin-top: auto;
+    font-size: 0.75rem;
+    color: #bbb;
+    text-align: right;
+    border-top: 1px solid rgba(0, 0, 0, 0.03);
+    padding-top: 0.8rem;
+    }
+
+
+
+
+    /* Form Styles */
+    .form-group {
+    margin-bottom: 1.2rem;
+    }
+
+    label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: #fcfcfc;
+    color: var(--text);
+    font-family: inherit;
+    border-radius: 4px;
+    transition: border-color 0.2s, background 0.2s;
+    font-size: 16px;
+    /* Prevent iOS zoom */
+    }
+
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: #fff;
+    }
+
+    textarea {
+    resize: vertical;
+    min-height: 100px;
+    }
+
+    /* File Input Styled */
+    .file-wrapper {
+    position: relative;
+    overflow: hidden;
+    border: 1px dashed rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    padding: 1rem;
+    text-align: center;
+    background: #fafafa;
+    cursor: pointer;
+    transition: all 0.2s;
+    }
+
+    .file-wrapper:hover {
+    border-color: var(--accent);
+    background: #fff;
+    }
+
+    .file-wrapper input[type=file] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    }
+
+    .file-status {
+    font-size: 0.85rem;
+    color: var(--muted);
+    pointer-events: none;
+    }
+
+    /* Categories & Filters */
+
+
+    .filter-btn {
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    padding: 0.35rem 0.9rem;
+    border-radius: 2px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: var(--text);
+    font-family: inherit;
+    transition: all 0.2s;
+    text-transform: lowercase;
+    }
+
+    .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    }
+
+    .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    font-weight: 500;
+    }
+
+    /* --- New Header Layout --- */
+    .feed-header-block {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    }
+
+    .header-title-group {
+    /* Title + Subtitle */
+    display: flex;
+    flex-direction: column;
+    }
+
+    /* Scrollable Category Tabs */
+    .category-scroll-container {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    /* Multiline on desktop if many */
+    }
+
+    .sort-row {
+    display: flex;
+    justify-content: flex-start;
+    /* Aligned left as per stacking request */
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    }
+
+    @media (max-width: 800px) {
+    .category-scroll-container {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    /* space for scrollbar if any */
+    -webkit-overflow-scrolling: touch;
+    margin-right: -1.5rem;
+    /* Bleed to edge */
+    padding-right: 1.5rem;
+    /* Hide scrollbar visually but allow scroll */
+    scrollbar-width: none;
+    }
+
+    .category-scroll-container::-webkit-scrollbar {
+    display: none;
+    }
+
+    .filter-btn {
+    flex-shrink: 0;
+    /* Don't squash buttons */
+    }
+
+    .feed-header-block {
+    gap: 1rem;
+    margin-bottom: 1rem;
+    }
+    }
+
+    .food-badge {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.6rem;
+    background: #f0f0f0;
+    border-radius: 4px;
+    color: #666;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    }
+
+    .card-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.03);
+    justify-content: flex-end;
+    }
+
+    .action-btn {
+    background: none;
+    border: none;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: var(--muted);
+    opacity: 0.6;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    font-family: inherit;
+    }
+
+    .action-btn:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.04);
+    }
+
+    .action-btn.delete:hover {
+    color: #d32f2f;
+    background: rgba(211, 47, 47, 0.05);
+    }
+
+    /* Edit Mode Styles */
+    .side-panel.edit-mode {
+    border: 1px solid var(--accent);
+    }
+
+    .edit-notice {
+    display: none;
+    background: rgba(var(--accent-rgb), 0.1);
+    /* assuming accent can be used, or just hardcode a color */
+    background: #fff8e1;
+    color: #f57c00;
+    padding: 0.6rem;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    text-align: center;
+    border: 1px solid #ffe0b2;
+    }
+
+    .side-panel.edit-mode .edit-notice {
+    display: block;
+    }
+
+    .side-panel.edit-mode .hide-on-edit {
+    display: none;
+    }
+
+    /* Interactive Stars */
+    .star-input-row {
+    display: flex;
+    gap: 4px;
+    cursor: pointer;
+    }
+
+    .input-star-svg {
+    width: 28px;
+    height: 28px;
+    fill: #e0e0e0;
+    transition: transform 0.1s;
+    }
+
+    .input-star-svg:hover {
+    transform: scale(1.1);
+    }
+
+    button.submit-btn {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+    font-weight: 500;
+    border-radius: 4px;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    transition: opacity 0.2s;
+    }
+
+    button.submit-btn:hover {
+    opacity: 0.9;
+    }
+
+    button.submit-btn:disabled {
+    background: var(--muted);
+    cursor: wait;
+    }
+
+    /* --- Desktop Defaults (Hide Mobile Elements) --- */
+    .mobile-fab-icon,
+    .panel-close-btn {
+    display: none;
+    }
+
+    /* --- Mobile Responsive --- */
+    @media (max-width: 800px) {
+    .konbini-layout {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+    padding-bottom: 100px;
+    /* Space for bottom panel trigger */
+    }
+
+    .feed-grid {
+    grid-template-columns: 1fr;
+    /* Single column on mobile usually looks better explicitly */
+    }
+
+    .feed-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    }
+
+    .side-panel {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    left: auto;
+    top: auto;
+    width: 56px;
+    height: 56px;
+    margin: 0;
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background: var(--accent);
+    color: white;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 0;
+    }
+
+    .side-panel.expanded {
+    width: 100%;
+    height: 85vh;
+    bottom: 0;
+    right: 0;
+    border-radius: 16px 16px 0 0;
+    background: #fff;
+    color: var(--text);
+    padding: 1.5rem;
+    overflow-y: auto;
+    display: block;
+    }
+
+    /* Mobile Trigger Icon */
+    .mobile-fab-icon {
+    font-size: 24px;
+    line-height: 1;
+    display: block;
+    }
+
+    .side-panel.expanded .mobile-fab-icon {
+    display: none;
+    }
+
+    /* Header tweaks for mobile expanded */
+    .panel-header {
+    display: none;
+    /* Hidden in FAB state */
+    }
+
+    .side-panel.expanded .panel-header {
+    display: flex;
+    padding-bottom: 1rem;
+    }
+
+    .panel-close-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--muted);
+    padding: 0.5rem;
+    cursor: pointer;
+    line-height: 1;
+    }
+
+    .side-panel.expanded .panel-close-btn {
+    display: block;
+    }
+
+    .side-panel.expanded {
+    transform: translateY(0);
+    max-height: 85vh;
+    overflow-y: auto;
+    }
+
+    .panel-header {
+    padding-bottom: 0;
+    /* Align nicer in small bar */
+    }
+    }
     </style>
 </head>
 
@@ -718,646 +721,646 @@
 
     <div class="konbini-layout">
 
-        <!-- MAIN FEED COLUMN -->
-        <div class="feed-column">
-            <div class="feed-header-block">
-                <!-- 1. Title & Subtitle -->
-                <div class="header-title-group">
-                    <h1 style="font-size: 1.8rem; font-weight: 500; margin:0;">konbini log</h1>
-                    <div class="feed-subtitle" style="color:var(--muted); font-size:0.9rem; margin-top:0.2rem;">
-                        tracking the good, the bad, and the crispy
-                    </div>
-                </div>
+    <!-- MAIN FEED COLUMN -->
+    <div class="feed-column">
+    <div class="feed-header-block">
+    <!-- 1. Title & Subtitle -->
+    <div class="header-title-group">
+    <h1 style="font-size: 1.8rem; font-weight: 500; margin:0;">konbini log</h1>
+    <div class="feed-subtitle" style="color:var(--muted); font-size:0.9rem; margin-top:0.2rem;">
+    tracking the good, the bad, and the crispy
+    </div>
+    </div>
 
-                <!-- 2. Category Tabs (Scrollable on Mobile) -->
-                <div class="category-scroll-container">
-                    <button class="filter-btn active" onclick="setCategory('All')">All</button>
-                    <button class="filter-btn" onclick="setCategory('Sweet')">Sweet</button>
-                    <button class="filter-btn" onclick="setCategory('Savory')">Savory</button>
-                    <button class="filter-btn" onclick="setCategory('Drink')">Drink</button>
-                    <button class="filter-btn" onclick="setCategory('Others')">Others</button>
-                </div>
+    <!-- 2. Category Tabs (Scrollable on Mobile) -->
+    <div class="category-scroll-container">
+    <button class="filter-btn active" onclick="setCategory('All')">All</button>
+    <button class="filter-btn" onclick="setCategory('Sweet')">Sweet</button>
+    <button class="filter-btn" onclick="setCategory('Savory')">Savory</button>
+    <button class="filter-btn" onclick="setCategory('Drink')">Drink</button>
+    <button class="filter-btn" onclick="setCategory('Others')">Others</button>
+    </div>
 
-                <!-- 3. Sort Filters -->
-                <div class="sort-row">
-                    <span>sort by:</span>
-                    <button class="sort-btn active" onclick="setSort('date')">newest</button>
-                    <button class="sort-btn" onclick="setSort('rating')">highest</button>
-                </div>
-            </div>
+    <!-- 3. Sort Filters -->
+    <div class="sort-row">
+    <span>sort by:</span>
+    <button class="sort-btn active" onclick="setSort('date')">newest</button>
+    <button class="sort-btn" onclick="setSort('rating')">highest</button>
+    </div>
+    </div>
 
-            <div id="feedList" class="feed-grid">
-                <div class="loading-msg">loading...</div>
-            </div>
-        </div>
+    <div id="feedList" class="feed-grid">
+    <div class="loading-msg">loading...</div>
+    </div>
+    </div>
 
 
-        <!-- Desktop Add Rating FAB & Backdrop -->
-        <button class="desktop-fab" onclick="togglePanel()">
-            <svg style="width:20px;height:20px;fill:currentColor" viewBox="0 0 24 24">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-            </svg>
-            Add Rating
-        </button>
-        <div class="modal-backdrop" onclick="togglePanel()"></div>
+    <!-- Desktop Add Rating FAB & Backdrop -->
+    <button class="desktop-fab" onclick="togglePanel()">
+    <svg style="width:20px;height:20px;fill:currentColor" viewBox="0 0 24 24">
+    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+    </svg>
+    Add Rating
+    </button>
+    <div class="modal-backdrop" onclick="togglePanel()"></div>
 
-        <!-- RIGHT SIDE PANEL (FORM) -->
-        <aside class="side-panel" id="sidePanel">
+    <!-- RIGHT SIDE PANEL (FORM) -->
+    <aside class="side-panel" id="sidePanel">
 
-            <!-- Header -->
-            <div class="panel-header">
-                <span class="panel-title">Add your rating</span>
-                <button class="panel-close-btn" onclick="togglePanel()"
-                    style="background:none; border:none; font-size:1.5rem; color:var(--muted); cursor:pointer;">&times;</button>
-            </div>
+    <!-- Header -->
+    <div class="panel-header">
+    <span class="panel-title">Add your rating</span>
+    <button class="panel-close-btn" onclick="togglePanel()"
+    style="background:none; border:none; font-size:1.5rem; color:var(--muted); cursor:pointer;">&times;</button>
+    </div>
 
-            <!-- Content (collapsible) -->
-            <div class="panel-content">
-                <form id="ratingForm">
+    <!-- Content (collapsible) -->
+    <div class="panel-content">
+    <form id="ratingForm">
 
-                    <div class="edit-notice">
-                        <strong>Edit Mode</strong><br>
-                        Updating an existing rating. Image & date are preserved.
-                        <div style="margin-top:0.4rem;">
-                            <button type="button" class="action-btn" onclick="cancelEdit()"
-                                style="text-decoration:underline;">Cancel Edit</button>
-                        </div>
-                    </div>
+    <div class="edit-notice">
+    <strong>Edit Mode</strong><br>
+    Updating an existing rating. Image & date are preserved.
+    <div style="margin-top:0.4rem;">
+    <button type="button" class="action-btn" onclick="cancelEdit()"
+    style="text-decoration:underline;">Cancel Edit</button>
+    </div>
+    </div>
 
-                    <!-- Item Name -->
-                    <div class="form-group">
-                        <label for="itemName">Item Name *</label>
-                        <input type="text" id="itemName" placeholder="e.g. Spicy Famichiki" required>
-                    </div>
+    <!-- Item Name -->
+    <div class="form-group">
+    <label for="itemName">Item Name *</label>
+    <input type="text" id="itemName" placeholder="e.g. Spicy Famichiki" required>
+    </div>
 
-                    <!-- Category -->
-                    <div class="form-group">
-                        <label for="categoryInput">Category *</label>
-                        <select id="categoryInput" required
-                            style="width:100%; padding:0.8rem; border:1px solid rgba(0,0,0,0.1); border-radius:4px; background:#fcfcfc; font-family:inherit; font-size:0.9rem;">
-                            <option value="" disabled selected>Select a category...</option>
-                            <option value="Sweet">Sweet</option>
-                            <option value="Savory">Savory</option>
-                            <option value="Drink">Drink</option>
-                            <option value="Others">Others</option>
-                        </select>
-                    </div>
+    <!-- Category -->
+    <div class="form-group">
+    <label for="categoryInput">Category *</label>
+    <select id="categoryInput" required
+    style="width:100%; padding:0.8rem; border:1px solid rgba(0,0,0,0.1); border-radius:4px; background:#fcfcfc; font-family:inherit; font-size:0.9rem;">
+    <option value="" disabled selected>Select a category...</option>
+    <option value="Sweet">Sweet</option>
+    <option value="Savory">Savory</option>
+    <option value="Drink">Drink</option>
+    <option value="Others">Others</option>
+    </select>
+    </div>
 
-                    <!-- Rating -->
-                    <div class="form-group">
-                        <label>Rating *</label>
-                        <div id="starInputWidget" class="star-input-row">
-                            <!-- Injected via JS -->
-                        </div>
-                        <input type="hidden" id="ratingValue" value="0">
-                        <div id="ratingText"
-                            style="font-size:0.8rem; color:var(--accent); margin-top:0.4rem; height:1rem; font-weight:500;">
-                        </div>
-                    </div>
+    <!-- Rating -->
+    <div class="form-group">
+    <label>Rating *</label>
+    <div id="starInputWidget" class="star-input-row">
+    <!-- Injected via JS -->
+    </div>
+    <input type="hidden" id="ratingValue" value="0">
+    <div id="ratingText"
+    style="font-size:0.8rem; color:var(--accent); margin-top:0.4rem; height:1rem; font-weight:500;">
+    </div>
+    </div>
 
-                    <!-- Review -->
-                    <div class="form-group">
-                        <label for="review">Review</label>
-                        <textarea id="review" placeholder="How was it?"></textarea>
-                    </div>
+    <!-- Review -->
+    <div class="form-group">
+    <label for="review">Review</label>
+    <textarea id="review" placeholder="How was it?"></textarea>
+    </div>
 
-                    <!-- Date (Hidden on Edit) -->
-                    <div class="form-group hide-on-edit">
-                        <label for="dateInput">Date</label>
-                        <input type="date" id="dateInput" required>
-                    </div>
+    <!-- Date (Hidden on Edit) -->
+    <div class="form-group hide-on-edit">
+    <label for="dateInput">Date</label>
+    <input type="date" id="dateInput" required>
+    </div>
 
-                    <!-- Image Upload (Hidden on Edit) -->
-                    <div class="form-group hide-on-edit">
-                        <label>Image (Optional)</label>
-                        <div class="file-wrapper">
-                            <span class="file-status" id="fileStatus">+ Click to upload photo</span>
-                            <input type="file" id="imageInput" accept="image/*">
-                        </div>
-                    </div>
+    <!-- Image Upload (Hidden on Edit) -->
+    <div class="form-group hide-on-edit">
+    <label>Image (Optional)</label>
+    <div class="file-wrapper">
+    <span class="file-status" id="fileStatus">+ Click to upload photo</span>
+    <input type="file" id="imageInput" accept="image/*">
+    </div>
+    </div>
 
-                    <button type="submit" class="submit-btn" id="submitBtn">Post Rating</button>
+    <button type="submit" class="submit-btn" id="submitBtn">Post Rating</button>
 
-                </form>
-            </div>
-        </aside>
+    </form>
+    </div>
+    </aside>
 
-        <!-- Mobile Add Rating FAB (Must be after side-panel for CSS sibling selector) -->
-        <span class="mobile-fab-icon" onclick="togglePanel()">+</span>
+    <!-- Mobile Add Rating FAB (Must be after side-panel for CSS sibling selector) -->
+    <span class="mobile-fab-icon" onclick="togglePanel()">+</span>
 
-        <!-- Hidden SVG gradients -->
-        <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
-            <linearGradient id="halfGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="50%" style="stop-color:var(--accent);stop-opacity:1" />
-                <stop offset="50%" style="stop-color:#e0e0e0;stop-opacity:1" />
-            </linearGradient>
-            <linearGradient id="fullGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="100%" style="stop-color:var(--accent);stop-opacity:1" />
-            </linearGradient>
-        </svg>
+    <!-- Hidden SVG gradients -->
+    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+    <linearGradient id="halfGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="50%" style="stop-color:var(--accent);stop-opacity:1" />
+    <stop offset="50%" style="stop-color:#e0e0e0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="fullGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="100%" style="stop-color:var(--accent);stop-opacity:1" />
+    </linearGradient>
+    </svg>
 
     </div>
 
     <script>
-        // ==========================================
-        // CONFIGURATION
-        // ==========================================
-        const CONFIG = {
-            cloudinaryName: '__CLOUDINARY_NAME__',
-            cloudinaryPreset: '__CLOUDINARY_PRESET__',
-            jsonBinId: '__JSONBIN_ID__',
-            jsonBinKey: '__JSONBIN_KEY__'
-        };
-
-        // ==========================================
-        // STATE
-        // ==========================================
-        let entries = [];
-        let activeSort = 'date'; // 'date' | 'rating'
-        let activeCategory = 'All'; // 'All' | 'Sweet' | 'Savory' | 'Drink' | 'Others'
-        let editingId = null; // If set, we are in edit mode
-
-        const API = {
-            cloudinary: (name) => `https://api.cloudinary.com/v1_1/${name}/image/upload`,
-            jsonBin: (id) => `https://api.jsonbin.io/v3/b/${id}`,
-            jsonBinLatest: (id) => `https://api.jsonbin.io/v3/b/${id}/latest`
-        };
-
-        // DOM Els
-        const feedList = document.getElementById('feedList');
-        const sidePanel = document.getElementById('sidePanel');
-        const form = document.getElementById('ratingForm');
-
-        // Stars
-        const starContainer = document.getElementById('starInputWidget');
-        const ratingInput = document.getElementById('ratingValue');
-        const ratingText = document.getElementById('ratingText');
-
-        // ==========================================
-        // INIT
-        // ==========================================
-        window.addEventListener('DOMContentLoaded', () => {
-            loadEntries();
-
-            // Set default date to today
-            document.getElementById('dateInput').valueAsDate = new Date();
-
-            // Build Helper Stars
-            setupStarWidget();
-        });
-
-        // ==========================================
-        // LOGIC
-        // ==========================================
-
-        async function loadEntries() {
-            try {
-                const res = await fetch(API.jsonBinLatest(CONFIG.jsonBinId), {
-                    headers: { 'X-Master-Key': CONFIG.jsonBinKey }
-                });
-                if (!res.ok) throw new Error('API Error');
-
-                const data = await res.json();
-                const raw = Array.isArray(data.record) ? data.record : [];
-
-                // MAP OLD DATA TO NEW MODEL IF NEEDED
-                let hasLegacyData = false;
-
-                entries = raw.map((e, idx) => {
-                    const isLegacy = !e.id;
-                    if (isLegacy) hasLegacyData = true;
-
-                    return {
-                        id: e.id || `entry_legacy_${Date.now()}_${idx}`, // Generate stable ID if missing
-                        itemName: e.itemName || e.name || 'Unknown Item',
-                        rating: parseFloat(e.rating),
-                        review: e.review || e.comment || '',
-                        imageUrl: e.imageUrl || null,
-                        date: e.date,
-                        category: e.category || 'Others'
-                    };
-                });
-
-                // --- CRITICAL FIX: Persist generated IDs immediately ---
-                if (hasLegacyData) {
-                    console.log("Backfilling missing IDs for legacy items...");
-                    await fetch(API.jsonBin(CONFIG.jsonBinId), {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Master-Key': CONFIG.jsonBinKey
-                        },
-                        body: JSON.stringify(entries)
-                    });
-                }
-
-                renderFeed();
-            } catch (err) {
-                console.error(err);
-                feedList.innerHTML = `<div class="empty-state">Unable to load feed. Check API setup.</div>`;
-            }
-        }
-
-        function setSort(type) {
-            activeSort = type;
-            renderControls();
-            renderFeed();
-        }
-
-        function setCategory(cat) {
-            activeCategory = cat;
-            renderControls();
-            renderFeed();
-        }
-
-        function renderControls() {
-            // Sort buttons
-            document.querySelectorAll('.sort-btn').forEach(b => {
-                b.classList.toggle('active', b.onclick.toString().includes(activeSort));
-            });
-            // Category buttons
-            document.querySelectorAll('.filter-btn').forEach(b => {
-                const cat = b.textContent;
-                b.classList.toggle('active', cat === activeCategory);
-            });
-        }
-
-        function renderFeed() {
-            feedList.innerHTML = '';
-
-            let filtered = entries;
-            if (activeCategory !== 'All') {
-                filtered = entries.filter(e => e.category === activeCategory);
-            }
-
-            if (filtered.length === 0) {
-                feedList.innerHTML = `
-                    <div class="empty-state">
-                        <h3>No ratings found</h3>
-                        <p>Try changing filters or add a new one!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Client side sort
-            const sorted = [...filtered].sort((a, b) => {
-                const dateA = new Date(a.date);
-                const dateB = new Date(b.date);
-
-                if (activeSort === 'date') {
-                    return dateB - dateA; // Newest first
-                } else if (activeSort === 'rating') {
-                    return b.rating - a.rating; // Highest first
-                }
-                return 0;
-            });
-
-            sorted.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'food-card';
-
-                // Stars HTML
-                const stars = getStarSvg(item.rating);
-
-                // Image HTML
-                const imgHtml = item.imageUrl ?
-                    `<img src="${item.imageUrl}" class="food-img" alt="${item.itemName}" loading="lazy">` :
-                    '';
-
-                // Date
-                const dateStr = new Date(item.date).toLocaleDateString(undefined, {
-                    year: 'numeric', month: 'short', day: 'numeric'
-                });
-
-                card.innerHTML = `
-                    ${imgHtml}
-                    <div class="food-header">
-                        <div style="flex:1;">
-                            <span class="food-badge">${item.category || 'Others'}</span>
-                            <div class="food-name">${item.itemName}</div>
-                        </div>
-                        <div class="food-rating">${stars}</div>
-                    </div>
-                    ${item.review ? `<p class="food-comment">${item.review}</p>` : ''}
-                    
-                    <div style="display:flex; justify-content:space-between; align-items:flex-end;">
-                        <div class="food-date">${dateStr}</div>
-                    </div>
-
-                    <div class="card-actions">
-                        <button class="action-btn" onclick="startEdit('${item.id}')">Edit</button>
-                        <button class="action-btn delete" onclick="deleteEntry('${item.id}')">Delete</button>
-                    </div>
-                `;
-
-                feedList.appendChild(card);
-            });
-        }
-
-        // ==========================================
-        // ACTIONS (Edit / Delete)
-        // ==========================================
-
-        function startEdit(id) {
-            const entry = entries.find(e => e.id === id);
-            if (!entry) return;
-
-            editingId = id;
-            sidePanel.classList.add('edit-mode');
-            sidePanel.classList.add('expanded');
-
-            // Populate Form
-            document.getElementById('itemName').value = entry.itemName;
-            document.getElementById('categoryInput').value = entry.category || 'Others';
-            document.getElementById('review').value = entry.review;
-
-            // Set stars
-            ratingInput.value = entry.rating;
-            updateStarVisuals(entry.rating);
-            ratingText.textContent = entry.rating + (entry.rating === 1 ? ' Star' : ' Stars');
-
-            document.getElementById('submitBtn').textContent = 'Update Rating';
-            document.querySelector('.panel-title').textContent = 'Edit Rating';
-
-            // Scroll to top of panel on mobile if needed
-            if (window.innerWidth < 800) {
-                // sidePanel.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        function cancelEdit() {
-            editingId = null;
-            sidePanel.classList.remove('edit-mode');
-
-            // Close the panel/modal and backdrop
-            sidePanel.classList.remove('expanded');
-            const backdrop = document.querySelector('.modal-backdrop');
-            if (backdrop) backdrop.classList.remove('active');
-
-            form.reset();
-
-            // Reset visuals
-            ratingInput.value = 0;
-            updateStarVisuals(0);
-            ratingText.textContent = '';
-            document.getElementById('dateInput').valueAsDate = new Date();
-            document.getElementById('submitBtn').textContent = 'Post Rating';
-            document.querySelector('.panel-title').textContent = 'Add your rating';
-        }
-
-        async function deleteEntry(id) {
-            if (!confirm("Are you sure you want to delete this rating?")) return;
-
-            const idx = entries.findIndex(e => e.id === id);
-            if (idx === -1) return;
-
-            // Optimistic Remove
-            const oldEntries = [...entries];
-            entries.splice(idx, 1);
-            renderFeed();
-
-            try {
-                // Sync
-                await fetch(API.jsonBin(CONFIG.jsonBinId), {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': CONFIG.jsonBinKey
-                    },
-                    body: JSON.stringify(entries)
-                });
-            } catch (err) {
-                console.error(err);
-                alert("Failed to delete. Reverting.");
-                entries = oldEntries;
-                renderFeed();
-            }
-        }
-
-        // ==========================================
-        // UI INTERACTIONS
-        // ==========================================
-
-        function togglePanel() {
-            const isExpanded = sidePanel.classList.toggle('expanded');
-            const backdrop = document.querySelector('.modal-backdrop');
-            if (backdrop) {
-                backdrop.classList.toggle('active', isExpanded);
-            }
-        }
-
-        // (Old click-outside logic removed as backdrop handles it now)
-
-        // File Input Logic
-        document.getElementById('imageInput').addEventListener('change', (e) => {
-            const status = document.getElementById('fileStatus');
-            if (e.target.files.length) {
-                status.textContent = `✓ ${e.target.files[0].name}`;
-                status.style.color = 'var(--accent)';
-                status.style.fontWeight = '500';
-            } else {
-                status.textContent = '+ Click to upload photo';
-                status.style.color = 'var(--muted)';
-                status.style.fontWeight = 'normal';
-            }
-        });
-
-        // ==========================================
-        // STAR INPUT WIDGET
-        // ==========================================
-        function setupStarWidget() {
-            for (let i = 1; i <= 5; i++) {
-                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                svg.setAttribute('viewBox', '0 0 24 24');
-                svg.setAttribute('class', 'input-star-svg');
-                svg.dataset.idx = i;
-                svg.innerHTML = `<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>`;
-
-                // Events
-                svg.addEventListener('mousemove', handleStarHover);
-                svg.addEventListener('click', handleStarClick);
-
-                starContainer.appendChild(svg);
-            }
-            starContainer.addEventListener('mouseleave', () => updateStarVisuals(parseFloat(ratingInput.value)));
-        }
-
-        function handleStarHover(e) {
-            const idx = parseInt(e.currentTarget.dataset.idx);
-            const rect = e.currentTarget.getBoundingClientRect();
-            const isHalf = (e.clientX - rect.left) < (rect.width / 2);
-
-            const val = isHalf ? idx - 0.5 : idx;
-            updateStarVisuals(val);
-            ratingText.textContent = val + (val === 1 ? ' Star' : ' Stars');
-        }
-
-        function handleStarClick(e) {
-            const idx = parseInt(e.currentTarget.dataset.idx);
-            const rect = e.currentTarget.getBoundingClientRect();
-            const isHalf = (e.clientX - rect.left) < (rect.width / 2);
-
-            const val = isHalf ? idx - 0.5 : idx;
-            ratingInput.value = val;
-            updateStarVisuals(val);
-            ratingText.textContent = val + (val === 1 ? ' Star' : ' Stars');
-
-            // Auto-expand panel if not already
-            if (!sidePanel.classList.contains('expanded')) {
-                sidePanel.classList.add('expanded');
-            }
-        }
-
-        function updateStarVisuals(val) {
-            Array.from(starContainer.children).forEach((svg, i) => {
-                const starVal = i + 1;
-                if (val >= starVal) {
-                    svg.style.fill = 'var(--accent)'; // Full
-                } else if (val >= starVal - 0.5) {
-                    svg.style.fill = 'url(#halfGradient)'; // Half
-                } else {
-                    svg.style.fill = '#e0e0e0'; // Empty
-                }
-            });
-        }
-
-        // Helper for Read-Only stars in grid
-        function getStarSvg(rating) {
-            let html = '';
-            for (let i = 1; i <= 5; i++) {
-                let fill = '#ddd';
-                if (rating >= i) fill = 'var(--accent)';
-                else if (rating >= i - 0.5) fill = 'url(#halfGradient)';
-
-                html += `<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:${fill}"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
-            }
-            return html;
-        }
-
-        // ==========================================
-        // SUBMIT
-        // ==========================================
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-
-            // -- Gather Data --
-            const itemName = document.getElementById('itemName').value;
-            const rating = parseFloat(document.getElementById('ratingValue').value);
-            const review = document.getElementById('review').value;
-            const category = document.getElementById('categoryInput').value;
-            const dateVal = document.getElementById('dateInput').value;
-            const fileInput = document.getElementById('imageInput');
-
-            // Validators
-            if (rating === 0) {
-                alert("Please add a rating by tapping the stars!");
-                return;
-            }
-            if (!category) {
-                alert("Please select a category.");
-                return;
-            }
-
-            try {
-                btn.disabled = true;
-                btn.textContent = editingId ? 'Updating...' : 'Publishing...';
-
-                // -- 1. Upload Image (If any, AND not editing mode) --
-                // In edit mode, we hide the file input, so files.length should be 0 anyway usually
-                let finalImageUrl = null;
-                if (!editingId && fileInput.files.length > 0) {
-                    const formData = new FormData();
-                    formData.append('file', fileInput.files[0]);
-                    formData.append('upload_preset', CONFIG.cloudinaryPreset);
-
-                    const upRes = await fetch(API.cloudinary(CONFIG.cloudinaryName), { method: 'POST', body: formData });
-                    if (!upRes.ok) throw new Error('Image upload failed');
-                    const upData = await upRes.json();
-                    finalImageUrl = upData.secure_url;
-                }
-
-                // -- 2. Re-fetch latest to avoid conflicts --
-                const getRes = await fetch(API.jsonBinLatest(CONFIG.jsonBinId), {
-                    headers: { 'X-Master-Key': CONFIG.jsonBinKey }
-                });
-                const getData = await getRes.json();
-                let currentEntries = Array.isArray(getData.record) ? getData.record : [];
-
-                // Sanity check: ensure all loaded entries have IDs (should be fixed by loadEntries, but be safe)
-                currentEntries = currentEntries.map((e) => ({
-                    ...e,
-                    id: e.id || `entry_gen_${Math.random().toString(36).substr(2, 9)}` // Fallback random ID if still missing
-                }));
-
-                let updatedList;
-
-                if (editingId) {
-                    // EDIT MODE
-                    const index = currentEntries.findIndex(e => e.id === editingId);
-                    if (index !== -1) {
-                        // Preserve original fields
-                        const original = currentEntries[index];
-                        updatedList = [...currentEntries];
-                        updatedList[index] = {
-                            ...original,
-                            itemName: itemName,
-                            rating: rating,
-                            review: review,
-                            category: category,
-                            // Ensure strict preservation of specific fields
-                            id: original.id,
-                            date: original.date,
-                            imageUrl: original.imageUrl
-                        };
-                    } else {
-                        throw new Error(`Entry with ID ${editingId} not found in cloud data. Sync error.`);
-                    }
-                } else {
-                    // NEW ENTRY
-                    const newRating = {
-                        id: `entry_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
-                        itemName: itemName,
-                        rating: rating,
-                        review: review,
-                        imageUrl: finalImageUrl || null,
-                        date: dateVal ? new Date(dateVal).toISOString() : new Date().toISOString(),
-                        category: category
-                    };
-                    updatedList = [...currentEntries, newRating];
-                }
-
-                // -- 3. Push --
-                await fetch(API.jsonBin(CONFIG.jsonBinId), {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': CONFIG.jsonBinKey
-                    },
-                    body: JSON.stringify(updatedList)
-                });
-
-                // -- 4. Update Local State (Refetching is safest to guarantee sync) --
-                // But for speed, we can plain set it.
-                // Let's re-run loadEntries to be 100% sure we have what the server has (including any patches)
-                // However, loadEntries is async and renders.
-                // Let's just update local state manually to match updatedList for instant feedback.
-                entries = updatedList;
-                renderFeed();
-
-                // Reset
-                cancelEdit(); // Helper to reset form & mode
-
-            } catch (err) {
-                console.error(err);
-                alert('Error processing rating. Please try again.');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = editingId ? 'Update Rating' : 'Post Rating';
-            }
-        });
+    // ==========================================
+    // CONFIGURATION
+    // ==========================================
+    const CONFIG = {
+    cloudinaryName: '__CLOUDINARY_NAME__',
+    cloudinaryPreset: '__CLOUDINARY_PRESET__',
+    jsonBinId: '__JSONBIN_ID__',
+    jsonBinKey: '__JSONBIN_KEY__'
+    };
+
+    // ==========================================
+    // STATE
+    // ==========================================
+    let entries = [];
+    let activeSort = 'date'; // 'date' | 'rating'
+    let activeCategory = 'All'; // 'All' | 'Sweet' | 'Savory' | 'Drink' | 'Others'
+    let editingId = null; // If set, we are in edit mode
+
+    const API = {
+    cloudinary: (name) => `https://api.cloudinary.com/v1_1/${name}/image/upload`,
+    jsonBin: (id) => `https://api.jsonbin.io/v3/b/${id}`,
+    jsonBinLatest: (id) => `https://api.jsonbin.io/v3/b/${id}/latest`
+    };
+
+    // DOM Els
+    const feedList = document.getElementById('feedList');
+    const sidePanel = document.getElementById('sidePanel');
+    const form = document.getElementById('ratingForm');
+
+    // Stars
+    const starContainer = document.getElementById('starInputWidget');
+    const ratingInput = document.getElementById('ratingValue');
+    const ratingText = document.getElementById('ratingText');
+
+    // ==========================================
+    // INIT
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+    loadEntries();
+
+    // Set default date to today
+    document.getElementById('dateInput').valueAsDate = new Date();
+
+    // Build Helper Stars
+    setupStarWidget();
+    });
+
+    // ==========================================
+    // LOGIC
+    // ==========================================
+
+    async function loadEntries() {
+    try {
+    const res = await fetch(API.jsonBinLatest(CONFIG.jsonBinId), {
+    headers: { 'X-Master-Key': CONFIG.jsonBinKey }
+    });
+    if (!res.ok) throw new Error('API Error');
+
+    const data = await res.json();
+    const raw = Array.isArray(data.record) ? data.record : [];
+
+    // MAP OLD DATA TO NEW MODEL IF NEEDED
+    let hasLegacyData = false;
+
+    entries = raw.map((e, idx) => {
+    const isLegacy = !e.id;
+    if (isLegacy) hasLegacyData = true;
+
+    return {
+    id: e.id || `entry_legacy_${Date.now()}_${idx}`, // Generate stable ID if missing
+    itemName: e.itemName || e.name || 'Unknown Item',
+    rating: parseFloat(e.rating),
+    review: e.review || e.comment || '',
+    imageUrl: e.imageUrl || null,
+    date: e.date,
+    category: e.category || 'Others'
+    };
+    });
+
+    // --- CRITICAL FIX: Persist generated IDs immediately ---
+    if (hasLegacyData) {
+    console.log("Backfilling missing IDs for legacy items...");
+    await fetch(API.jsonBin(CONFIG.jsonBinId), {
+    method: 'PUT',
+    headers: {
+    'Content-Type': 'application/json',
+    'X-Master-Key': CONFIG.jsonBinKey
+    },
+    body: JSON.stringify(entries)
+    });
+    }
+
+    renderFeed();
+    } catch (err) {
+    console.error(err);
+    feedList.innerHTML = `<div class="empty-state">Unable to load feed. Check API setup.</div>`;
+    }
+    }
+
+    function setSort(type) {
+    activeSort = type;
+    renderControls();
+    renderFeed();
+    }
+
+    function setCategory(cat) {
+    activeCategory = cat;
+    renderControls();
+    renderFeed();
+    }
+
+    function renderControls() {
+    // Sort buttons
+    document.querySelectorAll('.sort-btn').forEach(b => {
+    b.classList.toggle('active', b.onclick.toString().includes(activeSort));
+    });
+    // Category buttons
+    document.querySelectorAll('.filter-btn').forEach(b => {
+    const cat = b.textContent;
+    b.classList.toggle('active', cat === activeCategory);
+    });
+    }
+
+    function renderFeed() {
+    feedList.innerHTML = '';
+
+    let filtered = entries;
+    if (activeCategory !== 'All') {
+    filtered = entries.filter(e => e.category === activeCategory);
+    }
+
+    if (filtered.length === 0) {
+    feedList.innerHTML = `
+    <div class="empty-state">
+    <h3>No ratings found</h3>
+    <p>Try changing filters or add a new one!</p>
+    </div>
+    `;
+    return;
+    }
+
+    // Client side sort
+    const sorted = [...filtered].sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+
+    if (activeSort === 'date') {
+    return dateB - dateA; // Newest first
+    } else if (activeSort === 'rating') {
+    return b.rating - a.rating; // Highest first
+    }
+    return 0;
+    });
+
+    sorted.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'food-card';
+
+    // Stars HTML
+    const stars = getStarSvg(item.rating);
+
+    // Image HTML
+    const imgHtml = item.imageUrl ?
+    `<img src="${item.imageUrl}" class="food-img" alt="${item.itemName}" loading="lazy">` :
+    '';
+
+    // Date
+    const dateStr = new Date(item.date).toLocaleDateString(undefined, {
+    year: 'numeric', month: 'short', day: 'numeric'
+    });
+
+    card.innerHTML = `
+    ${imgHtml}
+    <div class="food-header">
+    <div style="flex:1;">
+    <span class="food-badge">${item.category || 'Others'}</span>
+    <div class="food-name">${item.itemName}</div>
+    </div>
+    <div class="food-rating">${stars}</div>
+    </div>
+    ${item.review ? `<p class="food-comment">${item.review}</p>` : ''}
+    
+    <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+    <div class="food-date">${dateStr}</div>
+    </div>
+
+    <div class="card-actions">
+    <button class="action-btn" onclick="startEdit('${item.id}')">Edit</button>
+    <button class="action-btn delete" onclick="deleteEntry('${item.id}')">Delete</button>
+    </div>
+    `;
+
+    feedList.appendChild(card);
+    });
+    }
+
+    // ==========================================
+    // ACTIONS (Edit / Delete)
+    // ==========================================
+
+    function startEdit(id) {
+    const entry = entries.find(e => e.id === id);
+    if (!entry) return;
+
+    editingId = id;
+    sidePanel.classList.add('edit-mode');
+    sidePanel.classList.add('expanded');
+
+    // Populate Form
+    document.getElementById('itemName').value = entry.itemName;
+    document.getElementById('categoryInput').value = entry.category || 'Others';
+    document.getElementById('review').value = entry.review;
+
+    // Set stars
+    ratingInput.value = entry.rating;
+    updateStarVisuals(entry.rating);
+    ratingText.textContent = entry.rating + (entry.rating === 1 ? ' Star' : ' Stars');
+
+    document.getElementById('submitBtn').textContent = 'Update Rating';
+    document.querySelector('.panel-title').textContent = 'Edit Rating';
+
+    // Scroll to top of panel on mobile if needed
+    if (window.innerWidth < 800) {
+    // sidePanel.scrollIntoView({ behavior: 'smooth' });
+    }
+    }
+
+    function cancelEdit() {
+    editingId = null;
+    sidePanel.classList.remove('edit-mode');
+
+    // Close the panel/modal and backdrop
+    sidePanel.classList.remove('expanded');
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) backdrop.classList.remove('active');
+
+    form.reset();
+
+    // Reset visuals
+    ratingInput.value = 0;
+    updateStarVisuals(0);
+    ratingText.textContent = '';
+    document.getElementById('dateInput').valueAsDate = new Date();
+    document.getElementById('submitBtn').textContent = 'Post Rating';
+    document.querySelector('.panel-title').textContent = 'Add your rating';
+    }
+
+    async function deleteEntry(id) {
+    if (!confirm("Are you sure you want to delete this rating?")) return;
+
+    const idx = entries.findIndex(e => e.id === id);
+    if (idx === -1) return;
+
+    // Optimistic Remove
+    const oldEntries = [...entries];
+    entries.splice(idx, 1);
+    renderFeed();
+
+    try {
+    // Sync
+    await fetch(API.jsonBin(CONFIG.jsonBinId), {
+    method: 'PUT',
+    headers: {
+    'Content-Type': 'application/json',
+    'X-Master-Key': CONFIG.jsonBinKey
+    },
+    body: JSON.stringify(entries)
+    });
+    } catch (err) {
+    console.error(err);
+    alert("Failed to delete. Reverting.");
+    entries = oldEntries;
+    renderFeed();
+    }
+    }
+
+    // ==========================================
+    // UI INTERACTIONS
+    // ==========================================
+
+    function togglePanel() {
+    const isExpanded = sidePanel.classList.toggle('expanded');
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) {
+    backdrop.classList.toggle('active', isExpanded);
+    }
+    }
+
+    // (Old click-outside logic removed as backdrop handles it now)
+
+    // File Input Logic
+    document.getElementById('imageInput').addEventListener('change', (e) => {
+    const status = document.getElementById('fileStatus');
+    if (e.target.files.length) {
+    status.textContent = `✓ ${e.target.files[0].name}`;
+    status.style.color = 'var(--accent)';
+    status.style.fontWeight = '500';
+    } else {
+    status.textContent = '+ Click to upload photo';
+    status.style.color = 'var(--muted)';
+    status.style.fontWeight = 'normal';
+    }
+    });
+
+    // ==========================================
+    // STAR INPUT WIDGET
+    // ==========================================
+    function setupStarWidget() {
+    for (let i = 1; i <= 5; i++) {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('class', 'input-star-svg');
+    svg.dataset.idx = i;
+    svg.innerHTML = `<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>`;
+
+    // Events
+    svg.addEventListener('mousemove', handleStarHover);
+    svg.addEventListener('click', handleStarClick);
+
+    starContainer.appendChild(svg);
+    }
+    starContainer.addEventListener('mouseleave', () => updateStarVisuals(parseFloat(ratingInput.value)));
+    }
+
+    function handleStarHover(e) {
+    const idx = parseInt(e.currentTarget.dataset.idx);
+    const rect = e.currentTarget.getBoundingClientRect();
+    const isHalf = (e.clientX - rect.left) < (rect.width / 2);
+
+    const val = isHalf ? idx - 0.5 : idx;
+    updateStarVisuals(val);
+    ratingText.textContent = val + (val === 1 ? ' Star' : ' Stars');
+    }
+
+    function handleStarClick(e) {
+    const idx = parseInt(e.currentTarget.dataset.idx);
+    const rect = e.currentTarget.getBoundingClientRect();
+    const isHalf = (e.clientX - rect.left) < (rect.width / 2);
+
+    const val = isHalf ? idx - 0.5 : idx;
+    ratingInput.value = val;
+    updateStarVisuals(val);
+    ratingText.textContent = val + (val === 1 ? ' Star' : ' Stars');
+
+    // Auto-expand panel if not already
+    if (!sidePanel.classList.contains('expanded')) {
+    sidePanel.classList.add('expanded');
+    }
+    }
+
+    function updateStarVisuals(val) {
+    Array.from(starContainer.children).forEach((svg, i) => {
+    const starVal = i + 1;
+    if (val >= starVal) {
+    svg.style.fill = 'var(--accent)'; // Full
+    } else if (val >= starVal - 0.5) {
+    svg.style.fill = 'url(#halfGradient)'; // Half
+    } else {
+    svg.style.fill = '#e0e0e0'; // Empty
+    }
+    });
+    }
+
+    // Helper for Read-Only stars in grid
+    function getStarSvg(rating) {
+    let html = '';
+    for (let i = 1; i <= 5; i++) {
+    let fill = '#ddd';
+    if (rating >= i) fill = 'var(--accent)';
+    else if (rating >= i - 0.5) fill = 'url(#halfGradient)';
+
+    html += `<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:${fill}"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+    }
+    return html;
+    }
+
+    // ==========================================
+    // SUBMIT
+    // ==========================================
+
+    form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+
+    // -- Gather Data --
+    const itemName = document.getElementById('itemName').value;
+    const rating = parseFloat(document.getElementById('ratingValue').value);
+    const review = document.getElementById('review').value;
+    const category = document.getElementById('categoryInput').value;
+    const dateVal = document.getElementById('dateInput').value;
+    const fileInput = document.getElementById('imageInput');
+
+    // Validators
+    if (rating === 0) {
+    alert("Please add a rating by tapping the stars!");
+    return;
+    }
+    if (!category) {
+    alert("Please select a category.");
+    return;
+    }
+
+    try {
+    btn.disabled = true;
+    btn.textContent = editingId ? 'Updating...' : 'Publishing...';
+
+    // -- 1. Upload Image (If any, AND not editing mode) --
+    // In edit mode, we hide the file input, so files.length should be 0 anyway usually
+    let finalImageUrl = null;
+    if (!editingId && fileInput.files.length > 0) {
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+    formData.append('upload_preset', CONFIG.cloudinaryPreset);
+
+    const upRes = await fetch(API.cloudinary(CONFIG.cloudinaryName), { method: 'POST', body: formData });
+    if (!upRes.ok) throw new Error('Image upload failed');
+    const upData = await upRes.json();
+    finalImageUrl = upData.secure_url;
+    }
+
+    // -- 2. Re-fetch latest to avoid conflicts --
+    const getRes = await fetch(API.jsonBinLatest(CONFIG.jsonBinId), {
+    headers: { 'X-Master-Key': CONFIG.jsonBinKey }
+    });
+    const getData = await getRes.json();
+    let currentEntries = Array.isArray(getData.record) ? getData.record : [];
+
+    // Sanity check: ensure all loaded entries have IDs (should be fixed by loadEntries, but be safe)
+    currentEntries = currentEntries.map((e) => ({
+    ...e,
+    id: e.id || `entry_gen_${Math.random().toString(36).substr(2, 9)}` // Fallback random ID if still missing
+    }));
+
+    let updatedList;
+
+    if (editingId) {
+    // EDIT MODE
+    const index = currentEntries.findIndex(e => e.id === editingId);
+    if (index !== -1) {
+    // Preserve original fields
+    const original = currentEntries[index];
+    updatedList = [...currentEntries];
+    updatedList[index] = {
+    ...original,
+    itemName: itemName,
+    rating: rating,
+    review: review,
+    category: category,
+    // Ensure strict preservation of specific fields
+    id: original.id,
+    date: original.date,
+    imageUrl: original.imageUrl
+    };
+    } else {
+    throw new Error(`Entry with ID ${editingId} not found in cloud data. Sync error.`);
+    }
+    } else {
+    // NEW ENTRY
+    const newRating = {
+    id: `entry_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+    itemName: itemName,
+    rating: rating,
+    review: review,
+    imageUrl: finalImageUrl || null,
+    date: dateVal ? new Date(dateVal).toISOString() : new Date().toISOString(),
+    category: category
+    };
+    updatedList = [...currentEntries, newRating];
+    }
+
+    // -- 3. Push --
+    await fetch(API.jsonBin(CONFIG.jsonBinId), {
+    method: 'PUT',
+    headers: {
+    'Content-Type': 'application/json',
+    'X-Master-Key': CONFIG.jsonBinKey
+    },
+    body: JSON.stringify(updatedList)
+    });
+
+    // -- 4. Update Local State (Refetching is safest to guarantee sync) --
+    // But for speed, we can plain set it.
+    // Let's re-run loadEntries to be 100% sure we have what the server has (including any patches)
+    // However, loadEntries is async and renders.
+    // Let's just update local state manually to match updatedList for instant feedback.
+    entries = updatedList;
+    renderFeed();
+
+    // Reset
+    cancelEdit(); // Helper to reset form & mode
+
+    } catch (err) {
+    console.error(err);
+    alert('Error processing rating. Please try again.');
+    } finally {
+    btn.disabled = false;
+    btn.textContent = editingId ? 'Update Rating' : 'Post Rating';
+    }
+    });
 
     </script>
 
