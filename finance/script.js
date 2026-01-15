@@ -20,6 +20,10 @@ const state = {
     charts: {
         category: null,
         trend: null
+    },
+    flatpickr: {
+        start: null,
+        end: null
     }
 };
 
@@ -81,16 +85,33 @@ function setupFilters() {
     const startIn = document.getElementById('startDate');
     const endIn = document.getElementById('endDate');
 
-    if (startIn && state.filters.startDate) {
-        const date = new Date(state.filters.startDate);
-        date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-        startIn.value = date.toISOString().split('T')[0];
-    }
-    if (endIn && state.filters.endDate) {
-        const date = new Date(state.filters.endDate);
-        date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-        endIn.value = date.toISOString().split('T')[0];
-    }
+    // Initialize Flatpickr
+    state.flatpickr.start = flatpickr(startIn, {
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "j M Y",
+        defaultDate: state.filters.startDate,
+        onChange: (selectedDates) => {
+            if (selectedDates[0]) {
+                state.filters.startDate = selectedDates[0];
+                updateDashboard();
+            }
+        }
+    });
+
+    state.flatpickr.end = flatpickr(endIn, {
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "j M Y",
+        defaultDate: state.filters.endDate,
+        onChange: (selectedDates) => {
+            if (selectedDates[0]) {
+                state.filters.endDate = selectedDates[0];
+                state.filters.endDate.setHours(23, 59, 59);
+                updateDashboard();
+            }
+        }
+    });
 }
 
 // Data Fetching
@@ -503,25 +524,8 @@ function setupEventListeners() {
         });
     });
 
-    // Date Inputs
-    const startIn = document.getElementById('startDate');
-    const endIn = document.getElementById('endDate');
+    // Date Inputs handled by Flatpickr onChange in setupFilters
 
-    startIn.addEventListener('change', (e) => {
-        if (e.target.value) {
-            state.filters.startDate = new Date(e.target.value);
-            updateDashboard();
-        }
-    });
-
-    endIn.addEventListener('change', (e) => {
-        if (e.target.value) {
-            state.filters.endDate = new Date(e.target.value);
-            // End of day
-            state.filters.endDate.setHours(23, 59, 59);
-            updateDashboard();
-        }
-    });
 
     // Quick Ranges
     document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -542,9 +546,9 @@ function setupEventListeners() {
             state.filters.startDate = start;
             state.filters.endDate = end;
 
-            // Update inputs
-            startIn.valueAsDate = start;
-            endIn.valueAsDate = end;
+            // Update Flatpickr instances
+            state.flatpickr.start.setDate(start);
+            state.flatpickr.end.setDate(end);
 
             updateDashboard();
         });
