@@ -89,7 +89,7 @@ input[type="text"] {
 
 .dropdown-filters {
     display: flex;
-    gap: 1.5rem;
+    gap: 4rem;
     flex-wrap: wrap;
 }
 
