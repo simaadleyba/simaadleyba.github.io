@@ -25,6 +25,11 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: Inject Analytics Endpoint
+        env:
+          ANALYTICS_ENDPOINT: ${{ secrets.ANALYTICS_ENDPOINT }}
+        run: |
+          sed -i "s|__ANALYTICS_ENDPOINT__|$ANALYTICS_ENDPOINT|g" analytics/config.js
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
