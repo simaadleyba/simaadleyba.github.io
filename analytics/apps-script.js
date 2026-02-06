@@ -48,6 +48,24 @@ function doPost(e) {
             ]);
         }
 
+        // Look up location from IP server-side
+        var country = '';
+        var city = '';
+        var region = '';
+        var ip = data.ip || '';
+
+        if (ip) {
+            try {
+                var geoResponse = UrlFetchApp.fetch('http://ip-api.com/json/' + ip + '?fields=country,city,regionName');
+                var geo = JSON.parse(geoResponse.getContentText());
+                country = geo.country || '';
+                city = geo.city || '';
+                region = geo.regionName || '';
+            } catch (geoErr) {
+                // Geo lookup failed, continue without location
+            }
+        }
+
         sheet.appendRow([
             data.timestamp || '',
             data.event || '',
@@ -55,10 +73,10 @@ function doPost(e) {
             data.clickedUrl || '',
             data.clickedText || '',
             data.referrer || '',
-            data.country || '',
-            data.city || '',
-            data.region || '',
-            data.ip || '',
+            country,
+            city,
+            region,
+            ip,
             data.timezone || '',
             data.language || '',
             (data.screenWidth || '') + 'x' + (data.screenHeight || ''),

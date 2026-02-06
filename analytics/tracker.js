@@ -5,8 +5,8 @@
 // Google Apps Script endpoint that logs to Google Sheets.
 //
 // Captured data: timestamp, page, event type, clicked URL/text,
-// referrer, location (country/city/region via IP), timezone,
-// language, screen size, device type, browser, OS.
+// referrer, IP, timezone, language, screen size, device type, browser, OS.
+// Location (country/city/region) is resolved server-side by Apps Script.
 //
 // Requires: analytics/config.js loaded before this script.
 
@@ -23,8 +23,8 @@
     // Session ID groups events from the same page visit
     var sessionId = Math.random().toString(36).substr(2, 9);
 
-    // --- Location data (fetched once per session) ---
-    var geoData = {};
+    // --- Client IP (fetched once per session) ---
+    var clientIp = '';
 
     // --- Device / Browser / OS detection ---
 
@@ -63,10 +63,7 @@
             timestamp: new Date().toISOString(),
             page: window.location.pathname,
             referrer: document.referrer || '',
-            country: geoData.country || '',
-            city: geoData.city || '',
-            region: geoData.region || '',
-            ip: geoData.ip || '',
+            ip: clientIp,
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
             language: navigator.language || '',
             screenWidth: screen.width,
@@ -100,12 +97,12 @@
         }
     }
 
-    // --- Fetch location, then send page view ---
+    // --- Fetch IP, then send page view ---
 
-    fetch('https://ipinfo.io/json')
+    fetch('https://api.ipify.org?format=json')
         .then(function (r) { return r.json(); })
         .then(function (data) {
-            geoData = data;
+            clientIp = data.ip || '';
         })
         .catch(function () { })
         .finally(function () {
