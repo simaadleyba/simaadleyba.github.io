@@ -63,7 +63,7 @@
             timestamp: new Date().toISOString(),
             page: window.location.pathname,
             referrer: document.referrer || '',
-            country: geoData.country_name || '',
+            country: geoData.country || '',
             city: geoData.city || '',
             region: geoData.region || '',
             ip: geoData.ip || '',
@@ -102,7 +102,7 @@
 
     // --- Fetch location, then send page view ---
 
-    fetch('https://ipapi.co/json/')
+    fetch('https://ipinfo.io/json')
         .then(function (r) { return r.json(); })
         .then(function (data) {
             geoData = data;
