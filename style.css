@@ -1,0 +1,424 @@
+/* ===================================================
+   SIMA ADLEYBA — PERSONAL ACADEMIC SITE
+   =================================================== */
+
+/* ---------- CSS VARIABLES ---------- */
+
+:root {
+    --bg: #f8fafc;
+    --text: #1a1a1a;
+    --muted: #555;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --card-bg: #ffffff;
+    --border: #e5e7eb;
+}
+
+/* ---------- RESET & BASE ---------- */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------- TYPOGRAPHY ---------- */
+
+h1, h2, h3 {
+    font-family: "Source Serif 4", Georgia, serif;
+    color: var(--text);
+    line-height: 1.3;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0 0 1.5rem;
+}
+
+h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+}
+
+p {
+    margin: 0 0 1rem;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: var(--accent-hover);
+}
+
+/* ---------- LAYOUT ---------- */
+
+.container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.section {
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.section:last-of-type {
+    border-bottom: none;
+}
+
+/* ---------- HEADER ---------- */
+
+.header {
+    padding: 4rem 0 3rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.header-content {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.photo-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: var(--border);
+    border: 3px solid var(--card-bg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.photo-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.header-text {
+    flex: 1;
+}
+
+.subtitle {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0.5rem 0 1rem;
+    line-height: 1.5;
+}
+
+.header-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.header-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+    transition: color 0.2s;
+}
+
+.header-links a:hover {
+    color: var(--accent);
+}
+
+.header-links svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+/* ---------- ABOUT ---------- */
+
+#about p:last-child {
+    margin-bottom: 0;
+}
+
+/* ---------- RESEARCH CARDS ---------- */
+
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    transition: box-shadow 0.2s;
+}
+
+.card:last-child {
+    margin-bottom: 0;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.card-type {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+}
+
+.card-date {
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+.card h3 {
+    margin-bottom: 0.4rem;
+}
+
+.card-advisor {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+}
+
+.card-description {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    line-height: 1.65;
+}
+
+.card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0;
+}
+
+.card-tags + .card-link {
+    margin-top: 1rem;
+}
+
+.tag {
+    display: inline-block;
+    padding: 0.15rem 0.65rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    background: #eff6ff;
+    color: var(--accent);
+    border-radius: 9999px;
+}
+
+.card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* ---------- EXPERIENCE & EDUCATION ENTRIES ---------- */
+
+.entry {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.entry:first-child {
+    padding-top: 0;
+}
+
+.entry:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.entry-date {
+    font-size: 0.85rem;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.entry-org {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+}
+
+.entry-detail {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 0;
+}
+
+.entry-description {
+    font-size: 0.95rem;
+    margin-bottom: 0;
+}
+
+/* ---------- BEYOND RESEARCH ---------- */
+
+.beyond-subsection {
+    margin-bottom: 2rem;
+}
+
+.beyond-subsection:last-child {
+    margin-bottom: 0;
+}
+
+.beyond-subsection h3 {
+    margin-bottom: 0.75rem;
+}
+
+.beyond-subsection p {
+    margin-bottom: 0;
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.photo-grid-item {
+    aspect-ratio: 1;
+    background: var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.photo-grid-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ---------- FOOTER ---------- */
+
+.footer {
+    padding: 2rem 0;
+    text-align: center;
+}
+
+.footer p {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+/* ---------- RESPONSIVE: TABLET ---------- */
+
+@media (max-width: 768px) {
+    .header {
+        padding: 2.5rem 0 2rem;
+    }
+
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .photo-placeholder {
+        width: 120px;
+        height: 120px;
+    }
+
+    .header-links {
+        justify-content: center;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+    }
+
+    .section {
+        padding: 2rem 0;
+    }
+
+    .entry-header {
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    .card-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2rem;
+    }
+
+    .photo-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ---------- RESPONSIVE: SMALL MOBILE ---------- */
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 1rem;
+    }
+
+    .header-links {
+        gap: 0.75rem;
+    }
+
+    .header-links a {
+        font-size: 0.85rem;
+    }
+
+    .card {
+        padding: 1.25rem;
+    }
+}

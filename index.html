@@ -4,85 +4,231 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sima</title>
+    <title>Sima Adleyba</title>
+    <meta name="description" content="Sima Adleyba — MS Student in Data Science at Sabancı University. Research in computational social science, network analysis, and algorithmic fairness.">
 
+    <!-- Google Fonts: Source Serif 4 + Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="style.css" />
     <link rel="icon" type="image/png" href="assets/icon.png">
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-    <meta name="apple-mobile-web-app-title" content="sima">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Sima Adleyba">
 </head>
 
 <body>
 
-    <div class="layout">
+    <!-- ========== HEADER ========== -->
 
-    <aside class="sidebar">
-    <nav>
-    <a href="index.html" class="active">home</a>
-    <a href="interests.html">interests</a>
-    <a href="writing.html">writing</a>
-    <div class="nav-divider"></div>
-    <a href="fair-clustering/index.html">fairness warps geometry</a>
-    <a href="impact-calibration/index.html">intuition calibration</a>
-    </nav>
-    </aside>
-
-    <main class="main">
-    <div class="content">
-
-    <header>
-    <h1>hi! i'm sima</h1>
-    <p class="subtitle">
-    data science · recommender systems · network science · fairness
-    </p>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="photo-placeholder">
+                    <!-- Replace this text with: <img src="assets/photo.jpg" alt="Sima Adleyba"> -->
+                    Photo
+                </div>
+                <div class="header-text">
+                    <h1>Sima Adleyba</h1>
+                    <p class="subtitle">MS Student in Data Science · VRL Lab · Sabancı University</p>
+                    <div class="header-links">
+                        <a href="mailto:adleyba@sabanciuniv.edu" title="Email">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                            Email
+                        </a>
+                        <a href="https://github.com/simaadleyba" target="_blank" rel="noopener" title="GitHub">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                            GitHub
+                        </a>
+                        <a href="#" target="_blank" rel="noopener" title="Twitter">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                            Twitter
+                        </a>
+                        <a href="#" target="_blank" rel="noopener" title="LinkedIn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                            LinkedIn
+                        </a>
+                        <a href="#" target="_blank" rel="noopener" title="Download CV">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            CV
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </header>
 
-    <p>
-    i’m a data science master’s student interested in recommender systems, machine learning,
-    network science, and user modeling, with an emphasis on fairness and bias in algorithmic systems.
-    </p>
+    <!-- ========== ABOUT ========== -->
 
-    <p>
-    i should probably mention that i'm very online and have chosen the deeply unserious title of
-    <em>“digital content curator.”</em>
-    </p>
+    <section id="about" class="section">
+        <div class="container">
+            <h2>About</h2>
+            <p>
+                I'm a first-year Master's student in Data Science at Sabancı University, advised by
+                <a href="https://www.onurvarol.com/" target="_blank" rel="noopener">Dr. Onur Varol</a>.
+                My research interests lie at the intersection of computational social science, network analysis,
+                and algorithmic fairness.
+            </p>
+            <p>
+                Currently, I'm studying bias and fairness in Bluesky's starter pack system — examining how
+                curated recommendation lists influence network formation and visibility on decentralized
+                social platforms.
+            </p>
+        </div>
+    </section>
 
-    <details>
-    <summary>research focus</summary>
-    <div class="details-content">
-    <p>
-    fairness, bias, explainability, and network effects in recommender systems.
-    </p>
-    </div>
-    </details>
+    <!-- ========== RESEARCH ========== -->
 
-    <details>
-    <summary>outside of research</summary>
-    <div class="details-content">
-    <p>
-    doomscrolling, reading, photography, vibe-coding, ice latte with nesquik, and lots of cat and manul
-    photos. refer to <a href="interests.html">interests</a> for more.
-    </p>
-    </div>
-    </details>
+    <section id="research" class="section">
+        <div class="container">
+            <h2>Research</h2>
 
-    </div>
+            <div class="card">
+                <div class="card-meta">
+                    <span class="card-type">MSc Thesis</span>
+                    <span class="card-date">Oct 2025 – Present</span>
+                </div>
+                <h3>Bias and Network Effects of Starter Packs on Bluesky</h3>
+                <p class="card-advisor">Advisor: Dr. Onur Varol</p>
+                <p class="card-description">
+                    Analyzing how Bluesky's starter packs influence user follow patterns and network topology.
+                    Studying structural and representational biases in starter pack composition and their
+                    downstream effects on network visibility and fairness. Working with a dataset of ~270,000
+                    starter packs containing 1.7 million members.
+                </p>
+                <div class="card-tags">
+                    <span class="tag">Social Networks</span>
+                    <span class="tag">Algorithmic Fairness</span>
+                    <span class="tag">Decentralized Platforms</span>
+                </div>
+            </div>
 
-    <footer class="site-footer">
-    <p>made by sima 𖤐ˎˊ˗</p>
+            <div class="card">
+                <div class="card-meta">
+                    <span class="card-type">Industry Project</span>
+                    <span class="card-date">Oct 2024 – Jun 2025</span>
+                </div>
+                <h3>Kariyer.net Knowledge Base</h3>
+                <p class="card-advisor">Supervisors: Dr. Onur Varol, Ömür Bali</p>
+                <p class="card-description">
+                    Developed a knowledge base for Turkey's largest job platform. Built a skill extraction
+                    pipeline using LangChain and GPT-4o-mini, with HDBSCAN clustering for normalization.
+                    The resulting graph contains 114,000+ nodes and ~61 million edges.
+                </p>
+                <div class="card-tags">
+                    <span class="tag">NLP</span>
+                    <span class="tag">Knowledge Graphs</span>
+                    <span class="tag">LLMs</span>
+                </div>
+                <a href="https://fens.sabanciuniv.edu/sites/fens.sabanciuniv.edu/files/2025-08/poster.pdf"
+                   target="_blank" rel="noopener" class="card-link">
+                    Project Poster →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== EXPERIENCE ========== -->
+
+    <section id="experience" class="section">
+        <div class="container">
+            <h2>Experience</h2>
+
+            <div class="entry">
+                <div class="entry-header">
+                    <h3>Teaching Assistant — CS412 Machine Learning</h3>
+                    <span class="entry-date">Oct 2025 – Present</span>
+                </div>
+                <p class="entry-org">Sabancı University</p>
+                <p class="entry-description">
+                    Led recitations, held office hours, and handled grading for the Machine Learning course.
+                </p>
+            </div>
+
+            <div class="entry">
+                <div class="entry-header">
+                    <h3>Data Science Intern</h3>
+                    <span class="entry-date">Jan 2024 – Aug 2024</span>
+                </div>
+                <p class="entry-org">iLab</p>
+                <p class="entry-description">
+                    Built a RAG-based usability testing tool using LangChain, OpenAI API, MongoDB, and Docker.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== EDUCATION ========== -->
+
+    <section id="education" class="section">
+        <div class="container">
+            <h2>Education</h2>
+
+            <div class="entry">
+                <div class="entry-header">
+                    <h3>MS in Data Science</h3>
+                    <span class="entry-date">Sep 2025 – Jun 2027 (Expected)</span>
+                </div>
+                <p class="entry-org">Sabancı University</p>
+                <p class="entry-detail">Full Scholarship</p>
+            </div>
+
+            <div class="entry">
+                <div class="entry-header">
+                    <h3>BS in Computer Science</h3>
+                    <span class="entry-date">Sep 2020 – Jun 2025</span>
+                </div>
+                <p class="entry-org">Sabancı University</p>
+                <p class="entry-detail">GPA: 3.13</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== BEYOND RESEARCH ========== -->
+
+    <section id="beyond" class="section">
+        <div class="container">
+            <h2>Beyond Research</h2>
+
+            <div class="beyond-subsection">
+                <h3>Photography</h3>
+                <p>I enjoy capturing moments around İstanbul and travels.</p>
+                <div class="photo-grid">
+                    <!-- Replace placeholders with: <img src="assets/photo-1.jpg" alt="Description"> -->
+                    <div class="photo-grid-item"></div>
+                    <div class="photo-grid-item"></div>
+                    <div class="photo-grid-item"></div>
+                    <div class="photo-grid-item"></div>
+                    <div class="photo-grid-item"></div>
+                    <div class="photo-grid-item"></div>
+                </div>
+            </div>
+
+            <div class="beyond-subsection">
+                <h3>Music</h3>
+                <p>Learning electric guitar.</p>
+            </div>
+
+            <div class="beyond-subsection">
+                <h3>Languages</h3>
+                <p>Turkish, English, Chinese. Currently learning Korean.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+
+    <footer class="footer">
+        <div class="container">
+            <p>Last updated February 2026</p>
+        </div>
     </footer>
-    </main>
 
-    </div>
-
+    <!-- Analytics -->
     <script src="analytics/config.js"></script>
     <script src="analytics/tracker.js"></script>
+
 </body>
 
 </html>
