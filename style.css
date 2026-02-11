@@ -1,17 +1,22 @@
 /* ===================================================
    SIMA ADLEYBA — PERSONAL ACADEMIC SITE
+   Visual style inspired by jocelynshen.com
+   with a subtle blue tint
    =================================================== */
 
 /* ---------- CSS VARIABLES ---------- */
 
 :root {
-    --bg: #f8fafc;
-    --text: #1a1a1a;
-    --muted: #555;
-    --accent: #3b82f6;
-    --accent-hover: #2563eb;
+    --bg: #f8f9fc;
+    --text: #242424;
+    --muted: #5b5b5b;
+    --accent: #5b6eae;
+    --accent-hover: #4a5c99;
+    --accent-light: #8b9bd4;
+    --accent-bg: #eef1f8;
     --card-bg: #ffffff;
-    --border: #e5e7eb;
+    --border: #e2e4ea;
+    --nav-height: 3.2rem;
 }
 
 /* ---------- RESET & BASE ---------- */
@@ -30,63 +35,152 @@ body {
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-size: 16px;
-    line-height: 1.7;
+    line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
+::selection {
+    background: var(--accent-bg);
+}
+
 /* ---------- TYPOGRAPHY ---------- */
 
-h1, h2, h3 {
-    font-family: "Source Serif 4", Georgia, serif;
+h1,
+h2,
+h3 {
+    font-family: "Noto Sans", sans-serif;
     color: var(--text);
     line-height: 1.3;
 }
 
 h1 {
-    font-size: 2rem;
+    font-size: 1.9rem;
     font-weight: 700;
     margin: 0;
 }
 
 h2 {
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin: 0 0 1.5rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0 0 1.2rem;
+    position: relative;
+    padding-top: 1.4rem;
+}
+
+h2::before {
+    content: "";
+    position: absolute;
+    width: 2.2em;
+    height: 0.22rem;
+    background: var(--accent);
+    top: 0;
+    left: 0;
+    border-radius: 2px;
 }
 
 h3 {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 600;
-    margin: 0 0 0.5rem;
+    margin: 0 0 0.4rem;
 }
 
 p {
-    margin: 0 0 1rem;
+    margin: 0 0 0.9rem;
 }
 
 a {
     color: var(--accent);
     text-decoration: none;
-    transition: color 0.2s;
+    transition: color 0.25s, opacity 0.25s;
 }
 
 a:hover {
     color: var(--accent-hover);
+    opacity: 0.85;
+}
+
+/* ---------- NAVIGATION BAR ---------- */
+
+#nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    width: 100%;
+    background: rgba(248, 249, 252, 0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--nav-height);
+}
+
+#nav::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent-light), var(--accent), var(--accent-light));
+    bottom: 0;
+    left: 0;
+    opacity: 0.4;
+}
+
+#nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+#nav-links a {
+    font-size: 0.82rem;
+    font-family: monospace;
+    color: var(--muted);
+    text-transform: lowercase;
+    letter-spacing: 0.02em;
+    transition: color 0.25s;
+    padding: 0.15rem 0;
+}
+
+#nav-links a:hover {
+    color: var(--accent);
+    opacity: 1;
+}
+
+#nav-links a.selected {
+    font-weight: 700;
+    color: var(--text);
+    pointer-events: none;
+}
+
+#burger-icon {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    margin-left: auto;
+    padding: 0;
+    color: var(--text);
+    line-height: 1;
 }
 
 /* ---------- LAYOUT ---------- */
 
 .container {
-    max-width: 860px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 2rem;
 }
 
 .section {
-    padding: 3rem 0;
+    padding: 2.8rem 0;
     border-bottom: 1px solid var(--border);
 }
 
@@ -97,30 +191,36 @@ a:hover {
 /* ---------- HEADER ---------- */
 
 .header {
-    padding: 4rem 0 3rem;
+    padding: calc(var(--nav-height) + 4rem) 0 3rem;
     border-bottom: 1px solid var(--border);
 }
 
 .header-content {
     display: flex;
-    gap: 2rem;
-    align-items: center;
+    gap: 2.5rem;
+    align-items: flex-start;
 }
 
 .photo-placeholder {
-    width: 150px;
-    height: 150px;
+    width: 250px;
+    height: 250px;
     border-radius: 50%;
-    background: var(--border);
+    background: linear-gradient(135deg, var(--accent-bg), var(--accent-light));
     border: 3px solid var(--card-bg);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(91, 110, 174, 0.15);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--muted);
-    font-size: 0.85rem;
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-family: monospace;
     flex-shrink: 0;
     overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.photo-placeholder:hover {
+    transform: scale(1.03);
 }
 
 .photo-placeholder img {
@@ -133,43 +233,55 @@ a:hover {
     flex: 1;
 }
 
+.name-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.2rem;
+}
+
 .subtitle {
     color: var(--muted);
-    font-size: 0.95rem;
-    margin: 0.5rem 0 1rem;
+    font-size: 0.92rem;
+    margin: 0.4rem 0 0.9rem;
     line-height: 1.5;
 }
 
 .header-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 0.7rem;
     align-items: center;
 }
 
 .header-links a {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    font-size: 0.9rem;
+    justify-content: center;
     color: var(--muted);
-    transition: color 0.2s;
+    transition: color 0.25s;
 }
 
 .header-links a:hover {
     color: var(--accent);
+    opacity: 1;
 }
 
 .header-links svg {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     flex-shrink: 0;
 }
 
-/* ---------- ABOUT ---------- */
+/* ---------- SECTION INTRO ---------- */
 
-#about p:last-child {
-    margin-bottom: 0;
+.section-intro {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
 }
 
 /* ---------- RESEARCH CARDS ---------- */
@@ -177,10 +289,10 @@ a:hover {
 .card {
     background: var(--card-bg);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 1.25rem;
-    transition: box-shadow 0.2s;
+    border-radius: 10px;
+    padding: 1.4rem;
+    margin-bottom: 1.2rem;
+    transition: box-shadow 0.3s, transform 0.3s;
 }
 
 .card:last-child {
@@ -188,62 +300,63 @@ a:hover {
 }
 
 .card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 6px 20px rgba(91, 110, 174, 0.1);
+    transform: translateY(-2px);
 }
 
 .card-meta {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.6rem;
 }
 
 .card-type {
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
     color: var(--accent);
 }
 
 .card-date {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     color: var(--muted);
 }
 
 .card h3 {
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.35rem;
 }
 
 .card-advisor {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: var(--muted);
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.7rem;
 }
 
 .card-description {
-    font-size: 0.95rem;
-    margin-bottom: 1rem;
-    line-height: 1.65;
+    font-size: 0.93rem;
+    margin-bottom: 0.9rem;
+    line-height: 1.6;
 }
 
 .card-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.45rem;
     margin-bottom: 0;
 }
 
-.card-tags + .card-link {
-    margin-top: 1rem;
+.card-tags+.card-link {
+    margin-top: 0.9rem;
 }
 
 .tag {
     display: inline-block;
-    padding: 0.15rem 0.65rem;
-    font-size: 0.78rem;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.75rem;
     font-weight: 500;
-    background: #eff6ff;
+    background: var(--accent-bg);
     color: var(--accent);
     border-radius: 9999px;
 }
@@ -252,14 +365,14 @@ a:hover {
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-weight: 500;
 }
 
 /* ---------- EXPERIENCE & EDUCATION ENTRIES ---------- */
 
 .entry {
-    padding: 1.25rem 0;
+    padding: 1.15rem 0;
     border-bottom: 1px solid var(--border);
 }
 
@@ -281,15 +394,15 @@ a:hover {
 }
 
 .entry-date {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     color: var(--muted);
     white-space: nowrap;
 }
 
 .entry-org {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: var(--muted);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.45rem;
 }
 
 .entry-detail {
@@ -299,14 +412,14 @@ a:hover {
 }
 
 .entry-description {
-    font-size: 0.95rem;
+    font-size: 0.93rem;
     margin-bottom: 0;
 }
 
 /* ---------- BEYOND RESEARCH ---------- */
 
 .beyond-subsection {
-    margin-bottom: 2rem;
+    margin-bottom: 1.8rem;
 }
 
 .beyond-subsection:last-child {
@@ -314,25 +427,33 @@ a:hover {
 }
 
 .beyond-subsection h3 {
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.6rem;
 }
 
 .beyond-subsection p {
     margin-bottom: 0;
 }
 
+/* ---------- PHOTO GALLERY — Grid + Show More ---------- */
+
 .photo-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.75rem;
-    margin-top: 0.5rem;
+    margin-top: 0.6rem;
 }
 
 .photo-grid-item {
     aspect-ratio: 1;
-    background: var(--border);
-    border-radius: 6px;
+    background: linear-gradient(135deg, var(--border), var(--accent-bg));
+    border-radius: 8px;
     overflow: hidden;
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.photo-grid-item:hover {
+    transform: scale(1.04);
 }
 
 .photo-grid-item img {
@@ -341,24 +462,195 @@ a:hover {
     object-fit: cover;
 }
 
+/* Hidden gallery items — revealed by "show more" */
+.gallery-hidden {
+    display: none;
+}
+
+.gallery-hidden.show {
+    display: block;
+}
+
+/* Show more button */
+.show-more-btn {
+    display: block;
+    margin: 1.2rem auto 0;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-family: monospace;
+    font-size: 0.82rem;
+    padding: 0.4rem 1.4rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    text-transform: lowercase;
+    transition: background 0.25s, border-color 0.25s;
+}
+
+.show-more-btn:hover {
+    background: var(--accent-bg);
+    border-color: var(--accent-light);
+}
+
+/* ---------- LIGHTBOX OVERLAY ---------- */
+
+.lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.85);
+    z-index: 999;
+    overflow-y: auto;
+}
+
+.lightbox.active {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 5rem;
+    animation: lightboxFadeIn 0.2s ease;
+}
+
+@keyframes lightboxFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.lightbox-inner {
+    display: flex;
+    gap: 2.5rem;
+    max-width: 1100px;
+    width: 90%;
+    padding: 1rem 2rem;
+}
+
+.lightbox-image {
+    flex: 3;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    min-width: 0;
+}
+
+.lightbox-image img {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+}
+
+.lightbox-info {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 0;
+}
+
+.lightbox-close {
+    align-self: flex-end;
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    transition: color 0.25s;
+}
+
+.lightbox-close:hover {
+    color: var(--text);
+}
+
+.lightbox-info h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.15rem;
+}
+
+.lightbox-meta {
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+}
+
+.lightbox-caption {
+    font-size: 0.92rem;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.lightbox-nav {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.lightbox-nav a {
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.25s;
+}
+
+.lightbox-nav a:hover {
+    color: var(--accent);
+}
+
 /* ---------- FOOTER ---------- */
 
 .footer {
-    padding: 2rem 0;
+    padding: 1.8rem 0;
     text-align: center;
 }
 
 .footer p {
     color: var(--muted);
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     margin: 0;
 }
 
 /* ---------- RESPONSIVE: TABLET ---------- */
 
 @media (max-width: 768px) {
+    #burger-icon {
+        display: block;
+    }
+
+    #nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: rgba(248, 249, 252, 0.98);
+        position: absolute;
+        top: var(--nav-height);
+        left: 0;
+        padding: 0.8rem 1.5rem;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+        gap: 0;
+    }
+
+    #nav-links.open {
+        display: flex;
+    }
+
+    #nav-links a {
+        padding: 0.5rem 0;
+        font-size: 0.95rem;
+        width: 100%;
+    }
+
     .header {
-        padding: 2.5rem 0 2rem;
+        padding: calc(var(--nav-height) + 2rem) 0 2rem;
     }
 
     .header-content {
@@ -366,9 +658,13 @@ a:hover {
         text-align: center;
     }
 
+    .name-row {
+        justify-content: center;
+    }
+
     .photo-placeholder {
-        width: 120px;
-        height: 120px;
+        width: 160px;
+        height: 160px;
     }
 
     .header-links {
@@ -376,11 +672,11 @@ a:hover {
     }
 
     h1 {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
     }
 
     h2 {
-        font-size: 1.25rem;
+        font-size: 1.15rem;
     }
 
     .section {
@@ -401,6 +697,17 @@ a:hover {
     .photo-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .lightbox-inner {
+        flex-direction: column;
+        padding: 1.5rem;
+        max-height: 95vh;
+        overflow-y: auto;
+    }
+
+    .lightbox-image img {
+        max-height: 50vh;
+    }
 }
 
 /* ---------- RESPONSIVE: SMALL MOBILE ---------- */
@@ -411,14 +718,14 @@ a:hover {
     }
 
     .header-links {
-        gap: 0.75rem;
+        gap: 0.65rem;
     }
 
     .header-links a {
-        font-size: 0.85rem;
+        font-size: 0.82rem;
     }
 
     .card {
-        padding: 1.25rem;
+        padding: 1.15rem;
     }
 }
