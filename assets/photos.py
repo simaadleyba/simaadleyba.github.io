@@ -3,7 +3,7 @@
         'name': 'DSCF2459',
         'title': 'two chairs in middle of nowhere',
         'description': 'two chairs in middle of nowhere. idk why.',
-        'location': 'near kocaeli'
+        'location': 'kocaeli'
     },
     {
         'name': 'DSCF2858',
