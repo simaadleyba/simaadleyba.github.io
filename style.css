@@ -110,7 +110,7 @@ a:hover {
     left: 0;
     z-index: 9999;
     width: 100%;
-    background: rgba(248, 249, 252, 0.92);
+    background: rgba(248, 249, 252, 0.78);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     padding: 0 2rem;
@@ -243,10 +243,11 @@ a:hover {
 }
 
 .subtitle {
-    color: var(--muted);
+    color: #7B6FD6;
     font-size: 0.92rem;
     margin: 0.4rem 0 0.9rem;
     line-height: 1.5;
+    font-weight: 500;
 }
 
 .header-links {
@@ -358,7 +359,7 @@ a:hover {
     font-weight: 500;
     background: var(--accent-bg);
     color: var(--accent);
-    border-radius: 9999px;
+    border-radius: 6px;
 }
 
 .card-link {
@@ -616,7 +617,29 @@ a:hover {
 .footer p {
     color: var(--muted);
     font-size: 0.82rem;
-    margin: 0;
+    margin: 0 0 0.3rem;
+}
+
+.footer p:last-child {
+    margin-bottom: 0;
+}
+
+.footer .footer-email {
+    color: #7B6FD6;
+    font-weight: 500;
+    font-size: 0.88rem;
+    letter-spacing: 0.02em;
+}
+
+.footer .footer-credit,
+.footer .footer-credit a {
+    color: #a0a0a0;
+    text-decoration: none;
+    font-size: 0.78rem;
+}
+
+.footer .footer-credit a:hover {
+    color: #7B6FD6;
 }
 
 /* ---------- RESPONSIVE: TABLET ---------- */
