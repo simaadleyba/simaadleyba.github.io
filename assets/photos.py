@@ -6,12 +6,6 @@
         'location': 'near kocaeli'
     },
     {
-        'name': 'DSCF2617',
-        'title': 'amca',
-        'description': 'amca giving classic turkish pose.',
-        'loacation': 'near bursa'
-    },
-    {
         'name': 'DSCF2858',
         'title': 'vapurda',
         'description': 'a turkish man looking away in the ship',
@@ -70,12 +64,6 @@
         'title': 'offtown_4',
         'description': 'photo from offtown festival of sabanci university.',
         'location': 'sabanci university, istanbul'
-    },
-    {
-        'name': 'DSCF4848',
-        'title': 'fish',
-        'description': 'what did the fish say when it hit a wall? dam.',
-        'location': 'florya, istanbul'
     },
     {
         'name': 'DSCF5830',
