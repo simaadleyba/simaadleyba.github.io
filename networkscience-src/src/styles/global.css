@@ -217,23 +217,25 @@ body {
   border: 1px solid var(--border);
 }
 
-/* ── Artifact card (dark) ── */
+/* ── Artifact card (light) ── */
 .artifact-card {
-  background: #1a1d2e;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
   border-radius: 12px;
   padding: 1.5rem;
   margin: 2rem 0;
-  color: white;
   overflow: hidden;
+  box-shadow: 0 2px 12px rgba(91, 110, 174, 0.07);
 }
 
 .artifact-card h4 {
-  color: #8b9bd4;
-  font-size: 0.85rem;
+  color: var(--accent);
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin: 0 0 1rem;
-  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin: 0 0 1.2rem;
+  font-weight: 700;
 }
 
 /* ── Formula card ── */
@@ -381,7 +383,7 @@ a:hover {
   }
 
   .artifact-card {
-    padding: 1rem;
+    padding: 1rem 0.9rem;
     margin: 1.2rem 0;
   }
 

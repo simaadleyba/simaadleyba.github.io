@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
-// Graph definitions
 const GRAPHS = {
   Star: {
     nodes: [0, 1, 2, 3, 4, 5, 6],
@@ -38,10 +37,7 @@ function computeCircularLayout(nodes) {
   const positions = {};
   nodes.forEach((id, i) => {
     const angle = (2 * Math.PI * i) / n - Math.PI / 2;
-    positions[id] = {
-      x: 200 + 150 * Math.cos(angle),
-      y: 200 + 150 * Math.sin(angle),
-    };
+    positions[id] = { x: 200 + 150 * Math.cos(angle), y: 200 + 150 * Math.sin(angle) };
   });
   return positions;
 }
@@ -72,9 +68,7 @@ function getLayout(name, nodes) {
   }
   if (name === 'Path') {
     const pos = {};
-    nodes.forEach((id, i) => {
-      pos[id] = { x: 40 + i * 72, y: 200 };
-    });
+    nodes.forEach((id, i) => { pos[id] = { x: 40 + i * 72, y: 200 }; });
     return pos;
   }
   if (name === 'Communities') {
@@ -96,10 +90,7 @@ function getLayout(name, nodes) {
 function buildAdj(nodes, edges) {
   const adj = {};
   nodes.forEach(n => (adj[n] = []));
-  edges.forEach(([a, b]) => {
-    adj[a].push(b);
-    adj[b].push(a);
-  });
+  edges.forEach(([a, b]) => { adj[a].push(b); adj[b].push(a); });
   return adj;
 }
 
@@ -111,10 +102,7 @@ function bfsDistances(nodes, adj, source) {
   while (queue.length > 0) {
     const curr = queue.shift();
     (adj[curr] || []).forEach(nb => {
-      if (dist[nb] === Infinity) {
-        dist[nb] = dist[curr] + 1;
-        queue.push(nb);
-      }
+      if (dist[nb] === Infinity) { dist[nb] = dist[curr] + 1; queue.push(nb); }
     });
   }
   return dist;
@@ -124,11 +112,9 @@ function computeCentralities(nodes, edges) {
   const adj = buildAdj(nodes, edges);
   const N = nodes.length;
 
-  // Degree centrality
   const degree = {};
   nodes.forEach(v => (degree[v] = adj[v].length / (N - 1)));
 
-  // Closeness centrality
   const closeness = {};
   nodes.forEach(v => {
     const dists = bfsDistances(nodes, adj, v);
@@ -137,59 +123,40 @@ function computeCentralities(nodes, edges) {
     closeness[v] = reachable > 0 ? reachable / totalDist : 0;
   });
 
-  // Betweenness centrality (Brandes algorithm)
   const betweenness = {};
   nodes.forEach(v => (betweenness[v] = 0));
-
   nodes.forEach(s => {
     const stack = [];
     const pred = {};
     const sigma = {};
     const dist = {};
-    nodes.forEach(v => {
-      pred[v] = [];
-      sigma[v] = 0;
-      dist[v] = -1;
-    });
-    sigma[s] = 1;
-    dist[s] = 0;
+    nodes.forEach(v => { pred[v] = []; sigma[v] = 0; dist[v] = -1; });
+    sigma[s] = 1; dist[s] = 0;
     const queue = [s];
     while (queue.length > 0) {
       const v = queue.shift();
       stack.push(v);
       adj[v].forEach(w => {
-        if (dist[w] < 0) {
-          queue.push(w);
-          dist[w] = dist[v] + 1;
-        }
-        if (dist[w] === dist[v] + 1) {
-          sigma[w] += sigma[v];
-          pred[w].push(v);
-        }
+        if (dist[w] < 0) { queue.push(w); dist[w] = dist[v] + 1; }
+        if (dist[w] === dist[v] + 1) { sigma[w] += sigma[v]; pred[w].push(v); }
       });
     }
     const delta = {};
     nodes.forEach(v => (delta[v] = 0));
     while (stack.length > 0) {
       const w = stack.pop();
-      pred[w].forEach(v => {
-        delta[v] += (sigma[v] / sigma[w]) * (1 + delta[w]);
-      });
+      pred[w].forEach(v => { delta[v] += (sigma[v] / sigma[w]) * (1 + delta[w]); });
       if (w !== s) betweenness[w] += delta[w];
     }
   });
-
   const normFactor = N > 2 ? 2 / ((N - 1) * (N - 2)) : 1;
   nodes.forEach(v => (betweenness[v] *= normFactor));
 
-  // Eigenvector centrality (power iteration)
   const eigen = {};
   nodes.forEach(v => (eigen[v] = 1.0 / N));
   for (let iter = 0; iter < 100; iter++) {
     const newEigen = {};
-    nodes.forEach(v => {
-      newEigen[v] = adj[v].reduce((s, nb) => s + eigen[nb], 0);
-    });
+    nodes.forEach(v => { newEigen[v] = adj[v].reduce((s, nb) => s + eigen[nb], 0); });
     const maxVal = Math.max(...Object.values(newEigen), 1e-10);
     nodes.forEach(v => (eigen[v] = newEigen[v] / maxVal));
   }
@@ -200,6 +167,8 @@ function computeCentralities(nodes, edges) {
 const MEASURES = ['Degree', 'Closeness', 'Betweenness', 'Eigenvector'];
 const GRAPH_NAMES = Object.keys(GRAPHS);
 
+const btnBase = { padding: '0.28rem 0.65rem', fontSize: '0.78rem', borderRadius: '6px', cursor: 'pointer' };
+
 export default function CentralityExplorer() {
   const [graphName, setGraphName] = useState('Star');
   const [measure, setMeasure] = useState('Degree');
@@ -207,7 +176,6 @@ export default function CentralityExplorer() {
 
   const graph = GRAPHS[graphName];
   const { nodes, edges } = graph;
-
   const centralities = useMemo(() => computeCentralities(nodes, edges), [nodes, edges]);
   const positions = useMemo(() => getLayout(graphName, nodes), [graphName, nodes]);
 
@@ -229,113 +197,58 @@ export default function CentralityExplorer() {
     .sort((a, b) => b.score - a.score);
 
   return (
-    <div style={{ color: '#e0e4f0' }}>
+    <div>
       {/* Controls */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginBottom: '1rem' }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center' }}>
-          <span style={{ color: '#8b9bd4', fontSize: '0.78rem' }}>Graph:</span>
+          <span style={{ color: 'var(--muted)', fontSize: '0.78rem' }}>Graph:</span>
           {GRAPH_NAMES.map(name => (
-            <button
-              key={name}
-              onClick={() => setGraphName(name)}
-              style={{
-                padding: '0.28rem 0.65rem',
-                fontSize: '0.78rem',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                background: graphName === name ? '#5b6eae' : '#2a2d3e',
-                border: `1px solid ${graphName === name ? '#5b6eae' : '#3a3d50'}`,
-                color: graphName === name ? 'white' : '#8b9bd4',
-              }}
-            >
-              {name}
-            </button>
+            <button key={name} onClick={() => setGraphName(name)} style={{
+              ...btnBase,
+              background: graphName === name ? 'var(--accent)' : 'var(--bg)',
+              border: `1px solid ${graphName === name ? 'var(--accent)' : 'var(--border)'}`,
+              color: graphName === name ? 'white' : 'var(--muted)',
+            }}>{name}</button>
           ))}
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center' }}>
-          <span style={{ color: '#8b9bd4', fontSize: '0.78rem' }}>Measure:</span>
+          <span style={{ color: 'var(--muted)', fontSize: '0.78rem' }}>Measure:</span>
           {MEASURES.map(m => (
-            <button
-              key={m}
-              onClick={() => setMeasure(m)}
-              style={{
-                padding: '0.28rem 0.65rem',
-                fontSize: '0.78rem',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                background: measure === m ? '#e85d04' : '#2a2d3e',
-                border: `1px solid ${measure === m ? '#e85d04' : '#3a3d50'}`,
-                color: measure === m ? 'white' : '#8b9bd4',
-              }}
-            >
-              {m}
-            </button>
+            <button key={m} onClick={() => setMeasure(m)} style={{
+              ...btnBase,
+              background: measure === m ? '#e85d04' : 'var(--bg)',
+              border: `1px solid ${measure === m ? '#e85d04' : 'var(--border)'}`,
+              color: measure === m ? 'white' : 'var(--muted)',
+            }}>{m}</button>
           ))}
         </div>
       </div>
 
       {/* Graph + info */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-        {/* SVG graph */}
         <div style={{ flex: '1 1 280px', minWidth: 0 }}>
-          <svg
-            viewBox="0 0 400 400"
-            style={{ width: '100%', maxWidth: 400, background: '#12141f', borderRadius: '8px' }}
-          >
-            {/* Edges */}
+          <svg viewBox="0 0 400 400" style={{ width: '100%', maxWidth: 400, background: '#12141f', borderRadius: '8px' }}>
             {edges.map(([a, b], i) => (
-              <line
-                key={i}
-                x1={positions[a]?.x}
-                y1={positions[a]?.y}
-                x2={positions[b]?.x}
-                y2={positions[b]?.y}
-                stroke="#2a2d3e"
-                strokeWidth={1.5}
-              />
+              <line key={i} x1={positions[a]?.x} y1={positions[a]?.y} x2={positions[b]?.x} y2={positions[b]?.y}
+                stroke="#2a2d3e" strokeWidth={1.5} />
             ))}
-            {/* Highlight ring for max-centrality node */}
             {positions[maxNode] && (
-              <circle
-                cx={positions[maxNode].x}
-                cy={positions[maxNode].y}
+              <circle cx={positions[maxNode].x} cy={positions[maxNode].y}
                 r={Math.max(10, (scores[maxNode] / maxScore) * 22) + 7}
-                fill="none"
-                stroke="#f0c040"
-                strokeWidth={1.5}
-                strokeDasharray="4 3"
-              />
+                fill="none" stroke="#f0c040" strokeWidth={1.5} strokeDasharray="4 3" />
             )}
-            {/* Nodes */}
             {nodes.map(id => {
               const score = scores[id] || 0;
               const r = Math.max(8, (score / maxScore) * 22);
               const pos = positions[id];
               if (!pos) return null;
               return (
-                <g
-                  key={id}
-                  style={{ cursor: 'pointer' }}
-                  onMouseEnter={() => setHoveredNode(id)}
-                  onMouseLeave={() => setHoveredNode(null)}
-                >
-                  <circle
-                    cx={pos.x}
-                    cy={pos.y}
-                    r={r}
-                    fill={getColor(score)}
-                    stroke={hoveredNode === id ? 'white' : 'transparent'}
-                    strokeWidth={2}
-                  />
-                  <text
-                    x={pos.x}
-                    y={pos.y}
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    style={{ fontSize: '10px', fill: 'white', fontWeight: 600, pointerEvents: 'none' }}
-                  >
-                    {id}
-                  </text>
+                <g key={id} style={{ cursor: 'pointer' }}
+                  onMouseEnter={() => setHoveredNode(id)} onMouseLeave={() => setHoveredNode(null)}>
+                  <circle cx={pos.x} cy={pos.y} r={r} fill={getColor(score)}
+                    stroke={hoveredNode === id ? 'white' : 'transparent'} strokeWidth={2} />
+                  <text x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="middle"
+                    style={{ fontSize: '10px', fill: 'white', fontWeight: 600, pointerEvents: 'none' }}>{id}</text>
                 </g>
               );
             })}
@@ -345,33 +258,28 @@ export default function CentralityExplorer() {
         {/* Info panel */}
         <div style={{ flex: '1 1 160px', minWidth: 0 }}>
           {hoveredNode !== null ? (
-            <div style={{ background: '#12141f', borderRadius: '8px', padding: '1rem' }}>
-              <div style={{ color: '#f0c040', fontWeight: 700, marginBottom: '0.6rem', fontSize: '0.9rem' }}>
+            <div style={{ background: 'var(--accent-bg)', borderRadius: '8px', padding: '1rem', border: '1px solid var(--border)' }}>
+              <div style={{ color: 'var(--accent)', fontWeight: 700, marginBottom: '0.6rem', fontSize: '0.9rem' }}>
                 Node {hoveredNode}
               </div>
               {['degree', 'closeness', 'betweenness', 'eigen'].map((m, i) => (
-                <div
-                  key={m}
-                  style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem', fontSize: '0.82rem' }}
-                >
-                  <span style={{ color: '#8b9bd4' }}>{MEASURES[i]}</span>
-                  <span style={{ color: 'white', fontFamily: 'monospace' }}>
+                <div key={m} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem', fontSize: '0.82rem' }}>
+                  <span style={{ color: 'var(--muted)' }}>{MEASURES[i]}</span>
+                  <span style={{ color: 'var(--text)', fontFamily: 'monospace' }}>
                     {(centralities[m][hoveredNode] || 0).toFixed(3)}
                   </span>
                 </div>
               ))}
             </div>
           ) : (
-            <div style={{ background: '#12141f', borderRadius: '8px', padding: '1rem', fontSize: '0.82rem' }}>
-              <div style={{ marginBottom: '0.5rem', color: '#e0e4f0', fontWeight: 600 }}>
-                Graph: {graphName}
-              </div>
-              <div style={{ color: '#8b9bd4' }}>Nodes: {nodes.length}</div>
-              <div style={{ color: '#8b9bd4' }}>Edges: {edges.length}</div>
-              <div style={{ marginTop: '0.8rem', color: '#f0c040', fontSize: '0.78rem' }}>
+            <div style={{ background: 'var(--accent-bg)', borderRadius: '8px', padding: '1rem', fontSize: '0.82rem', border: '1px solid var(--border)' }}>
+              <div style={{ marginBottom: '0.5rem', color: 'var(--text)', fontWeight: 600 }}>Graph: {graphName}</div>
+              <div style={{ color: 'var(--muted)' }}>Nodes: {nodes.length}</div>
+              <div style={{ color: 'var(--muted)' }}>Edges: {edges.length}</div>
+              <div style={{ marginTop: '0.8rem', color: 'var(--accent)', fontSize: '0.78rem' }}>
                 ◎ = highest {measure.toLowerCase()} centrality
               </div>
-              <div style={{ marginTop: '0.5rem', color: '#8b9bd4', fontSize: '0.78rem' }}>
+              <div style={{ marginTop: '0.5rem', color: 'var(--muted)', fontSize: '0.78rem' }}>
                 Hover a node to see all scores
               </div>
             </div>
@@ -381,21 +289,17 @@ export default function CentralityExplorer() {
 
       {/* Bar chart */}
       <div style={{ marginTop: '1rem' }}>
-        <div style={{ fontSize: '0.78rem', color: '#8b9bd4', marginBottom: '0.4rem' }}>
+        <div style={{ fontSize: '0.78rem', color: 'var(--muted)', marginBottom: '0.4rem' }}>
           {measure} centrality ranking
         </div>
         <ResponsiveContainer width="100%" height={130}>
           <BarChart data={barData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-            <XAxis dataKey="name" tick={{ fill: '#8b9bd4', fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fill: '#8b9bd4', fontSize: 11 }} axisLine={false} tickLine={false} />
-            <Tooltip
-              contentStyle={{ background: '#1a1d2e', border: '1px solid #3a3d50', color: 'white', fontSize: '0.8rem' }}
-              cursor={{ fill: 'rgba(91,110,174,0.2)' }}
-            />
+            <XAxis dataKey="name" tick={{ fill: '#5b5b5b', fontSize: 11 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fill: '#5b5b5b', fontSize: 11 }} axisLine={false} tickLine={false} />
+            <Tooltip contentStyle={{ background: 'white', border: '1px solid #e2e4ea', color: '#242424', fontSize: '0.8rem' }}
+              cursor={{ fill: 'rgba(91,110,174,0.08)' }} />
             <Bar dataKey="score" radius={[3, 3, 0, 0]}>
-              {barData.map((entry, i) => (
-                <Cell key={i} fill={i === 0 ? '#f0c040' : '#4a90d9'} />
-              ))}
+              {barData.map((_, i) => <Cell key={i} fill={i === 0 ? '#e85d04' : 'var(--accent)'} />)}
             </Bar>
           </BarChart>
         </ResponsiveContainer>

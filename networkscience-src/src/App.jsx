@@ -61,11 +61,6 @@ export default function App() {
           <div className="ns-subtitle">
             Interactive Study Guide · Network Analysis Course Notes
           </div>
-          <div style={{ marginTop: '0.8rem', display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
-            {['9 sections', '9 formula cards', '5 interactive artifacts'].map(tag => (
-              <span key={tag} className="tag">{tag}</span>
-            ))}
-          </div>
         </div>
       </header>
 
@@ -576,21 +571,12 @@ export default function App() {
             </section>
 
             {/* ── Footer ── */}
-            <footer
-              style={{
-                padding: '2rem 0',
-                textAlign: 'center',
-                color: 'var(--muted)',
-                fontSize: '0.82rem',
-                borderTop: '1px solid var(--border)',
-                marginTop: '1rem',
-              }}
-            >
-              <p>Network Science Study Guide · Built with React + KaTeX</p>
-              <p style={{ marginTop: '0.5rem' }}>
-                <a href="/" style={{ color: 'var(--accent)' }}>
-                  ← Back to Portfolio
-                </a>
+            <footer style={{ padding: '1.8rem 0', textAlign: 'center' }}>
+              <p style={{ color: '#7B6FD6', fontWeight: 500, fontSize: '0.88rem', letterSpacing: '0.02em', margin: '0 0 0.3rem' }}>
+                adleyba [at] sabanciuniv [dot] edu
+              </p>
+              <p style={{ color: '#a0a0a0', fontSize: '0.78rem', margin: 0 }}>
+                Network Science Study Guide · Built with React + KaTeX
               </p>
             </footer>
           </main>

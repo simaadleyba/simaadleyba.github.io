@@ -14,7 +14,7 @@ export default function FormulaCard({ latex, terms = [], title }) {
       const sorted = [...terms].sort((a, b) => b.symbol.length - a.symbol.length);
       sorted.forEach(({ symbol, color }) => {
         const hexColor = color.replace('#', '');
-        coloredLatex = coloredLatex.split(symbol).join(`\\textcolor[HTML]{${hexColor}}{${symbol}}`);
+        coloredLatex = coloredLatex.split(symbol).join(`\\textcolor{#${hexColor}}{${symbol}}`);
       });
     }
 
