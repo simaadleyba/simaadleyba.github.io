@@ -199,9 +199,9 @@ export default function CentralityExplorer() {
   return (
     <div>
       {/* Controls */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginBottom: '1rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center' }}>
-          <span style={{ color: 'var(--muted)', fontSize: '0.78rem' }}>Graph:</span>
+          <span style={{ color: 'var(--muted)', fontSize: '0.78rem', minWidth: '3.5rem' }}>Graph:</span>
           {GRAPH_NAMES.map(name => (
             <button key={name} onClick={() => setGraphName(name)} style={{
               ...btnBase,
@@ -212,7 +212,7 @@ export default function CentralityExplorer() {
           ))}
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center' }}>
-          <span style={{ color: 'var(--muted)', fontSize: '0.78rem' }}>Measure:</span>
+          <span style={{ color: 'var(--muted)', fontSize: '0.78rem', minWidth: '3.5rem' }}>Measure:</span>
           {MEASURES.map(m => (
             <button key={m} onClick={() => setMeasure(m)} style={{
               ...btnBase,
@@ -227,7 +227,7 @@ export default function CentralityExplorer() {
       {/* Graph + info */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
         <div style={{ flex: '1 1 280px', minWidth: 0 }}>
-          <svg viewBox="0 0 400 400" style={{ width: '100%', maxWidth: 400, background: 'var(--accent-bg)', borderRadius: '8px' }}>
+          <svg viewBox="0 0 400 400" style={{ width: '100%', background: 'var(--accent-bg)', borderRadius: '8px' }}>
             {edges.map(([a, b], i) => (
               <line key={i} x1={positions[a]?.x} y1={positions[a]?.y} x2={positions[b]?.x} y2={positions[b]?.y}
                 stroke="#c5cad8" strokeWidth={1.5} />

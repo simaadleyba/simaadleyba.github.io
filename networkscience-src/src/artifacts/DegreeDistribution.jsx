@@ -72,10 +72,10 @@ export default function DegreeDistribution() {
         </div>
       )}
 
-      <ResponsiveContainer width="100%" height={200}>
-        <ComposedChart data={data} margin={{ top: 5, right: 15, left: 0, bottom: 20 }}>
+      <ResponsiveContainer width="100%" height={220}>
+        <ComposedChart data={data} margin={{ top: 5, right: 15, left: 0, bottom: 5 }}>
           <XAxis dataKey="k" tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false}
-            label={{ value: 'degree k', fill: '#5b5b5b', fontSize: 10, position: 'insideBottom', offset: -10 }} />
+            label={{ value: 'degree k', fill: '#5b5b5b', fontSize: 10, position: 'insideBottomRight', offset: 0 }} />
           <YAxis tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} />
           <Tooltip contentStyle={{ background: 'white', border: '1px solid #e2e4ea', color: '#242424', fontSize: '0.75rem' }} />
           <Legend wrapperStyle={{ color: '#5b5b5b', fontSize: '0.78rem', paddingTop: '4px' }} />
