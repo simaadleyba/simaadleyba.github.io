@@ -68,19 +68,19 @@ function getLayout(name, nodes) {
   }
   if (name === 'Path') {
     const pos = {};
-    nodes.forEach((id, i) => { pos[id] = { x: 40 + i * 72, y: 200 }; });
+    nodes.forEach((id, i) => { pos[id] = { x: 38 + i * 64, y: 200 }; });
     return pos;
   }
   if (name === 'Communities') {
     const pos = {};
     [0,1,2,3].forEach((id, i) => {
       const angle = (2 * Math.PI * i / 4) - Math.PI / 2;
-      pos[id] = { x: 120 + 85 * Math.cos(angle), y: 200 + 85 * Math.sin(angle) };
+      pos[id] = { x: 110 + 78 * Math.cos(angle), y: 200 + 78 * Math.sin(angle) };
     });
-    pos[4] = { x: 240, y: 200 };
+    pos[4] = { x: 230, y: 200 };
     [5,6,7,8].forEach((id, i) => {
       const angle = (2 * Math.PI * i / 4) - Math.PI / 2;
-      pos[id] = { x: 340 + 70 * Math.cos(angle), y: 200 + 70 * Math.sin(angle) };
+      pos[id] = { x: 320 + 62 * Math.cos(angle), y: 200 + 62 * Math.sin(angle) };
     });
     return pos;
   }
@@ -216,8 +216,8 @@ export default function CentralityExplorer() {
           {MEASURES.map(m => (
             <button key={m} onClick={() => setMeasure(m)} style={{
               ...btnBase,
-              background: measure === m ? '#e85d04' : 'var(--bg)',
-              border: `1px solid ${measure === m ? '#e85d04' : 'var(--border)'}`,
+              background: measure === m ? '#d95b8f' : 'var(--bg)',
+              border: `1px solid ${measure === m ? '#d95b8f' : 'var(--border)'}`,
               color: measure === m ? 'white' : 'var(--muted)',
             }}>{m}</button>
           ))}
@@ -227,15 +227,15 @@ export default function CentralityExplorer() {
       {/* Graph + info */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
         <div style={{ flex: '1 1 280px', minWidth: 0 }}>
-          <svg viewBox="0 0 400 400" style={{ width: '100%', maxWidth: 400, background: '#12141f', borderRadius: '8px' }}>
+          <svg viewBox="0 0 400 400" style={{ width: '100%', maxWidth: 400, background: 'var(--accent-bg)', borderRadius: '8px' }}>
             {edges.map(([a, b], i) => (
               <line key={i} x1={positions[a]?.x} y1={positions[a]?.y} x2={positions[b]?.x} y2={positions[b]?.y}
-                stroke="#2a2d3e" strokeWidth={1.5} />
+                stroke="#c5cad8" strokeWidth={1.5} />
             ))}
             {positions[maxNode] && (
               <circle cx={positions[maxNode].x} cy={positions[maxNode].y}
                 r={Math.max(10, (scores[maxNode] / maxScore) * 22) + 7}
-                fill="none" stroke="#f0c040" strokeWidth={1.5} strokeDasharray="4 3" />
+                fill="none" stroke="#d95b8f" strokeWidth={1.5} strokeDasharray="4 3" />
             )}
             {nodes.map(id => {
               const score = scores[id] || 0;
@@ -299,7 +299,7 @@ export default function CentralityExplorer() {
             <Tooltip contentStyle={{ background: 'white', border: '1px solid #e2e4ea', color: '#242424', fontSize: '0.8rem' }}
               cursor={{ fill: 'rgba(91,110,174,0.08)' }} />
             <Bar dataKey="score" radius={[3, 3, 0, 0]}>
-              {barData.map((_, i) => <Cell key={i} fill={i === 0 ? '#e85d04' : 'var(--accent)'} />)}
+              {barData.map((_, i) => <Cell key={i} fill={i === 0 ? '#d95b8f' : 'var(--accent)'} />)}
             </Bar>
           </BarChart>
         </ResponsiveContainer>

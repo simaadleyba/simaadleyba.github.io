@@ -88,11 +88,11 @@ export default function BetheLattice() {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
         {/* SVG */}
         <div style={{ flex: '1 1 280px', minWidth: 0 }}>
-          <svg viewBox="0 0 400 360" style={{ width: '100%', background: '#12141f', borderRadius: '8px' }}>
+          <svg viewBox="0 0 400 360" style={{ width: '100%', background: 'var(--accent-bg)', borderRadius: '8px' }}>
             {edges.map(([a, b], i) => {
               const pa = positions[a], pb = positions[b];
               if (!pa || !pb) return null;
-              return <line key={i} x1={pa.x} y1={pa.y} x2={pb.x} y2={pb.y} stroke="#2a2d3e" strokeWidth={1.2} />;
+              return <line key={i} x1={pa.x} y1={pa.y} x2={pb.x} y2={pb.y} stroke="#c5cad8" strokeWidth={1.2} />;
             })}
             {nodes.map(({ id, depth }) => {
               const pos = positions[id];
@@ -101,9 +101,9 @@ export default function BetheLattice() {
                 fill={DEPTH_COLORS[depth % DEPTH_COLORS.length]} opacity={0.9} />;
             })}
           </svg>
-          {nodes.length >= 500 && (
-            <div style={{ fontSize: '0.75rem', color: '#e85d04', marginTop: '0.4rem', textAlign: 'center' }}>
-              Rendering capped at 500 nodes
+          {theoreticalTotal > 500 && (
+            <div style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: '0.4rem', textAlign: 'center' }}>
+              Showing 500 of {theoreticalTotal} nodes
             </div>
           )}
         </div>
@@ -122,13 +122,9 @@ export default function BetheLattice() {
               </div>
             ))}
             <div style={{ borderTop: '1px solid var(--border)', marginTop: '0.6rem', paddingTop: '0.6rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
-                <span style={{ color: 'var(--muted)' }}>Actual N</span>
-                <span style={{ color: 'var(--accent)', fontFamily: 'monospace', fontWeight: 700 }}>{totalNodes}</span>
-              </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--muted)' }}>Formula N</span>
-                <span style={{ color: '#1a6b4a', fontFamily: 'monospace' }}>{theoreticalTotal}</span>
+                <span style={{ color: 'var(--muted)' }}>Total N</span>
+                <span style={{ color: 'var(--accent)', fontFamily: 'monospace', fontWeight: 700 }}>{theoreticalTotal}</span>
               </div>
             </div>
           </div>

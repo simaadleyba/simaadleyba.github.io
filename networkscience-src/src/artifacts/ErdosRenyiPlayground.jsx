@@ -1,4 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import katex from 'katex';
+
+function KM({ l }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (ref.current) katex.render(l, ref.current, { throwOnError: false, displayMode: false });
+  }, [l]);
+  return <span ref={ref} style={{ display: 'inline-block', verticalAlign: 'middle' }} />;
+}
 import { ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 function generateGraph(N, p) {
@@ -173,21 +182,29 @@ export default function ErdosRenyiPlayground() {
 
       {/* Critical threshold */}
       <div style={{
-        fontSize: '0.8rem', padding: '0.4rem 0.8rem', borderRadius: '6px', marginBottom: '1rem',
-        background: connected ? 'rgba(45,106,79,0.1)' : 'rgba(193,18,31,0.08)',
+        fontSize: '0.82rem', padding: '0.45rem 0.9rem', borderRadius: '6px', marginBottom: '1rem',
+        background: connected ? 'rgba(45,106,79,0.08)' : 'rgba(193,18,31,0.07)',
         border: `1px solid ${connected ? '#2d6a4f' : '#c1121f'}`,
         color: connected ? '#1a6b4a' : '#c1121f',
+        display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.3rem',
       }}>
-        p_c = ln(N)/N ≈ {pc.toFixed(3)} — Current p {connected ? '≥' : '<'} p_c → graph is {connected ? 'likely connected' : 'likely disconnected'}
+        <KM l={`p_c = \\tfrac{\\ln N}{N} \\approx ${pc.toFixed(3)}`} />
+        <span>—</span>
+        <span>current</span>
+        <KM l="p" />
+        <span>{connected ? '≥' : '<'}</span>
+        <KM l="p_c" />
+        <span>→ graph is</span>
+        <strong>{connected ? 'likely connected' : 'likely disconnected'}</strong>
       </div>
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
         {/* Graph SVG */}
         <div style={{ flex: '1 1 280px', minWidth: 0 }}>
           {graph && layout && (
-            <svg viewBox="0 0 380 300" style={{ width: '100%', background: '#12141f', borderRadius: '8px' }}>
+            <svg viewBox="0 0 380 300" style={{ width: '100%', background: 'var(--accent-bg)', borderRadius: '8px' }}>
               {graph.edges.map(([a, b], i) => (
-                <line key={i} x1={layout[a]?.x} y1={layout[a]?.y} x2={layout[b]?.x} y2={layout[b]?.y} stroke="#2a2d3e" strokeWidth={1} />
+                <line key={i} x1={layout[a]?.x} y1={layout[a]?.y} x2={layout[b]?.x} y2={layout[b]?.y} stroke="#c5cad8" strokeWidth={1} />
               ))}
               {graph.nodes.map(id => {
                 const pos = layout[id];

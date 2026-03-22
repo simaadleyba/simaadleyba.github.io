@@ -1,4 +1,4 @@
-import { useEffect, useRef, Suspense, lazy } from 'react';
+import { useEffect, useRef, useState, Suspense, lazy } from 'react';
 import katex from 'katex';
 import TableOfContents from './components/TableOfContents';
 import FormulaCard from './components/FormulaCard';
@@ -33,33 +33,133 @@ function KB({ l }) {
   return <div ref={ref} style={{ overflowX: 'auto', margin: '0.8rem 0' }} />;
 }
 
-// Artifact wrapper
-function ArtifactWrapper({ title, children }) {
+// Navbar — matches main site design
+function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <div className="artifact-card">
-      <h4>{title}</h4>
-      <Suspense
-        fallback={
-          <div style={{ color: '#8b9bd4', fontSize: '0.9rem', padding: '1rem 0' }}>
-            Loading interactive component...
-          </div>
-        }
+    <nav className="ns-nav">
+      <button
+        className="ns-nav-burger"
+        aria-label="Toggle menu"
+        onClick={() => setMenuOpen(o => !o)}
       >
-        {children}
-      </Suspense>
-    </div>
+        ☰
+      </button>
+      <div className={`ns-nav-links${menuOpen ? ' mobile-open' : ''}`}>
+        <a href="/" onClick={() => setMenuOpen(false)}>about</a>
+        <a href="/#research" onClick={() => setMenuOpen(false)}>research</a>
+        <a href="/#experience" onClick={() => setMenuOpen(false)}>experience</a>
+        <a href="/#education" onClick={() => setMenuOpen(false)}>education</a>
+        <a href="/#beyond" onClick={() => setMenuOpen(false)}>beyond</a>
+        <a href="/#" onClick={() => setMenuOpen(false)}>cv</a>
+      </div>
+    </nav>
+  );
+}
+
+// Artifact wrapper with fullscreen expand
+function ArtifactWrapper({ title, children }) {
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = expanded ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [expanded]);
+
+  const content = (
+    <Suspense fallback={<div style={{ color: '#8b9bd4', fontSize: '0.9rem', padding: '1rem 0' }}>Loading interactive component...</div>}>
+      {children}
+    </Suspense>
+  );
+
+  const expandBtn = (
+    <button
+      onClick={() => setExpanded(e => !e)}
+      title={expanded ? 'Close' : 'Expand to full view'}
+      style={{
+        background: 'none',
+        border: '1px solid var(--border)',
+        borderRadius: '6px',
+        padding: '0.18rem 0.55rem',
+        cursor: 'pointer',
+        color: 'var(--muted)',
+        fontSize: '0.72rem',
+        fontFamily: 'inherit',
+        lineHeight: 1.4,
+      }}
+    >
+      {expanded ? '✕ Close' : '⤢ Expand'}
+    </button>
+  );
+
+  return (
+    <>
+      {/* Regular card */}
+      <div className="artifact-card" style={{ display: expanded ? 'none' : undefined }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+          <h4 style={{ margin: 0 }}>{title}</h4>
+          {expandBtn}
+        </div>
+        {content}
+      </div>
+
+      {/* Fullscreen overlay */}
+      {expanded && (
+        <>
+          <div
+            onClick={() => setExpanded(false)}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 1000,
+              background: 'rgba(20, 22, 32, 0.22)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+            }}
+          />
+          <div style={{
+            position: 'fixed',
+            top: 'calc(3.2rem + 1.2rem)',
+            left: '1.5rem', right: '1.5rem', bottom: '1.5rem',
+            zIndex: 1001,
+            background: 'rgba(255, 255, 255, 0.90)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            border: '1px solid rgba(226, 228, 234, 0.85)',
+            borderRadius: '14px',
+            boxShadow: '0 24px 80px rgba(91, 110, 174, 0.18)',
+            display: 'flex', flexDirection: 'column',
+            overflow: 'hidden',
+          }}>
+            <div style={{
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              padding: '1rem 1.5rem',
+              borderBottom: '1px solid var(--border)',
+              flexShrink: 0,
+            }}>
+              <span style={{ color: 'var(--accent)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>
+                {title}
+              </span>
+              {expandBtn}
+            </div>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem' }}>
+              {content}
+            </div>
+          </div>
+        </>
+      )}
+    </>
   );
 }
 
 export default function App() {
   return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+      <Navbar />
       {/* ── Header ── */}
       <header className="ns-header">
         <div className="container">
           <div className="ns-title">Network Science</div>
           <div className="ns-subtitle">
-            Interactive Study Guide · Network Analysis Course Notes
+            Interactive study guide with visualizations, centrality measures, random graphs, Bethe lattices, and more.
           </div>
         </div>
       </header>
@@ -426,13 +526,6 @@ export default function App() {
                 ]}
               />
 
-              <p>
-                <strong>Katz Centrality</strong> counts all paths with exponentially decaying
-                weights by length: <K l="C_K(v) = \sum_{k=1}^{\infty} \sum_j \alpha^k (A^k)_{ji}" />.
-                The attenuation factor <K l="\alpha < 1/\lambda_{\max}" /> ensures convergence.
-                Katz works for directed and disconnected graphs where eigenvector centrality fails.
-              </p>
-
               {/* Centrality Explorer Artifact */}
               <ArtifactWrapper title="Interactive: Centrality Explorer">
                 <CentralityExplorer />
@@ -570,18 +663,30 @@ export default function App() {
               </ArtifactWrapper>
             </section>
 
-            {/* ── Footer ── */}
-            <footer style={{ padding: '1.8rem 0', textAlign: 'center' }}>
-              <p style={{ color: '#7B6FD6', fontWeight: 500, fontSize: '0.88rem', letterSpacing: '0.02em', margin: '0 0 0.3rem' }}>
-                adleyba [at] sabanciuniv [dot] edu
-              </p>
-              <p style={{ color: '#a0a0a0', fontSize: '0.78rem', margin: 0 }}>
-                Network Science Study Guide · Built with React + KaTeX
-              </p>
-            </footer>
+            {/* ── References ── */}
+            <section id="references" className="ns-section">
+              <h2>References &amp; Resources</h2>
+              <p>Lecture notes: CS514 Network Science, Dr. Onur Varol (Sabancı University)</p>
+            </section>
+
           </main>
         </div>
       </div>
+
+      {/* ── Footer — full width, outside grid ── */}
+      <footer style={{ padding: '1.8rem 0', textAlign: 'center' }}>
+        <div className="container">
+          <p style={{ color: '#7B6FD6', fontWeight: 500, fontSize: '0.88rem', letterSpacing: '0.02em', margin: '0 0 0.3rem' }}>
+            adleyba [at] sabanciuniv [dot] edu
+          </p>
+          <p style={{ color: '#a0a0a0', fontSize: '0.78rem', margin: '0 0 0.5rem' }}>
+            Network Science Study Guide · Built with React + KaTeX
+          </p>
+          <a href="/" style={{ color: 'var(--accent)', fontSize: '0.78rem', fontFamily: 'monospace', textDecoration: 'none', opacity: 0.8 }}>
+            back to portfolio
+          </a>
+        </div>
+      </footer>
     </div>
   );
 }

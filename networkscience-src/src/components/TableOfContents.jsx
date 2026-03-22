@@ -10,6 +10,7 @@ const SECTIONS = [
   { id: 'centrality', label: '7. Centrality Measures' },
   { id: 'assortativity', label: '8. Assortativity' },
   { id: 'bethe-lattice', label: '9. Bethe Lattice' },
+  { id: 'references', label: 'References' },
 ];
 
 export default function TableOfContents() {

@@ -1,21 +1,34 @@
 import { useRef, useEffect } from 'react';
 import katex from 'katex';
 
+function KatexInline({ latex }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    try {
+      katex.render(latex, ref.current, { throwOnError: false, displayMode: false, trust: true });
+    } catch (e) {
+      if (ref.current) ref.current.textContent = latex;
+    }
+  }, [latex]);
+  return <span ref={ref} style={{ display: 'inline-block', verticalAlign: 'middle' }} />;
+}
+
 export default function FormulaCard({ latex, terms = [], title }) {
   const ref = useRef(null);
 
   useEffect(() => {
     if (!ref.current) return;
 
-    // Build colored latex string
+    // Build colored latex string — single regex pass to avoid re-processing injected hex values
+    // Wrapping each replacement in {…} so they are valid in superscript/subscript positions
     let coloredLatex = latex;
     if (terms.length > 0) {
-      // Sort terms by symbol length descending to avoid partial replacements
       const sorted = [...terms].sort((a, b) => b.symbol.length - a.symbol.length);
-      sorted.forEach(({ symbol, color }) => {
-        const hexColor = color.replace('#', '');
-        coloredLatex = coloredLatex.split(symbol).join(`\\textcolor{#${hexColor}}{${symbol}}`);
-      });
+      const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const pattern = new RegExp(sorted.map(t => escRe(t.symbol)).join('|'), 'g');
+      const symbolMap = Object.fromEntries(sorted.map(t => [t.symbol, t.color.replace('#', '')]));
+      coloredLatex = latex.replace(pattern, match => `{\\textcolor{#${symbolMap[match]}}{${match}}}`);
     }
 
     try {
@@ -51,12 +64,17 @@ export default function FormulaCard({ latex, terms = [], title }) {
       <div ref={ref} style={{ overflowX: 'auto' }} />
       {terms.length > 0 && (
         <div className="formula-legend">
-          {terms.map(({ color, label }, i) => (
-            <div key={i} className="formula-legend-item">
-              <div className="formula-legend-dot" style={{ background: color }} />
-              <span style={{ fontSize: '0.82rem', color: 'var(--muted)' }}>{label}</span>
-            </div>
-          ))}
+          {terms.map(({ symbol, color, label }, i) => {
+            const dashIdx = label.indexOf(' — ');
+            const desc = dashIdx !== -1 ? label.slice(dashIdx + 3) : label;
+            return (
+              <div key={i} className="formula-legend-item">
+                <div className="formula-legend-dot" style={{ background: color }} />
+                <KatexInline latex={symbol} />
+                <span style={{ fontSize: '0.82rem', color: 'var(--muted)' }}> — {desc}</span>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

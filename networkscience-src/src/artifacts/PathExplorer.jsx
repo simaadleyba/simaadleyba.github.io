@@ -103,13 +103,19 @@ export default function PathExplorer() {
   const resetMode = m => { setMode(m); setSelected([]); setResult(null); setBfsData(null); setBfsStep(0); setAnimating(false); clearTimeout(timerRef.current); };
 
   const getNodeColor = id => {
-    if (mode === 'shortest' && result?.type === 'path' && result.path.includes(id)) return '#f0c040';
+    if (mode === 'shortest') {
+      if (result?.type === 'path' && result.path.includes(id)) {
+        if (selected[0] === id || selected[1] === id) return '#d95b8f'; // pink endpoints
+        return '#27ae60'; // green for inner path nodes
+      }
+      if (selected.includes(id)) return '#d95b8f'; // pink for selected source
+    }
     if (mode === 'bfs' && bfsData) {
       const d = bfsData.dist[id];
       if (d !== undefined && d !== Infinity && d <= bfsStep) return DISTANCE_COLORS[d] || '#4a90d9';
-      return '#c8ccd8';
+      return '#9099b8';
     }
-    if (selected.includes(id)) return '#f0c040';
+    if (selected.includes(id)) return '#d95b8f';
     return '#4a90d9';
   };
 
@@ -170,10 +176,10 @@ export default function PathExplorer() {
       </div>
 
       {/* SVG */}
-      <svg viewBox="0 0 540 290" style={{ width: '100%', background: '#12141f', borderRadius: '8px', maxHeight: 290 }}>
+      <svg viewBox="0 0 540 290" style={{ width: '100%', background: 'var(--accent-bg)', borderRadius: '8px', maxHeight: 290 }}>
         {EDGES.map(([a, b], i) => (
           <line key={i} x1={POSITIONS[a].x} y1={POSITIONS[a].y} x2={POSITIONS[b].x} y2={POSITIONS[b].y}
-            stroke={isPathEdge(a, b) ? '#f0c040' : '#2a2d3e'} strokeWidth={isPathEdge(a, b) ? 3 : 1.5} />
+            stroke={isPathEdge(a, b) ? '#27ae60' : '#c5cad8'} strokeWidth={isPathEdge(a, b) ? 3 : 1.5} />
         ))}
         {NODES.map(id => {
           const pos = POSITIONS[id];
@@ -181,12 +187,12 @@ export default function PathExplorer() {
           return (
             <g key={id} style={{ cursor: 'pointer' }} onClick={() => handleNodeClick(id)}>
               <circle cx={pos.x} cy={pos.y} r={18} fill={getNodeColor(id)}
-                stroke={selected.includes(id) ? 'white' : 'transparent'} strokeWidth={2} />
+                stroke={selected.includes(id) ? '#333' : 'transparent'} strokeWidth={2} />
               <text x={pos.x} y={pos.y} textAnchor="middle" dominantBaseline="middle"
                 style={{ fontSize: '11px', fill: 'white', fontWeight: 700, pointerEvents: 'none' }}>{id}</text>
               {bfsDist !== null && (
                 <text x={pos.x + 16} y={pos.y - 16} textAnchor="middle"
-                  style={{ fontSize: '10px', fill: '#f0c040', fontWeight: 700, pointerEvents: 'none' }}>{bfsDist}</text>
+                  style={{ fontSize: '10px', fill: '#e85d04', fontWeight: 700, pointerEvents: 'none' }}>{bfsDist}</text>
               )}
             </g>
           );
