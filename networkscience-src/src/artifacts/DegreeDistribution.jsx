@@ -78,7 +78,7 @@ export default function DegreeDistribution() {
             label={{ value: 'degree k', fill: '#5b5b5b', fontSize: 10, position: 'insideBottom', offset: -10 }} />
           <YAxis tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} />
           <Tooltip contentStyle={{ background: 'white', border: '1px solid #e2e4ea', color: '#242424', fontSize: '0.75rem' }} />
-          <Legend wrapperStyle={{ color: '#5b5b5b', fontSize: '0.78rem', paddingTop: '30px' }} />
+          <Legend wrapperStyle={{ color: '#5b5b5b', fontSize: '0.78rem', paddingTop: '4px' }} />
           <Bar dataKey="binomial" fill="var(--accent)" opacity={0.75} name="Binomial P(k)" radius={[2, 2, 0, 0]} />
           <Line type="monotone" dataKey="poisson" stroke="#e85d04" strokeWidth={2.5} dot={false} name="Poisson approx" />
         </ComposedChart>
