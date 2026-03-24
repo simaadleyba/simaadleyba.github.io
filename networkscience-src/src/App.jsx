@@ -10,6 +10,8 @@ const PathExplorer = lazy(() => import('./artifacts/PathExplorer'));
 const ErdosRenyiPlayground = lazy(() => import('./artifacts/ErdosRenyiPlayground'));
 const DegreeDistribution = lazy(() => import('./artifacts/DegreeDistribution'));
 const BetheLattice = lazy(() => import('./artifacts/BetheLattice'));
+const PowerLawExplorer = lazy(() => import('./artifacts/PowerLawExplorer'));
+const BAGrowthSimulator = lazy(() => import('./artifacts/BAGrowthSimulator'));
 
 // Inline KaTeX helper
 function K({ l }) {
@@ -660,6 +662,360 @@ export default function App() {
               {/* Bethe Lattice Artifact */}
               <ArtifactWrapper title="Interactive: Bethe Lattice Explorer">
                 <BetheLattice />
+              </ArtifactWrapper>
+            </section>
+
+            {/* ── Section 10: Power Law Distribution ── */}
+            <section id="power-law" className="ns-section">
+              <h2>10. Power Law Distribution</h2>
+
+              <p>
+                Many real networks — the web, citations, proteins — have degree distributions
+                that follow a <strong>power law</strong>: <K l="P(k) \sim k^{-\alpha}" />.
+                Unlike the rapidly decaying Poisson distribution of random graphs, power laws
+                have heavy tails: extremely high-degree nodes (hubs) are rare but present.
+              </p>
+
+              <FormulaCard
+                title="Power law degree distribution"
+                latex="P(k) = C \cdot k^{-\alpha}, \quad k \geq k_{\min}"
+                terms={[
+                  { symbol: 'C', color: '#2d6a4f', label: 'C — normalization constant' },
+                  { symbol: 'k_{\\min}', color: '#e85d04', label: 'k_min — minimum degree (lower cutoff)' },
+                  { symbol: '\\alpha', color: '#4a90d9', label: 'α — power law exponent (typically 2 < α < 3)' },
+                ]}
+              />
+
+              <h3>Statistical Moments</h3>
+              <p>
+                The moments of the power law distribution depend critically on <K l="\alpha" />:
+              </p>
+              <ul>
+                <li>
+                  <K l="\langle k \rangle" /> finite iff <K l="\alpha > 2" />. For <K l="2 < \alpha \leq 3" />:{' '}
+                  <K l="\langle k \rangle = \frac{\alpha - 1}{\alpha - 2}\,k_{\min}" />
+                </li>
+                <li>
+                  <K l="\langle k^2 \rangle" /> diverges if <K l="\alpha \leq 3" />, leading to
+                  anomalous fluctuations and extreme hubs.
+                </li>
+                <li>
+                  Most real-world scale-free networks have <K l="2 < \alpha < 3" />, placing
+                  them in the "anomalous" regime.
+                </li>
+              </ul>
+
+              <h3>Log-Log Linearity</h3>
+              <p>
+                Taking logs: <K l="\log P(k) = \log C - \alpha \log k" />. A straight
+                line in a log-log plot is the empirical signature of a power law. The slope
+                estimates <K l="-\alpha" />.
+              </p>
+
+              <h3>Robustness and Fragility</h3>
+              <p>
+                Scale-free networks are robust to random failures (most nodes have low degree)
+                but fragile to targeted attacks on hubs. Removing the small fraction of
+                highest-degree nodes can rapidly disintegrate the network.
+              </p>
+
+              <ArtifactWrapper title="Interactive: Power Law Explorer">
+                <PowerLawExplorer />
+              </ArtifactWrapper>
+            </section>
+
+            {/* ── Section 11: Barabási–Albert Model ── */}
+            <section id="ba-model" className="ns-section">
+              <h2>11. Barabási–Albert Model</h2>
+
+              <p>
+                The <strong>Barabási–Albert (BA) model</strong> explains how power laws
+                emerge naturally from two simple mechanisms: <em>growth</em> (nodes are added
+                one at a time) and <em>preferential attachment</em> (new nodes prefer to
+                connect to already well-connected nodes).
+              </p>
+
+              <h3>Algorithm</h3>
+              <ol>
+                <li>Start with a small seed graph of <K l="m_0 \geq m" /> nodes.</li>
+                <li>At each time step, add one new node with <K l="m" /> edges.</li>
+                <li>
+                  Each edge connects to existing node <K l="i" /> with probability proportional
+                  to its current degree:
+                </li>
+              </ol>
+
+              <FormulaCard
+                title="Preferential attachment probability"
+                latex="\Pi(i) = \frac{k_i}{\sum_j k_j}"
+                terms={[
+                  { symbol: 'k_i', color: '#4a90d9', label: 'k_i — current degree of node i' },
+                  { symbol: '\\sum_j k_j', color: '#e85d04', label: 'Σ k_j — total degree (= 2L at step t)' },
+                ]}
+              />
+
+              <h3>Resulting Degree Distribution</h3>
+              <p>
+                After <K l="t" /> steps the network has <K l="N = m_0 + t" /> nodes and{' '}
+                <K l="\langle L \rangle = mt" /> edges. The degree distribution converges to
+                a power law with exponent exactly <K l="\alpha = 3" />:
+              </p>
+              <KB l="P(k) \sim 2m^2 k^{-3}" />
+              <p>
+                This result is independent of <K l="m" /> and <K l="m_0" />. The exponent{' '}
+                <K l="\alpha = 3" /> falls in the <K l="2 < \alpha \leq 3" /> regime — finite
+                mean but divergent variance.
+              </p>
+
+              <h3>Continuum Theory (Mean-Field)</h3>
+              <p>
+                Since each new node brings <K l="m" /> edges and there are <K l="t" /> nodes,
+                the total degree is <K l="\sum_j k_j = 2mt" />. The rate of change of
+                node <K l="i" />'s degree is therefore:
+              </p>
+              <KB l="\frac{\partial k_i}{\partial t} = m \cdot \frac{k_i}{\sum_j k_j} = \frac{k_i}{2t}" />
+              <p>
+                Separating variables and integrating from the initial condition{' '}
+                <K l="k_i(t_i) = m" />:
+              </p>
+              <KB l="\int_m^{k_i} \frac{dk_i}{k_i} = \int_{t_i}^{t} \frac{dt}{2t}" />
+              <KB l="\ln\!\left(\frac{k_i}{m}\right) = \frac{1}{2}\ln\!\left(\frac{t}{t_i}\right)" />
+              <p>Exponentiating both sides yields the growth law:</p>
+
+              <h3>Mean Degree Growth</h3>
+              <p>
+                Each node's degree grows as a power of time. A node added at time <K l="t_i" />{' '}
+                has expected degree at time <K l="t" />:
+              </p>
+              <KB l="\langle k_i(t) \rangle = m \left(\frac{t}{t_i}\right)^{1/2}" />
+              <p>
+                Early nodes become hubs because they had more time to accumulate edges — the
+                <em> first-mover advantage</em> in network growth.
+              </p>
+
+              <h3>Rate Equation Approach</h3>
+              <p>
+                A more rigorous derivation counts how the number of degree-<K l="k" /> nodes
+                changes per timestep. The preferential attachment probability for a
+                degree-<K l="k" /> node is:
+              </p>
+              <KB l="\Pi(k) = \frac{k}{2mt}" />
+              <p>
+                (In time <K l="t" /> we have added <K l="m" /> links per step, each
+                contributing to 2 endpoints, so <K l="\sum_j k_j = 2mt" />.) The number of
+                links added to degree-<K l="k" /> nodes after one new node arrives is:
+              </p>
+              <FormulaCard
+                title="Links added to degree-k nodes per step"
+                latex="\frac{k}{2mt} \cdot N \cdot P(k,t) \cdot m = \frac{k}{2} P(k,t)"
+                terms={[
+                  { symbol: '\\frac{k}{2mt}', color: '#7b2cbf', label: 'k/2mt — preferential attachment probability for a degree-k node' },
+                  { symbol: 'N \\cdot P(k,t)', color: '#4a90d9', label: 'N·P(k,t) — total number of degree-k nodes in the network' },
+                  { symbol: 'm', color: '#2d6a4f', label: 'm — number of links the new node adds' },
+                  { symbol: '\\frac{k}{2} P(k,t)', color: '#e85d04', label: '(k/2)P(k,t) — simplified result: rate of links going to degree-k nodes' },
+                ]}
+              />
+              <p>The number of degree-<K l="k" /> nodes changes each step due to:</p>
+              <ul>
+                <li>
+                  <strong>Gain</strong>: degree-<K l="(k{-}1)" /> nodes that acquire a link
+                  and become degree <K l="k" />:{' '}
+                  <K l="\tfrac{k-1}{2} P(k-1, t)" />
+                </li>
+                <li>
+                  <strong>Loss</strong>: degree-<K l="k" /> nodes that acquire a link and
+                  become degree <K l="(k{+}1)" />:{' '}
+                  <K l="\tfrac{k}{2} P(k, t)" />
+                </li>
+              </ul>
+              <KB l="(N+1)P(k,t+1) = N P(k,t) + \frac{k-1}{2} P(k-1,t) - \frac{k}{2} P(k,t)" />
+              <p>
+                Boundary condition at <K l="k = m" /> (new nodes start with degree <K l="m" />):
+              </p>
+              <KB l="(N+1)P(m,t+1) = N P(m,t) + 1 - \frac{m}{2} P(m,t)" />
+
+              <h4>Stationary Solution</h4>
+              <p>
+                As <K l="N = t \to \infty" />, <K l="P(k,t) \to P(k)" /> (time-independent).
+                The left-hand side becomes:
+              </p>
+              <KB l="(N+1)P(k,t+1) - N P(k,t) \;\longrightarrow\; P(k)" />
+              <p>So the stationary equation for <K l="k > m" /> is:</p>
+              <KB l="P(k) = \frac{k-1}{2} P(k-1) - \frac{k}{2} P(k)" />
+              <p>
+                Moving <K l="\tfrac{k}{2}P(k)" /> to the left:
+              </p>
+              <KB l="P(k)\!\left(1 + \frac{k}{2}\right) = \frac{k-1}{2} P(k-1)" />
+              <FormulaCard
+                title="Recursion relation"
+                latex="P(k) = \frac{k-1}{k+2}\,P(k-1)"
+                terms={[
+                  { symbol: 'P(k)', color: '#4a90d9', label: 'P(k) — probability of degree k' },
+                  { symbol: 'k-1', color: '#2d6a4f', label: 'k−1 — degree of the "source" state (gaining a link)' },
+                  { symbol: 'k+2', color: '#c1121f', label: 'k+2 — denominator from 1 + k/2 = (k+2)/2' },
+                  { symbol: 'P(k-1)', color: '#e85d04', label: 'P(k−1) — probability of degree k−1 (feeds into P(k))' },
+                ]}
+              />
+              <p>Boundary condition at <K l="k = m" />:</p>
+              <KB l="P(m)\!\left(1 + \frac{m}{2}\right) = 1 \implies P(m) = \frac{2}{m+2}" />
+
+              <h4>Unrolling the Recursion</h4>
+              <p>
+                Starting from <K l="P(m) = \tfrac{2}{m+2}" /> and applying{' '}
+                <K l="P(k+1) = \tfrac{k}{k+3} P(k)" /> repeatedly:
+              </p>
+              <KB l="P(m+1) = \frac{m}{m+3} \cdot \frac{2}{m+2} = \frac{2m}{(m+2)(m+3)}" />
+              <KB l="P(m+2) = \frac{m+1}{m+4} \cdot \frac{2m}{(m+2)(m+3)} = \frac{2m(m+1)}{(m+2)(m+3)(m+4)}" />
+              <KB l="P(m+3) = \frac{m+2}{m+5} \cdot \frac{2m(m+1)}{(m+2)(m+3)(m+4)} = \frac{2m(m+1)}{(m+3)(m+4)(m+5)}" />
+              <p>
+                The numerator accumulates a rising factorial starting at <K l="m" />; the
+                denominator is three consecutive integers ending at <K l="k+2" />. For
+                general <K l="k \geq m" /> the numerator stabilizes at <K l="2m(m+1)" /> and
+                the denominator is <K l="k(k+1)(k+2)" />:
+              </p>
+              <FormulaCard
+                title="General degree distribution (exact)"
+                latex="P(k) = \frac{2m(m+1)}{k(k+1)(k+2)}"
+                terms={[
+                  { symbol: '2m(m+1)', color: '#2d6a4f', label: '2m(m+1) — numerator, depends only on m' },
+                  { symbol: 'k(k+1)(k+2)', color: '#4a90d9', label: 'k(k+1)(k+2) — three consecutive integers ≈ k³ for large k' },
+                ]}
+              />
+              <p>For large <K l="k" /> the numerator is a constant, so:</p>
+              <KB l="P(k) \approx \frac{2m(m+1)}{k^3} \sim k^{-3}" />
+              <p>
+                The exponent <K l="\gamma = 3" /> is <strong>universal</strong> — it holds
+                regardless of <K l="m" />. This is a signature prediction of the BA model.
+              </p>
+
+              <h3>Uniform Attachment</h3>
+              <p>
+                If instead each new node picks targets <em>uniformly at random</em>, the
+                growth rate is equal for all nodes:
+              </p>
+              <KB l="\frac{\partial k_i}{\partial t} = \frac{m}{m_0 + t - 1}" />
+              <p>Integrating:</p>
+              <KB l="k_i(t) = m \ln\!\left(\frac{m_0 + t - 1}{m_0 + t_i - 1}\right) + m" />
+              <p>
+                This is <em>logarithmic</em> growth — far slower than the{' '}
+                <K l="\sqrt{t}" /> power-law growth of the BA model. Inverting to find{' '}
+                <K l="t_i(k)" /> and using a uniform arrival rate:
+              </p>
+              <KB l="P(k) = \frac{e}{m} \exp\!\left(-\frac{k}{m}\right) \sim e^{-k}" />
+              <p>
+                Exponential, not power-law. No hubs form. Preferential attachment is necessary
+                for scale-free structure.
+              </p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Model</th>
+                    <th>Attachment</th>
+                    <th>Growth</th>
+                    <th><K l="k_i(t)" /> scaling</th>
+                    <th><K l="P(k)" /></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>BA model</td>
+                    <td>Preferential</td>
+                    <td>Yes</td>
+                    <td><K l="\sim t^{1/2}" /></td>
+                    <td><K l="\sim k^{-3}" /></td>
+                  </tr>
+                  <tr>
+                    <td>Uniform attachment</td>
+                    <td>Uniform</td>
+                    <td>Yes</td>
+                    <td><K l="\sim \ln t" /></td>
+                    <td><K l="\sim e^{-k}" /></td>
+                  </tr>
+                  <tr>
+                    <td>Model B</td>
+                    <td>Preferential</td>
+                    <td>No</td>
+                    <td><K l="\sim t" /></td>
+                    <td>Gaussian</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h3>Without Growth (Model B)</h3>
+              <p>
+                Fix <K l="N" /> nodes (no growth) and rewire edges preferentially. The
+                degree growth rate becomes:
+              </p>
+              <FormulaCard
+                title="Degree growth — fixed population"
+                latex="\frac{\partial k_i}{\partial t} = \frac{N}{N-1}\frac{k_i}{2t} + \frac{1}{N}"
+                terms={[
+                  { symbol: '\\frac{N}{N-1}', color: '#7b2cbf', label: 'N/(N−1) — correction factor for fixed population' },
+                  { symbol: '\\frac{k_i}{2t}', color: '#e85d04', label: 'k_i/2t — preferential attachment term' },
+                  { symbol: '\\frac{1}{N}', color: '#2d6a4f', label: '1/N — uniform baseline (each node has equal chance of receiving a rewired link)' },
+                ]}
+              />
+              <p>
+                The <K l="k_i" /> growth becomes <em>linear in <K l="t" /></em> (not{' '}
+                <K l="\sqrt{t}" />), because every timestep all <K l="N" /> nodes compete.
+                The degree distribution evolves in three stages:
+              </p>
+              <ol>
+                <li>Initially power-law–like</li>
+                <li>Degrees homogenize → Gaussian</li>
+                <li>Eventually → fully connected</li>
+              </ol>
+              <p>
+                <strong>Conclusion:</strong> Growth is necessary alongside preferential
+                attachment for a persistent scale-free structure.
+              </p>
+
+              <h3>Measuring <K l="\Pi(k)" /> Empirically</h3>
+              <p>
+                You cannot directly observe <K l="\Pi(k)" />, but since{' '}
+                <K l="\partial k_i / \partial t \propto \Pi(k_i)" />, you can measure{' '}
+                <K l="\Delta k / \Delta t" /> for nodes of degree <K l="k" />. To reduce
+                noise, plot the <strong>cumulative preference function</strong>:
+              </p>
+              <KB l="\kappa(k) = \sum_{K < k} \Pi(K)" />
+              <ul>
+                <li>
+                  <K l="\kappa(k) \sim k" /> → uniform attachment (no preferential attachment)
+                </li>
+                <li>
+                  <K l="\kappa(k) \sim k^2" /> → linear preferential attachment{' '}
+                  (<K l="\Pi(k) \propto k" />, since the derivative of <K l="k^2" /> is{' '}
+                  <K l="2k" />)
+                </li>
+              </ul>
+              <FormulaCard
+                title="General empirical finding"
+                latex="\Pi(k) \approx A + k^{\alpha}, \quad \alpha \leq 1"
+                terms={[
+                  { symbol: 'A', color: '#4a90d9', label: 'A — constant offset (baseline attractiveness)' },
+                  { symbol: 'k^{\\alpha}', color: '#e85d04', label: 'k^α — degree-dependent term' },
+                  { symbol: '\\alpha', color: '#c1121f', label: 'α — attachment exponent (α = 1 recovers BA)' },
+                ]}
+              />
+              <ul>
+                <li>
+                  <K l="\alpha = 1" />: linear preferential attachment →{' '}
+                  <K l="P(k) \sim k^{-3}" /> (BA model)
+                </li>
+                <li>
+                  <K l="\alpha < 1" />: sublinear → stretched exponential, not a pure power law
+                </li>
+                <li>
+                  <K l="\alpha > 1" />: superlinear → winner-takes-all (single hub dominates)
+                </li>
+              </ul>
+              <p>
+                Real networks show <K l="\alpha \approx 1" /> but not exactly — approximately
+                linear preferential attachment.
+              </p>
+
+              <ArtifactWrapper title="Interactive: Barabási–Albert Growth Simulator">
+                <BAGrowthSimulator />
               </ArtifactWrapper>
             </section>
 

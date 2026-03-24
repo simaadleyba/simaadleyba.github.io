@@ -10,6 +10,8 @@ const SECTIONS = [
   { id: 'centrality', label: '7. Centrality Measures' },
   { id: 'assortativity', label: '8. Assortativity' },
   { id: 'bethe-lattice', label: '9. Bethe Lattice' },
+  { id: 'power-law', label: '10. Power Law Distribution' },
+  { id: 'ba-model', label: '11. Barabási–Albert Model' },
   { id: 'references', label: 'References' },
 ];
 
