@@ -3,10 +3,17 @@
   "configurations": [
     {
       "name": "networkscience-dev",
-      "runtimeExecutable": "/opt/homebrew/bin/npm",
-      "runtimeArgs": ["run", "dev"],
-      "cwd": "networkscience-src",
+      "runtimeExecutable": "/opt/homebrew/Cellar/node/25.8.1_1/bin/node",
+      "runtimeArgs": ["./node_modules/.bin/vite"],
+      "cwd": "/Users/simaadleyba/Desktop/personal/simaadleyba.github.io/networkscience-src",
       "port": 5173
+    },
+    {
+      "name": "machinelearning-preview",
+      "runtimeExecutable": "/opt/homebrew/Cellar/node/25.8.1_1/bin/node",
+      "runtimeArgs": ["./node_modules/.bin/vite", "preview", "--port", "5174"],
+      "cwd": "/Users/simaadleyba/Desktop/personal/simaadleyba.github.io/machinelearning-src",
+      "port": 5174
     }
   ]
 }
