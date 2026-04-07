@@ -366,7 +366,7 @@ export default function App() {
                 Average number of links: <K l="\langle L \rangle = p \cdot N(N-1)/2" />
               </p>
               <p>
-                Average degree: <K l="\langle k \rangle = p(N-1) \approx 2\langle L \rangle / N" />
+                Average degree: <K l="\langle k \rangle = p \cdot (N-1) \approx 2\langle L \rangle / N" />
               </p>
 
               <h3>Degree Distribution (Binomial)</h3>
