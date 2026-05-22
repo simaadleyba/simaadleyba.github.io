@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Post</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+
+    <style>
+        body { padding-top: calc(var(--nav-height) + 2rem); }
+
+        .admin-container {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .admin-container h1 {
+            margin-bottom: 2rem;
+        }
+
+        .field {
+            margin-bottom: 1.4rem;
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.4rem;
+        }
+
+        .field input[type="text"],
+        .field input[type="date"],
+        .field textarea {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.6rem 0.9rem;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text);
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        .field input:focus,
+        .field textarea:focus {
+            outline: none;
+            border-color: var(--accent-light);
+        }
+
+        .field textarea {
+            min-height: 280px;
+            resize: vertical;
+            font-family: monospace;
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+
+        .tag-checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag-checkboxes label {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.82rem;
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0;
+            color: var(--text);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.25rem 0.7rem;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .tag-checkboxes label:has(input:checked) {
+            background: var(--accent-bg);
+            border-color: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .tag-checkboxes input[type="checkbox"] {
+            display: none;
+        }
+
+        .submit-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.7rem 2rem;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #status {
+            margin-top: 1.2rem;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            display: none;
+        }
+
+        #status.success {
+            background: #eefaf0;
+            border: 1px solid #a8ddb5;
+            color: #2d6a4f;
+            display: block;
+        }
+
+        #status.error {
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+            display: block;
+        }
+
+        .pat-controls {
+            margin-top: 0.4rem;
+        }
+
+        .pat-reset-btn {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-family: monospace;
+            cursor: pointer;
+            padding: 0;
+            text-decoration: underline;
+        }
+
+        .pat-reset-btn:hover { color: var(--accent); }
+
+        .slug-hint {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 0.3rem;
+            font-family: monospace;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav id="nav">
+        <button id="burger-icon" aria-label="Toggle menu"
+            onclick="document.getElementById('nav-links').classList.toggle('open')">☰</button>
+        <div id="nav-links">
+            <a href="/">about</a>
+            <a href="/#research">research</a>
+            <a href="/#experience">experience</a>
+            <a href="/#education">education</a>
+            <a href="/#studyguides">study guides</a>
+            <a href="/#beyond">beyond</a>
+            <a href="/" target="_blank" rel="noopener">cv</a>
+            <span class="nav-pipe">|</span>
+            <a href="/blog/">blog</a>
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <h1>New Post</h1>
+
+        <form id="post-form">
+            <div class="field">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" required placeholder="Post title" />
+            </div>
+
+            <div class="field">
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date" required />
+            </div>
+
+            <div class="field">
+                <label for="slug">Slug</label>
+                <input type="text" id="slug" name="slug" required placeholder="url-friendly-slug" />
+                <p class="slug-hint">→ /blog/posts/<span id="slug-preview">...</span>.html</p>
+            </div>
+
+            <div class="field">
+                <label for="summary">Summary</label>
+                <input type="text" id="summary" name="summary" required placeholder="One-sentence description" />
+            </div>
+
+            <div class="field">
+                <label>Tags</label>
+                <div class="tag-checkboxes">
+                    <label><input type="checkbox" name="tags" value="research"> research</label>
+                    <label><input type="checkbox" name="tags" value="bluesky"> bluesky</label>
+                    <label><input type="checkbox" name="tags" value="ml"> ml</label>
+                    <label><input type="checkbox" name="tags" value="network science"> network science</label>
+                    <label><input type="checkbox" name="tags" value="personal"> personal</label>
+                    <label><input type="checkbox" name="tags" value="photography"> photography</label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="body">Body (Markdown)</label>
+                <textarea id="body" name="body" placeholder="Write your post in Markdown..."></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submit-btn">Publish</button>
+            <div id="status"></div>
+        </form>
+
+        <div class="pat-controls">
+            <button class="pat-reset-btn" onclick="resetPAT()">reset GitHub token</button>
+        </div>
+    </div>
+
+    <script>
+        const OWNER = 'simaadleyba';
+        const REPO  = 'simaadleyba.github.io';
+        const POSTS_PATH = 'blog/posts.json';
+
+        // ── Password gate ──
+        const PASSWORD = 'tasbak-5tydhy-carBih';
+        (function checkPassword() {
+            const stored = sessionStorage.getItem('admin_auth');
+            if (stored === PASSWORD) return;
+            const entered = window.prompt('Password:');
+            if (entered !== PASSWORD) {
+                window.location.href = '/';
+            } else {
+                sessionStorage.setItem('admin_auth', PASSWORD);
+            }
+        })();
+
+        // ── GitHub PAT ──
+        function getPAT() {
+            return localStorage.getItem('gh_pat');
+        }
+
+        function promptPAT() {
+            const pat = window.prompt(
+                'Enter your GitHub Personal Access Token\n(needs repo / contents:write scope):'
+            );
+            if (!pat) { window.location.href = '/'; return null; }
+            localStorage.setItem('gh_pat', pat);
+            return pat;
+        }
+
+        function resetPAT() {
+            localStorage.removeItem('gh_pat');
+            alert('Token cleared. Reload to enter a new one.');
+        }
+
+        if (!getPAT()) promptPAT();
+
+        // ── Date default ──
+        document.getElementById('date').value = new Date().toISOString().slice(0, 10);
+
+        // ── Slug auto-generation from title ──
+        document.getElementById('title').addEventListener('input', function () {
+            const slug = toSlug(this.value);
+            document.getElementById('slug').value = slug;
+            document.getElementById('slug-preview').textContent = slug || '...';
+        });
+
+        document.getElementById('slug').addEventListener('input', function () {
+            document.getElementById('slug-preview').textContent = this.value || '...';
+        });
+
+        function toSlug(str) {
+            return str
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-+|-+$/g, '');
+        }
+
+        // ── Form submit ──
+        document.getElementById('post-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const status = document.getElementById('status');
+            btn.disabled = true;
+            btn.textContent = 'Publishing…';
+            status.className = '';
+            status.style.display = 'none';
+
+            const pat = getPAT();
+            if (!pat) { promptPAT(); btn.disabled = false; btn.textContent = 'Publish'; return; }
+
+            const title   = document.getElementById('title').value.trim();
+            const date    = document.getElementById('date').value;
+            const slug    = document.getElementById('slug').value.trim();
+            const summary = document.getElementById('summary').value.trim();
+            const tags    = [...document.querySelectorAll('input[name="tags"]:checked')].map(el => el.value);
+            const body    = document.getElementById('body').value;
+
+            const post = { title, date, slug, summary, tags };
+
+            try {
+                // 1. Update posts.json
+                await updatePostsJson(post, pat);
+
+                // 2. Create post HTML file
+                const postHtml = buildPostHtml(post, marked.parse(body));
+                await createFile(`blog/posts/${slug}.html`, postHtml, `Add post: ${title}`, pat);
+
+                status.className = 'success';
+                status.innerHTML = `Published! <a href="/blog/posts/${slug}.html" target="_blank">/blog/posts/${slug}.html</a>`;
+                document.getElementById('post-form').reset();
+                document.getElementById('date').value = new Date().toISOString().slice(0, 10);
+                document.getElementById('slug-preview').textContent = '...';
+            } catch (err) {
+                status.className = 'error';
+                status.textContent = 'Error: ' + err.message;
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Publish';
+        });
+
+        // ── GitHub API helpers ──
+        async function ghFetch(path, method, body, pat) {
+            const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
+                method,
+                headers: {
+                    'Authorization': `Bearer ${pat}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github+json',
+                },
+                body: body ? JSON.stringify(body) : undefined,
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.message || `GitHub API error ${res.status}`);
+            }
+            return res.json();
+        }
+
+        async function updatePostsJson(newPost, pat) {
+            // Fetch current file to get SHA and content
+            const current = await ghFetch(POSTS_PATH, 'GET', null, pat);
+            const posts = JSON.parse(atob(current.content.replace(/\n/g, '')));
+            posts.unshift(newPost);
+            await ghFetch(POSTS_PATH, 'PUT', {
+                message: `Add post: ${newPost.title}`,
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(posts, null, 2) + '\n'))),
+                sha: current.sha,
+            }, pat);
+        }
+
+        async function createFile(path, content, message, pat) {
+            // Check if file exists (to get SHA if it does)
+            let sha;
+            try {
+                const existing = await ghFetch(path, 'GET', null, pat);
+                sha = existing.sha;
+            } catch (_) {
+                sha = undefined;
+            }
+            const body = {
+                message,
+                content: btoa(unescape(encodeURIComponent(content))),
+            };
+            if (sha) body.sha = sha;
+            await ghFetch(path, 'PUT', body, pat);
+        }
+
+        // ── Post HTML template ──
+        function buildPostHtml(post, bodyHtml) {
+            const tagSpans = (post.tags || [])
+                .map(t => `<span class="tag">${esc(t)}</span>`)
+                .join('');
+
+            return `<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${esc(post.title)} — Sima Adleyba</title>
+    <meta name="description" content="${esc(post.summary)}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" type="image/png" href="/assets/icon.png">
+    <style>
+        .post-header { padding: calc(var(--nav-height) + 3rem) 0 2rem; border-bottom: 1px solid var(--border); }
+        .post-back { font-family: monospace; font-size: 0.85rem; color: var(--muted); display: inline-block; margin-bottom: 1rem; }
+        .post-back:hover { color: var(--accent); }
+        .post-date { font-family: monospace; font-size: 0.82rem; color: var(--muted); margin-bottom: 0.5rem; }
+        .post-header h1 { margin-bottom: 0.8rem; }
+        .post-body { max-width: 680px; padding: 2.2rem 0; }
+        .post-body h1, .post-body h2, .post-body h3 { margin-top: 1.8rem; margin-bottom: 0.5rem; }
+        .post-body p { margin-bottom: 1rem; }
+        .post-body a { color: var(--accent); }
+        .post-body a:hover { color: var(--accent-hover); }
+        .post-body code { background: var(--accent-bg); padding: 0.1em 0.35em; border-radius: 4px; font-size: 0.87em; font-family: monospace; }
+        .post-body pre { background: var(--accent-bg); padding: 1rem; border-radius: 8px; overflow-x: auto; margin-bottom: 1rem; }
+        .post-body pre code { background: none; padding: 0; font-size: 0.85em; }
+        .post-body blockquote { border-left: 3px solid var(--accent-light); margin: 0 0 1rem; padding: 0.3rem 1rem; color: var(--muted); }
+        .post-body img { max-width: 100%; border-radius: 8px; margin: 0.5rem 0; }
+        .post-body ul, .post-body ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+        .post-body li { margin-bottom: 0.3rem; }
+        .post-body hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+    </style>
+</head>
+
+<body>
+
+    <nav id="nav">
+        <button id="burger-icon" aria-label="Toggle menu"
+            onclick="document.getElementById('nav-links').classList.toggle('open')">☰</button>
+        <div id="nav-links">
+            <a href="/">about</a>
+            <a href="/#research">research</a>
+            <a href="/#experience">experience</a>
+            <a href="/#education">education</a>
+            <a href="/#studyguides">study guides</a>
+            <a href="/#beyond">beyond</a>
+            <a href="/" target="_blank" rel="noopener">cv</a>
+            <span class="nav-pipe">|</span>
+            <a href="/blog/" class="selected">blog</a>
+        </div>
+    </nav>
+
+    <header class="post-header">
+        <div class="container">
+            <a href="/blog/" class="post-back">← blog</a>
+            <p class="post-date">${fmtDate(post.date)}</p>
+            <h1>${esc(post.title)}</h1>
+            <div class="card-tags">${tagSpans}</div>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <div class="post-body">
+                ${bodyHtml}
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-email">adleyba [at] sabanciuniv [dot] edu</p>
+            <p class="footer-credit">Source code credits to <a href="https://catherinesyeh.github.io/" target="_blank" rel="noopener">Catherine Yeh</a></p>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('#nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('nav-links').classList.remove('open');
+            });
+        });
+    <\/script>
+
+</body>
+</html>`;
+        }
+
+        function esc(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function fmtDate(iso) {
+            if (!iso) return '';
+            const d = new Date(iso + 'T00:00:00');
+            return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        document.querySelectorAll('#nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('nav-links').classList.remove('open');
+            });
+        });
+    </script>
+
+</body>
+</html>

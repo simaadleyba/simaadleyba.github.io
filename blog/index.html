@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog — Sima Adleyba</title>
+    <meta name="description" content="Writing on research, tools, and things I find interesting.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="icon" type="image/png" href="../assets/icon.png">
+    <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+
+    <style>
+        .blog-tag-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .blog-tag-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: monospace;
+            font-size: 0.78rem;
+            padding: 0.2rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s, color 0.2s;
+            text-transform: lowercase;
+        }
+
+        .blog-tag-btn:hover,
+        .blog-tag-btn.active {
+            background: var(--accent-bg);
+            border-color: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .blog-post-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.4rem;
+            margin-bottom: 1.2rem;
+            transition: box-shadow 0.3s, transform 0.3s;
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .blog-post-card:hover {
+            box-shadow: 0 6px 20px rgba(91, 110, 174, 0.1);
+            transform: translateY(-2px);
+            opacity: 1;
+        }
+
+        .blog-post-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .blog-post-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .blog-post-date {
+            font-size: 0.82rem;
+            color: var(--muted);
+            font-family: monospace;
+        }
+
+        .blog-post-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin: 0 0 0.4rem;
+            color: var(--text);
+        }
+
+        .blog-post-summary {
+            font-size: 0.93rem;
+            color: var(--muted);
+            margin: 0 0 0.8rem;
+            line-height: 1.6;
+        }
+
+        .blog-post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--muted);
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        #posts-list {
+            min-height: 120px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========== NAVIGATION BAR ========== -->
+
+    <nav id="nav">
+        <button id="burger-icon" aria-label="Toggle menu"
+            onclick="document.getElementById('nav-links').classList.toggle('open')">☰</button>
+        <div id="nav-links">
+            <a href="/">about</a>
+            <a href="/#research">research</a>
+            <a href="/#experience">experience</a>
+            <a href="/#education">education</a>
+            <a href="/#studyguides">study guides</a>
+            <a href="/#beyond">beyond</a>
+            <a href="/" target="_blank" rel="noopener">cv</a>
+            <span class="nav-pipe">|</span>
+            <a href="/blog/" class="selected">blog</a>
+        </div>
+    </nav>
+
+    <!-- ========== HEADER ========== -->
+
+    <header class="header">
+        <div class="container">
+            <h1 style="margin-bottom: 0.5rem;">Blog</h1>
+            <p class="subtitle">Writing on research, tools, and things I find interesting.</p>
+        </div>
+    </header>
+
+    <!-- ========== POSTS ========== -->
+
+    <section class="section">
+        <div class="container">
+
+            <div class="blog-tag-filter" id="tag-filter" style="display:none;"></div>
+
+            <div id="posts-list"></div>
+
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-email">adleyba [at] sabanciuniv [dot] edu</p>
+            <p class="footer-credit">Source code credits to <a href="https://catherinesyeh.github.io/" target="_blank"
+                    rel="noopener">Catherine Yeh</a></p>
+        </div>
+    </footer>
+
+    <!-- Analytics -->
+    <script src="../analytics/config.js"></script>
+    <script src="../analytics/tracker.js"></script>
+
+    <script>
+        let allPosts = [];
+        let activeTag = null;
+
+        async function loadPosts() {
+            try {
+                const res = await fetch('/blog/posts.json');
+                allPosts = await res.json();
+            } catch (e) {
+                allPosts = [];
+            }
+            renderPosts();
+            renderTagFilter();
+        }
+
+        function renderTagFilter() {
+            const container = document.getElementById('tag-filter');
+            const tags = [...new Set(allPosts.flatMap(p => p.tags || []))].sort();
+            if (tags.length === 0) { container.style.display = 'none'; return; }
+            container.style.display = 'flex';
+            container.innerHTML = tags.map(t =>
+                `<button class="blog-tag-btn${activeTag === t ? ' active' : ''}" onclick="filterTag('${t}')">${t}</button>`
+            ).join('');
+        }
+
+        function filterTag(tag) {
+            activeTag = activeTag === tag ? null : tag;
+            renderPosts();
+            renderTagFilter();
+        }
+
+        function renderPosts() {
+            const list = document.getElementById('posts-list');
+            const posts = activeTag
+                ? allPosts.filter(p => (p.tags || []).includes(activeTag))
+                : allPosts;
+
+            if (posts.length === 0) {
+                list.innerHTML = `<div class="empty-state"><p>${allPosts.length === 0
+                    ? 'No posts yet — check back soon.'
+                    : 'No posts match that tag.'}</p></div>`;
+                return;
+            }
+
+            list.innerHTML = posts.map(p => `
+                <a href="/blog/posts/${p.slug}.html" class="blog-post-card">
+                    <div class="blog-post-meta">
+                        <span class="blog-post-date">${formatDate(p.date)}</span>
+                    </div>
+                    <div class="blog-post-title">${escHtml(p.title)}</div>
+                    <p class="blog-post-summary">${escHtml(p.summary)}</p>
+                    <div class="blog-post-tags">
+                        ${(p.tags || []).map(t => `<span class="tag">${escHtml(t)}</span>`).join('')}
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        function formatDate(iso) {
+            if (!iso) return '';
+            const d = new Date(iso + 'T00:00:00');
+            return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function escHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        // Close mobile nav on link click
+        document.querySelectorAll('#nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('nav-links').classList.remove('open');
+            });
+        });
+
+        loadPosts();
+    </script>
+
+</body>
+
+</html>

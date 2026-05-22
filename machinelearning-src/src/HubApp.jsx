@@ -3,8 +3,8 @@ import './styles/global.css';
 
 const TOPICS = [
   { num: '01', name: 'k-Nearest Neighbors', href: '/machinelearning/knn/', ready: true },
-  { num: '02', name: 'Decision Trees', href: null },
-  { num: '03', name: 'Evaluation Metrics', href: null },
+  { num: '02', name: 'Decision Trees', href: '/machinelearning/decisiontrees/', ready: true },
+  { num: '03', name: 'Evaluation Metrics', href: '/machinelearning/evaluationmetrics/', ready: true },
   { num: '04', name: 'Model Evaluation', href: null },
   { num: '05', name: 'MLE & MAP', href: null },
   { num: '06', name: 'Naive Bayes', href: null },

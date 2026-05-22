@@ -17,6 +17,8 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         knn: resolve(__dirname, 'knn/index.html'),
+        decisiontrees: resolve(__dirname, 'decisiontrees/index.html'),
+        evaluationmetrics: resolve(__dirname, 'evaluationmetrics/index.html'),
       },
     },
   },

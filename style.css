@@ -416,6 +416,79 @@ a:hover {
     margin-bottom: 0;
 }
 
+/* ---------- NAV PIPE SEPARATOR ---------- */
+
+.nav-pipe {
+    color: var(--muted);
+    font-family: monospace;
+    font-size: 0.82rem;
+    opacity: 0.45;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* ---------- GUIDE CARDS (study guides + blog) ---------- */
+
+.guide-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 0.8rem;
+}
+
+.guide-cards--single {
+    grid-template-columns: 1fr;
+    max-width: 340px;
+}
+
+.guide-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.guide-card:hover {
+    box-shadow: 0 6px 20px rgba(91, 110, 174, 0.1);
+    transform: translateY(-2px);
+    opacity: 1;
+}
+
+.guide-thumbnail {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--accent-bg);
+    overflow: hidden;
+}
+
+.guide-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.guide-card-body {
+    padding: 1rem 1.2rem;
+}
+
+.guide-card-body .card-type {
+    display: block;
+    margin-bottom: 0.35rem;
+}
+
+.guide-card-body h3 {
+    margin-bottom: 0.3rem;
+}
+
+.guide-card-body .card-description {
+    margin-bottom: 0;
+}
+
 /* ---------- BEYOND RESEARCH ---------- */
 
 .beyond-subsection {
@@ -719,6 +792,18 @@ a:hover {
 
     .photo-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .nav-pipe {
+        display: none;
+    }
+
+    .guide-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .guide-cards--single {
+        max-width: 100%;
     }
 
     .lightbox-inner {

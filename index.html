@@ -32,8 +32,11 @@
             <a href="#research">research</a>
             <a href="#experience">experience</a>
             <a href="#education">education</a>
+            <a href="#studyguides">study guides</a>
             <a href="#beyond">beyond</a>
             <a href="#" target="_blank" rel="noopener">cv</a>
+            <span class="nav-pipe">|</span>
+            <a href="/blog/">blog</a>
         </div>
     </nav>
 
@@ -82,7 +85,9 @@
                         and algorithmic fairness.
                     </p>
                     <p>
-                        Currently, I'm studying bias and fairness in Bluesky. Investigating network formation and visibility on decentralized social platforms.
+                        Currently, I'm investigating algorithmic fairness and systemic bias on Bluesky, specifically
+                        focusing on how curation mechanisms shape network structure and user exposure.
+>>>>>>> Stashed changes
                     </p>
                 </div>
             </div>
@@ -203,37 +208,46 @@
         <div class="container">
             <h2>Beyond Research</h2>
 
-            <div class="beyond-subsection">
-                <h3>Teaching</h3>
+            <div class="beyond-subsection" id="studyguides">
+                <h3>Interactive Study Guides</h3>
                 <p>I build interactive study guides for courses I TA and take.</p>
-                <a href="/networkscience/" class="card"
-                    style="display:block; text-decoration:none; color:inherit; margin-top:0.8rem;">
-                    <div class="card-meta">
-                        <span class="card-type">Interactive Guide</span>
-                    </div>
-                    <h3 style="margin-bottom:0.5rem;">Network Science</h3>
-                    <p class="card-description" style="margin-bottom:0.7rem;">Interactive study guide with
-                        visualizations, centrality measures, random graphs, Bethe lattices, and more.</p>
-                    <div class="card-tags">
-                        <span class="tag">React</span>
-                        <span class="tag">KaTeX</span>
-                        <span class="tag">Interactive</span>
-                    </div>
-                </a>
-                <a href="/machinelearning/" class="card"
-                    style="display:block; text-decoration:none; color:inherit; margin-top:0.8rem;">
-                    <div class="card-meta">
-                        <span class="card-type">Interactive Guide</span>
-                    </div>
-                    <h3 style="margin-bottom:0.5rem;">Machine Learning</h3>
-                    <p class="card-description" style="margin-bottom:0.7rem;">MLPs, backpropagation, loss functions, and
-                        more, with interactive visualizations.</p>
-                    <div class="card-tags">
-                        <span class="tag">React</span>
-                        <span class="tag">KaTeX</span>
-                        <span class="tag">Interactive</span>
-                    </div>
-                </a>
+                <div class="guide-cards">
+                    <a href="/networkscience/" class="guide-card">
+                        <div class="guide-thumbnail">
+                            <img src="https://api.microlink.io/?url=https%3A%2F%2Fsimaadleyba.com%2Fnetworkscience%2F&screenshot=true&meta=false&embed=screenshot.url" alt="Network Science study guide" loading="lazy">
+                        </div>
+                        <div class="guide-card-body">
+                            <span class="card-type">Interactive Guide</span>
+                            <h3>Network Science</h3>
+                            <p class="card-description">Interactive study guide with visualizations, centrality measures, random graphs, Bethe lattices, and more.</p>
+                        </div>
+                    </a>
+                    <a href="/machinelearning/" class="guide-card">
+                        <div class="guide-thumbnail">
+                            <img src="https://api.microlink.io/?url=https%3A%2F%2Fsimaadleyba.com%2Fmachinelearning%2Fknn%2F&screenshot=true&meta=false&embed=screenshot.url" alt="Machine Learning study guide" loading="lazy">
+                        </div>
+                        <div class="guide-card-body">
+                            <span class="card-type">Interactive Guide</span>
+                            <h3>Machine Learning</h3>
+                            <p class="card-description">MLPs, backpropagation, loss functions, and more, with interactive visualizations.</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="beyond-subsection">
+                <div class="guide-cards guide-cards--single">
+                    <a href="/blog/" class="guide-card">
+                        <div class="guide-thumbnail">
+                            <img src="https://api.microlink.io/?url=https%3A%2F%2Fsimaadleyba.com%2Fblog%2F&screenshot=true&meta=false&embed=screenshot.url" alt="Blog" loading="lazy">
+                        </div>
+                        <div class="guide-card-body">
+                            <span class="card-type">Blog</span>
+                            <h3>Blog</h3>
+                            <p class="card-description">Writing on research, tools, and things I find interesting.</p>
+                        </div>
+                    </a>
+                </div>
             </div>
 
             <div class="beyond-subsection">
@@ -339,12 +353,22 @@
 
             <div class="beyond-subsection">
                 <h3>Music</h3>
-                <p>Learning electric guitar.</p>
+                <p>I'll listen to almost anything, but lately it's mostly K-pop, rap, Japanese folk, progressive rock, and K-indie. I also play guitar. Though I must say, I like my HSS Strat and how I look with it.</p>
             </div>
 
             <div class="beyond-subsection">
-                <h3>Languages</h3>
-                <p>Turkish, English. I'm curious and very open to discussions in linguistics and etymology though!</p>
+                <h3>Movies</h3>
+                <p>I love whodunnits and murder mysteries and could genuinely talk about them for hours. Also into psychological thrillers and Korean cinema. <a href="https://en.wikipedia.org/wiki/Park_Chan-wook" target="_blank" rel="noopener">Park Chan-wook</a> especially.</p>
+            </div>
+
+            <div class="beyond-subsection">
+                <h3>Other Media</h3>
+                <p>Some YouTube channels I watch regularly and think are worth your time: <a href="https://www.youtube.com/@veritasium" target="_blank" rel="noopener">Veritasium</a>, <a href="https://www.youtube.com/@TheRestIsScience" target="_blank" rel="noopener">The Rest Is Science</a>, <a href="https://www.youtube.com/@Howtown" target="_blank" rel="noopener">Howtown</a>, <a href="https://www.youtube.com/@neoexplains" target="_blank" rel="noopener">neo</a>, <a href="https://www.youtube.com/@fern-tv" target="_blank" rel="noopener">fern</a>, <a href="https://www.youtube.com/@Waveform" target="_blank" rel="noopener">WVFRM Podcast</a>, and <a href="https://www.youtube.com/@MicTheSnare" target="_blank" rel="noopener">Mic The Snare</a>.</p>
+            </div>
+
+            <div class="beyond-subsection">
+                <h3>Other Interests</h3>
+                <p>Linguistics, etymology, mathematics, sociology, urban studies. I game sometimes too.</p>
             </div>
         </div>
     </section>
