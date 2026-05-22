@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>New Post</title>
+    <title>Admin — Field Notes</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -20,13 +20,67 @@
             padding: 2rem;
         }
 
-        .admin-container h1 {
+        /* ── Tabs ── */
+        .admin-tabs {
+            display: flex;
+            gap: 0;
             margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
         }
 
-        .field {
-            margin-bottom: 1.4rem;
+        .admin-tab {
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            padding: 0.45rem 1.1rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--muted);
+            cursor: pointer;
+            text-transform: lowercase;
+            letter-spacing: 0.02em;
+            transition: color 0.2s, border-color 0.2s;
         }
+
+        .admin-tab:hover { color: var(--text); }
+
+        .admin-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* ── Edit loader ── */
+        #edit-loader { margin-bottom: 0.5rem; }
+
+        .load-row {
+            display: flex;
+            gap: 0.7rem;
+            align-items: flex-end;
+        }
+
+        .load-row .field { flex: 1; margin-bottom: 0; }
+
+        .load-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--accent);
+            font-family: monospace;
+            font-size: 0.82rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s, border-color 0.2s;
+            height: fit-content;
+        }
+
+        .load-btn:hover { background: var(--accent-bg); border-color: var(--accent-light); }
+        .load-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* ── Form fields ── */
+        .field { margin-bottom: 1.4rem; }
 
         .field label {
             display: block;
@@ -57,6 +111,12 @@
         .field textarea:focus {
             outline: none;
             border-color: var(--accent-light);
+        }
+
+        .field input[readonly] {
+            opacity: 0.6;
+            background: var(--bg);
+            cursor: not-allowed;
         }
 
         .field textarea {
@@ -96,10 +156,9 @@
             color: var(--accent);
         }
 
-        .tag-checkboxes input[type="checkbox"] {
-            display: none;
-        }
+        .tag-checkboxes input[type="checkbox"] { display: none; }
 
+        /* ── Submit button ── */
         .submit-btn {
             background: var(--accent);
             color: #fff;
@@ -111,42 +170,76 @@
             font-weight: 600;
             cursor: pointer;
             transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .submit-btn:hover {
-            background: var(--accent-hover);
+        .submit-btn:hover { background: var(--accent-hover); }
+        .submit-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .submit-btn .spinner {
+            display: none;
+            width: 0.9em;
+            height: 0.9em;
+            border: 2px solid rgba(255,255,255,0.35);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.65s linear infinite;
+            flex-shrink: 0;
         }
 
-        .submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+        .submit-btn.loading .spinner { display: inline-block; }
 
-        #status {
-            margin-top: 1.2rem;
-            padding: 0.8rem 1rem;
+        /* ── Status messages ── */
+        .status-msg {
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
             border-radius: 8px;
             font-size: 0.92rem;
             display: none;
         }
 
-        #status.success {
+        .status-msg.success {
             background: #eefaf0;
             border: 1px solid #a8ddb5;
             color: #2d6a4f;
             display: block;
         }
 
-        #status.error {
+        .status-msg.error {
             background: #fef2f2;
             border: 1px solid #fca5a5;
             color: #991b1b;
             display: block;
         }
 
-        .pat-controls {
-            margin-top: 0.4rem;
+        .status-msg a { color: inherit; text-decoration: underline; }
+
+        /* ── Hints ── */
+        .slug-hint {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 0.3rem;
+            font-family: monospace;
         }
+
+        .body-note {
+            font-size: 0.78rem;
+            color: #b45309;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 6px;
+            padding: 0.3rem 0.7rem;
+            margin-top: 0.4rem;
+            font-family: monospace;
+            display: none;
+        }
+
+        /* ── PAT controls ── */
+        .pat-controls { margin-top: 1rem; }
 
         .pat-reset-btn {
             background: none;
@@ -160,13 +253,6 @@
         }
 
         .pat-reset-btn:hover { color: var(--accent); }
-
-        .slug-hint {
-            font-size: 0.78rem;
-            color: var(--muted);
-            margin-top: 0.3rem;
-            font-family: monospace;
-        }
     </style>
 </head>
 
@@ -189,8 +275,26 @@
     </nav>
 
     <div class="admin-container">
-        <h1>New Post</h1>
 
+        <!-- Tabs -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" id="tab-new" onclick="switchTab('new')">new post</button>
+            <button class="admin-tab" id="tab-edit" onclick="switchTab('edit')">edit post</button>
+        </div>
+
+        <!-- Edit-mode slug loader (only visible in edit tab before post is loaded) -->
+        <div id="edit-loader" style="display:none;">
+            <div class="load-row">
+                <div class="field">
+                    <label for="edit-slug-input">Slug</label>
+                    <input type="text" id="edit-slug-input" placeholder="post-slug-to-edit" />
+                </div>
+                <button class="load-btn" id="load-btn" onclick="loadPost()">Load Post</button>
+            </div>
+            <div class="status-msg" id="load-status"></div>
+        </div>
+
+        <!-- Main form (shared by both modes) -->
         <form id="post-form">
             <div class="field">
                 <label for="title">Title</label>
@@ -222,10 +326,14 @@
             <div class="field">
                 <label for="body">Body (Markdown)</label>
                 <textarea id="body" name="body" placeholder="Write your post in Markdown..."></textarea>
+                <p class="body-note" id="body-note">⚠ Loaded as rendered HTML — will be re-rendered from this content on save.</p>
             </div>
 
-            <button type="submit" class="submit-btn" id="submit-btn">Publish</button>
-            <div id="status"></div>
+            <button type="submit" class="submit-btn" id="submit-btn">
+                <span class="spinner"></span>
+                <span id="submit-label">Publish</span>
+            </button>
+            <div class="status-msg" id="status"></div>
         </form>
 
         <div class="pat-controls">
@@ -234,8 +342,8 @@
     </div>
 
     <script>
-        const OWNER = 'simaadleyba';
-        const REPO  = 'simaadleyba.github.io';
+        const OWNER      = 'simaadleyba';
+        const REPO       = 'simaadleyba.github.io';
         const POSTS_PATH = 'fieldnotes/posts.json';
 
         // ── Password gate ──
@@ -252,14 +360,10 @@
         })();
 
         // ── GitHub PAT ──
-        function getPAT() {
-            return localStorage.getItem('gh_pat');
-        }
+        function getPAT() { return localStorage.getItem('gh_pat'); }
 
         function promptPAT() {
-            const pat = window.prompt(
-                'Enter your GitHub Personal Access Token\n(needs repo / contents:write scope):'
-            );
+            const pat = window.prompt('Enter your GitHub Personal Access Token\n(needs repo / contents:write scope):');
             if (!pat) { window.location.href = '/'; return null; }
             localStorage.setItem('gh_pat', pat);
             return pat;
@@ -272,11 +376,94 @@
 
         if (!getPAT()) promptPAT();
 
+        // ── Mode state ──
+        let currentMode = 'new';
+
+        function switchTab(mode) {
+            currentMode = mode;
+            document.getElementById('tab-new').classList.toggle('active', mode === 'new');
+            document.getElementById('tab-edit').classList.toggle('active', mode === 'edit');
+
+            clearStatus('status');
+            clearStatus('load-status');
+
+            if (mode === 'new') {
+                document.getElementById('edit-loader').style.display = 'none';
+                document.getElementById('post-form').style.display = 'block';
+                document.getElementById('slug').readOnly = false;
+                document.getElementById('body-note').style.display = 'none';
+                document.getElementById('submit-label').textContent = 'Publish';
+                resetForm();
+            } else {
+                document.getElementById('edit-loader').style.display = 'block';
+                document.getElementById('post-form').style.display = 'none';
+                document.getElementById('edit-slug-input').value = '';
+                document.getElementById('edit-slug-input').focus();
+            }
+        }
+
+        // ── Load post for editing ──
+        async function loadPost() {
+            const slug = document.getElementById('edit-slug-input').value.trim();
+            if (!slug) return;
+
+            const loadBtn = document.getElementById('load-btn');
+            loadBtn.disabled = true;
+            loadBtn.textContent = 'Loading…';
+            clearStatus('load-status');
+
+            const pat = getPAT();
+            try {
+                // 1. Fetch posts.json, find entry
+                const postsFile = await ghFetch(POSTS_PATH, 'GET', null, pat);
+                const posts = JSON.parse(atob(postsFile.content.replace(/\n/g, '')));
+                const post = posts.find(p => p.slug === slug);
+                if (!post) throw new Error(`No post found with slug "${slug}"`);
+
+                // 2. Fetch post HTML, extract .post-body
+                const postFile = await ghFetch(`fieldnotes/posts/${slug}.html`, 'GET', null, pat);
+                const rawHtml = atob(postFile.content.replace(/\n/g, ''));
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(rawHtml, 'text/html');
+                const postBodyEl = doc.querySelector('.post-body');
+                const bodyContent = postBodyEl ? postBodyEl.innerHTML.trim() : '';
+
+                // 3. Pre-fill form fields
+                document.getElementById('title').value   = post.title   || '';
+                document.getElementById('date').value    = post.date    || '';
+                document.getElementById('slug').value    = post.slug    || '';
+                document.getElementById('slug-preview').textContent = post.slug || '...';
+                document.getElementById('summary').value = post.summary || '';
+                document.getElementById('tags').value    = (post.tags || []).join(', ');
+                document.getElementById('body').value    = bodyContent;
+
+                // 4. Lock slug, show body note, update button
+                document.getElementById('slug').readOnly = true;
+                document.getElementById('body-note').style.display = 'block';
+                document.getElementById('submit-label').textContent = 'Save Changes';
+
+                // 5. Show form
+                document.getElementById('post-form').style.display = 'block';
+
+            } catch (err) {
+                showStatus('load-status', 'error', 'Error: ' + err.message);
+            }
+
+            loadBtn.disabled = false;
+            loadBtn.textContent = 'Load Post';
+        }
+
+        // Allow pressing Enter in the slug input to trigger load
+        document.getElementById('edit-slug-input').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); loadPost(); }
+        });
+
         // ── Date default ──
         document.getElementById('date').value = new Date().toISOString().slice(0, 10);
 
-        // ── Slug auto-generation from title ──
+        // ── Slug auto-generation (new mode only) ──
         document.getElementById('title').addEventListener('input', function () {
+            if (currentMode === 'edit') return;
             const slug = toSlug(this.value);
             document.getElementById('slug').value = slug;
             document.getElementById('slug-preview').textContent = slug || '...';
@@ -287,9 +474,7 @@
         });
 
         function toSlug(str) {
-            return str
-                .toLowerCase()
-                .trim()
+            return str.toLowerCase().trim()
                 .replace(/[^\w\s-]/g, '')
                 .replace(/\s+/g, '-')
                 .replace(/-+/g, '-')
@@ -299,45 +484,58 @@
         // ── Form submit ──
         document.getElementById('post-form').addEventListener('submit', async function (e) {
             e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            const status = document.getElementById('status');
+
+            const isEdit  = currentMode === 'edit';
+            const btn     = document.getElementById('submit-btn');
+            const label   = document.getElementById('submit-label');
+
             btn.disabled = true;
-            btn.textContent = 'Publishing…';
-            status.className = '';
-            status.style.display = 'none';
+            btn.classList.add('loading');
+            label.textContent = isEdit ? 'Saving…' : 'Publishing…';
+            clearStatus('status');
 
             const pat = getPAT();
-            if (!pat) { promptPAT(); btn.disabled = false; btn.textContent = 'Publish'; return; }
+            if (!pat) { promptPAT(); btn.disabled = false; btn.classList.remove('loading'); label.textContent = isEdit ? 'Save Changes' : 'Publish'; return; }
 
             const title   = document.getElementById('title').value.trim();
             const date    = document.getElementById('date').value;
             const slug    = document.getElementById('slug').value.trim();
             const summary = document.getElementById('summary').value.trim();
-            const tags = document.getElementById('tags').value.split(',').map(t => t.trim()).filter(Boolean);
+            const tags    = document.getElementById('tags').value.split(',').map(t => t.trim()).filter(Boolean);
             const body    = document.getElementById('body').value;
+            const today   = new Date().toISOString().slice(0, 10);
 
-            const post = { title, date, slug, summary, tags };
+            const post = isEdit
+                ? { title, date, slug, summary, tags, lastEdited: today }
+                : { title, date, slug, summary, tags };
 
             try {
-                // 1. Update posts.json
-                await updatePostsJson(post, pat);
+                if (isEdit) {
+                    await updatePostInJson(post, pat);
+                } else {
+                    await addPostToJson(post, pat);
+                }
 
-                // 2. Create post HTML file
                 const postHtml = buildPostHtml(post, marked.parse(body));
-                await createFile(`fieldnotes/posts/${slug}.html`, postHtml, `Add post: ${title}`, pat);
+                await createFile(
+                    `fieldnotes/posts/${slug}.html`,
+                    postHtml,
+                    `${isEdit ? 'Edit' : 'Add'} post: ${title}`,
+                    pat
+                );
 
-                status.className = 'success';
-                status.innerHTML = `Published! <a href="/fieldnotes/posts/${slug}.html" target="_blank">/fieldnotes/posts/${slug}.html</a>`;
-                document.getElementById('post-form').reset();
-                document.getElementById('date').value = new Date().toISOString().slice(0, 10);
-                document.getElementById('slug-preview').textContent = '...';
+                showStatus('status', 'success',
+                    `${isEdit ? 'Updated!' : 'Published!'} <a href="/fieldnotes/posts/${slug}.html" target="_blank">/fieldnotes/posts/${slug}.html</a>`
+                );
+
+                if (!isEdit) resetForm();
             } catch (err) {
-                status.className = 'error';
-                status.textContent = 'Error: ' + err.message;
+                showStatus('status', 'error', 'Error: ' + err.message);
             }
 
             btn.disabled = false;
-            btn.textContent = 'Publish';
+            btn.classList.remove('loading');
+            label.textContent = isEdit ? 'Save Changes' : 'Publish';
         });
 
         // ── GitHub API helpers ──
@@ -358,8 +556,7 @@
             return res.json();
         }
 
-        async function updatePostsJson(newPost, pat) {
-            // Fetch current file to get SHA and content
+        async function addPostToJson(newPost, pat) {
             const current = await ghFetch(POSTS_PATH, 'GET', null, pat);
             const posts = JSON.parse(atob(current.content.replace(/\n/g, '')));
             posts.unshift(newPost);
@@ -370,19 +567,26 @@
             }, pat);
         }
 
+        async function updatePostInJson(updatedPost, pat) {
+            const current = await ghFetch(POSTS_PATH, 'GET', null, pat);
+            const posts = JSON.parse(atob(current.content.replace(/\n/g, '')));
+            const idx = posts.findIndex(p => p.slug === updatedPost.slug);
+            if (idx === -1) throw new Error(`Post "${updatedPost.slug}" not found in posts.json`);
+            posts[idx] = updatedPost;
+            await ghFetch(POSTS_PATH, 'PUT', {
+                message: `Edit post: ${updatedPost.title}`,
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(posts, null, 2) + '\n'))),
+                sha: current.sha,
+            }, pat);
+        }
+
         async function createFile(path, content, message, pat) {
-            // Check if file exists (to get SHA if it does)
             let sha;
             try {
                 const existing = await ghFetch(path, 'GET', null, pat);
                 sha = existing.sha;
-            } catch (_) {
-                sha = undefined;
-            }
-            const body = {
-                message,
-                content: btoa(unescape(encodeURIComponent(content))),
-            };
+            } catch (_) { sha = undefined; }
+            const body = { message, content: btoa(unescape(encodeURIComponent(content))) };
             if (sha) body.sha = sha;
             await ghFetch(path, 'PUT', body, pat);
         }
@@ -392,6 +596,10 @@
             const tagSpans = (post.tags || [])
                 .map(t => `<span class="tag">${esc(t)}</span>`)
                 .join('');
+
+            const lastEditedBlock = post.lastEdited
+                ? `\n    <div class="post-last-edited">Last edited: ${esc(fmtDate(post.lastEdited))}</div>`
+                : '';
 
             return `<!DOCTYPE html>
 <html lang="en">
@@ -412,7 +620,7 @@
         .post-back:hover { color: var(--accent); }
         .post-date { font-family: monospace; font-size: 0.82rem; color: var(--muted); margin-bottom: 0.5rem; }
         .post-header h1 { margin-bottom: 0.8rem; }
-        .post-body { max-width: 680px; padding: 2.2rem 0; }
+        .post-body { max-width: 680px; padding: 2.2rem 0 1rem; }
         .post-body h1, .post-body h2, .post-body h3 { margin-top: 1.8rem; margin-bottom: 0.5rem; }
         .post-body p { margin-bottom: 1rem; }
         .post-body a { color: var(--accent); }
@@ -425,6 +633,7 @@
         .post-body ul, .post-body ol { margin-bottom: 1rem; padding-left: 1.5rem; }
         .post-body li { margin-bottom: 0.3rem; }
         .post-body hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+        .post-last-edited { max-width: 680px; font-family: monospace; font-size: 0.76rem; color: var(--muted); padding: 0.8rem 0 1.6rem; border-top: 1px solid var(--border); margin-top: 0.5rem; }
     </style>
 </head>
 
@@ -459,7 +668,7 @@
         <div class="container">
             <div class="post-body">
                 ${bodyHtml}
-            </div>
+            </div>${lastEditedBlock}
         </div>
     </section>
 
@@ -482,6 +691,7 @@
 </html>`;
         }
 
+        // ── Utilities ──
         function esc(str) {
             return String(str)
                 .replace(/&/g, '&amp;')
@@ -496,6 +706,29 @@
             return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         }
 
+        function showStatus(id, type, html) {
+            const el = document.getElementById(id);
+            el.className = 'status-msg ' + type;
+            el.innerHTML = html;
+        }
+
+        function clearStatus(id) {
+            const el = document.getElementById(id);
+            el.className = 'status-msg';
+            el.innerHTML = '';
+        }
+
+        function resetForm() {
+            document.getElementById('post-form').reset();
+            document.getElementById('date').value = new Date().toISOString().slice(0, 10);
+            document.getElementById('slug-preview').textContent = '...';
+            document.getElementById('slug').readOnly = false;
+            document.getElementById('body-note').style.display = 'none';
+            document.getElementById('submit-label').textContent = 'Publish';
+            clearStatus('status');
+        }
+
+        // Close mobile nav on link click
         document.querySelectorAll('#nav-links a').forEach(link => {
             link.addEventListener('click', () => {
                 document.getElementById('nav-links').classList.remove('open');
