@@ -184,7 +184,7 @@
             <a href="/#beyond">beyond</a>
             <a href="/" target="_blank" rel="noopener">cv</a>
             <span class="nav-pipe">|</span>
-            <a href="/blog/">blog</a>
+            <a href="/fieldnotes/">field notes</a>
         </div>
     </nav>
 
@@ -205,7 +205,7 @@
             <div class="field">
                 <label for="slug">Slug</label>
                 <input type="text" id="slug" name="slug" required placeholder="url-friendly-slug" />
-                <p class="slug-hint">→ /blog/posts/<span id="slug-preview">...</span>.html</p>
+                <p class="slug-hint">→ /fieldnotes/posts/<span id="slug-preview">...</span>.html</p>
             </div>
 
             <div class="field">
@@ -242,7 +242,7 @@
     <script>
         const OWNER = 'simaadleyba';
         const REPO  = 'simaadleyba.github.io';
-        const POSTS_PATH = 'blog/posts.json';
+        const POSTS_PATH = 'fieldnotes/posts.json';
 
         // ── Password gate ──
         const PASSWORD = 'tasbak-5tydhy-carBih';
@@ -330,10 +330,10 @@
 
                 // 2. Create post HTML file
                 const postHtml = buildPostHtml(post, marked.parse(body));
-                await createFile(`blog/posts/${slug}.html`, postHtml, `Add post: ${title}`, pat);
+                await createFile(`fieldnotes/posts/${slug}.html`, postHtml, `Add post: ${title}`, pat);
 
                 status.className = 'success';
-                status.innerHTML = `Published! <a href="/blog/posts/${slug}.html" target="_blank">/blog/posts/${slug}.html</a>`;
+                status.innerHTML = `Published! <a href="/fieldnotes/posts/${slug}.html" target="_blank">/fieldnotes/posts/${slug}.html</a>`;
                 document.getElementById('post-form').reset();
                 document.getElementById('date').value = new Date().toISOString().slice(0, 10);
                 document.getElementById('slug-preview').textContent = '...';
@@ -448,13 +448,13 @@
             <a href="/#beyond">beyond</a>
             <a href="/" target="_blank" rel="noopener">cv</a>
             <span class="nav-pipe">|</span>
-            <a href="/blog/" class="selected">blog</a>
+            <a href="/fieldnotes/" class="selected">field notes</a>
         </div>
     </nav>
 
     <header class="post-header">
         <div class="container">
-            <a href="/blog/" class="post-back">← blog</a>
+            <a href="/fieldnotes/" class="post-back">← field notes</a>
             <p class="post-date">${fmtDate(post.date)}</p>
             <h1>${esc(post.title)}</h1>
             <div class="card-tags">${tagSpans}</div>
