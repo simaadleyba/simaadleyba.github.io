@@ -214,15 +214,9 @@
             </div>
 
             <div class="field">
-                <label>Tags</label>
-                <div class="tag-checkboxes">
-                    <label><input type="checkbox" name="tags" value="research"> research</label>
-                    <label><input type="checkbox" name="tags" value="bluesky"> bluesky</label>
-                    <label><input type="checkbox" name="tags" value="ml"> ml</label>
-                    <label><input type="checkbox" name="tags" value="network science"> network science</label>
-                    <label><input type="checkbox" name="tags" value="personal"> personal</label>
-                    <label><input type="checkbox" name="tags" value="photography"> photography</label>
-                </div>
+                <label for="tags">Tags</label>
+                <input type="text" id="tags" name="tags" placeholder="research, bluesky, personal..." />
+                <p class="slug-hint">comma-separated</p>
             </div>
 
             <div class="field">
@@ -319,7 +313,7 @@
             const date    = document.getElementById('date').value;
             const slug    = document.getElementById('slug').value.trim();
             const summary = document.getElementById('summary').value.trim();
-            const tags    = [...document.querySelectorAll('input[name="tags"]:checked')].map(el => el.value);
+            const tags = document.getElementById('tags').value.split(',').map(t => t.trim()).filter(Boolean);
             const body    = document.getElementById('body').value;
 
             const post = { title, date, slug, summary, tags };
