@@ -1092,6 +1092,12 @@
     .hero__name .portrait { width: 110px; height: 110px; }
   }
 
+  @media (max-width: 768px) {
+    .section:first-of-type {
+      padding-top: 3.5rem;
+    }
+  }
+
   /* ==========================================================
      TWEAKS PANEL
      ========================================================== */
