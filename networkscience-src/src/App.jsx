@@ -40,6 +40,7 @@ function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
     <nav className="ns-nav">
+      <a className="nav-mark" href="/"><span className="dot"></span></a>
       <button
         className="ns-nav-burger"
         aria-label="Toggle menu"
@@ -48,12 +49,15 @@ function Navbar() {
         ☰
       </button>
       <div className={`ns-nav-links${menuOpen ? ' mobile-open' : ''}`}>
-        <a href="/" onClick={() => setMenuOpen(false)}>about</a>
+        <a href="/#about" onClick={() => setMenuOpen(false)}>about</a>
         <a href="/#research" onClick={() => setMenuOpen(false)}>research</a>
         <a href="/#experience" onClick={() => setMenuOpen(false)}>experience</a>
         <a href="/#education" onClick={() => setMenuOpen(false)}>education</a>
+        <a href="/#studyguides" onClick={() => setMenuOpen(false)}>study guides</a>
         <a href="/#beyond" onClick={() => setMenuOpen(false)}>beyond</a>
-        <a href="/#" onClick={() => setMenuOpen(false)}>cv</a>
+        <a href="/" target="_blank" rel="noopener" onClick={() => setMenuOpen(false)}>cv</a>
+        <span className="nav-pipe">|</span>
+        <a href="/fieldnotes/" className="field-notes" onClick={() => setMenuOpen(false)}>field notes</a>
       </div>
     </nav>
   );
@@ -1030,17 +1034,16 @@ export default function App() {
       </div>
 
       {/* ── Footer — full width, outside grid ── */}
-      <footer style={{ padding: '1.8rem 0', textAlign: 'center' }}>
-        <div className="container">
-          <p style={{ color: '#7B6FD6', fontWeight: 500, fontSize: '0.88rem', letterSpacing: '0.02em', margin: '0 0 0.3rem' }}>
-            adleyba [at] sabanciuniv [dot] edu
-          </p>
-          <p style={{ color: '#a0a0a0', fontSize: '0.78rem', margin: '0 0 0.5rem' }}>
-            Network Science Study Guide · Built with React + KaTeX
-          </p>
-          <a href="/" style={{ color: 'var(--accent)', fontSize: '0.78rem', fontFamily: 'monospace', textDecoration: 'none', opacity: 0.8 }}>
-            back to portfolio
-          </a>
+      <footer className="footer">
+        <div className="footer-bg" aria-hidden="true"></div>
+        <div className="footer-inner">
+          <div className="footer-left">
+            <p className="footer-email">adleyba [at] sabanciuniv [dot] edu</p>
+            <p style={{ margin: "0.5rem 0 0", fontSize: "0.78rem", opacity: 0.6, fontFamily: "var(--ff-mono)" }}>
+              Network Science Study Guide · Built with React + KaTeX
+            </p>
+          </div>
+          <p className="footer-copy">© 2026 — SIMA ADLEYBA</p>
         </div>
       </footer>
     </div>
