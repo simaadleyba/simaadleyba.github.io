@@ -445,7 +445,7 @@
     position: relative;
     padding-top: 3.5rem;
     padding-bottom: 3.5rem;
-    border-top: 1px solid var(--line);
+    border-top: 2px solid var(--line-2);
   }
   .section:first-of-type { border-top: none; }
 
