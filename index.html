@@ -1,501 +1,711 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sima Adleyba</title>
-    <meta name="description"
-        content="Sima Adleyba — MS Student in Data Science at Sabancı University. Research in computational social science, network analysis, and algorithmic fairness.">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sima Adleyba</title>
+<meta name="description" content="Sima Adleyba — MS Student in Data Science at Sabancı University. Research in computational social science, network analysis, and algorithmic fairness." />
 
-    <!-- Google Fonts: Noto Sans -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
 
-    <link rel="stylesheet" href="style.css" />
-    <link rel="icon" type="image/png" href="assets/icon.png">
-    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-    <meta name="apple-mobile-web-app-title" content="Sima Adleyba">
+<link rel="icon" type="image/png" href="assets/icon.png" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="Sima Adleyba" />
+
+<link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-    <!-- ========== NAVIGATION BAR ========== -->
+<!-- ========== NAV ========== -->
+<nav id="nav">
+  <a class="nav-mark" href="#"><span class="dot"></span></a>
+  <button id="burger-icon" aria-label="Toggle menu"
+    onclick="document.getElementById('nav-links').classList.toggle('open')">☰</button>
+  <div id="nav-links">
+    <a href="#">about</a>
+    <a href="#research">research</a>
+    <a href="#experience">experience</a>
+    <a href="#education">education</a>
+    <a href="#studyguides">study guides</a>
+    <a href="#beyond">beyond</a>
+    <a href="#" target="_blank" rel="noopener">cv</a>
+    <span class="nav-pipe">|</span>
+    <a href="/fieldnotes/" class="field-notes">field notes</a>
+  </div>
+</nav>
 
-    <nav id="nav">
-        <button id="burger-icon" aria-label="Toggle menu"
-            onclick="document.getElementById('nav-links').classList.toggle('open')">☰</button>
-        <div id="nav-links">
-            <a href="#">about</a>
-            <a href="#research">research</a>
-            <a href="#experience">experience</a>
-            <a href="#education">education</a>
-            <a href="#studyguides">study guides</a>
-            <a href="#beyond">beyond</a>
-            <a href="#" target="_blank" rel="noopener">cv</a>
-            <span class="nav-pipe">|</span>
-            <a href="/fieldnotes/">field notes</a>
-        </div>
-    </nav>
+<!-- ========== HERO ========== -->
+<header class="hero">
+  <div class="hero__bg"></div>
+  <div class="hero__grain"></div>
 
-    <!-- ========== HEADER ========== -->
-
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="photo-placeholder">
-                    <img src="assets/photo.JPG" alt="Sima Adleyba">
-                </div>
-                <div class="header-text">
-                    <div class="name-row">
-                        <h1>Sima Adleyba</h1>
-                        <div class="header-links">
-                            <a href="mailto:adleyba@sabanciuniv.edu" title="Email">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <rect x="2" y="4" width="20" height="16" rx="2" />
-                                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                                </svg>
-                            </a>
-                            <a href="https://github.com/simaadleyba" target="_blank" rel="noopener" title="GitHub">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                    fill="currentColor">
-                                    <path
-                                        d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
-                                </svg>
-                            </a>
-                            <a href="https://www.linkedin.com/in/simaadleyba/" target="_blank" rel="noopener"
-                                title="LinkedIn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                    fill="currentColor">
-                                    <path
-                                        d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                    <p class="subtitle">MS Student in Data Science · VRL Lab · Sabancı University</p>
-                    <p>
-                        I'm a first-year Master's student in Data Science at Sabancı University, advised by
-                        <a href="https://www.onurvarol.com/" target="_blank" rel="noopener">Dr. Onur Varol</a>.
-                        My research interests lie at the intersection of computational social science, network analysis,
-                        and algorithmic fairness.
-                    </p>
-                    <p>
-                        Currently, I'm investigating algorithmic fairness and systemic bias on Bluesky, specifically
-                        focusing on how curation mechanisms shape network structure and user exposure.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </header>
+  <div class="hero__top">
+    <div class="meta-block">
+      <span class="meta-label">40.8920° N · 29.3786° E</span>
+    </div>
+  </div>
 
 
-
-    <!-- ========== RESEARCH ========== -->
-
-    <section id="research" class="section">
-        <div class="container">
-            <h2>Research</h2>
-            <p class="section-intro">
-                My research focuses on understanding bias and fairness in social platforms, network effects of
-                algorithmic recommendations.
-            </p>
-
-            <div class="card">
-                <div class="card-meta">
-                    <span class="card-type">MSc Thesis</span>
-                    <span class="card-date">Oct 2025 - Present</span>
-                </div>
-                <h3>Measuring Bias on Bluesky</h3>
-                <p class="card-advisor">Advisor: Dr. Onur Varol</p>
-                <p class="card-description">
-                    Investigating the intersection of algorithmic fairness and systemic bias within the Bluesky ecosystem, specifically focusing on curation mechanisms.
-                </p>
-                <div class="card-tags">
-                    <span class="tag">Social Networks</span>
-                    <span class="tag">Algorithmic Fairness</span>
-                    <span class="tag">Decentralized Platforms</span>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-meta">
-                    <span class="card-type">Industry Project</span>
-                    <span class="card-date">Oct 2024 – Jun 2025</span>
-                </div>
-                <h3>Kariyer.net Knowledge Base</h3>
-                <p class="card-advisor">Supervisors: Dr. Onur Varol, Ömür Bali</p>
-                <p class="card-description">
-                    Developed a knowledge base for Turkey's largest job platform. Built a skill extraction
-                    pipeline using LangChain and GPT-4o-mini, with HDBSCAN clustering for normalization.
-                    The resulting graph contains 114,000+ nodes and ~61 million edges.
-                </p>
-                <div class="card-tags">
-                    <span class="tag">NLP</span>
-                    <span class="tag">Knowledge Graphs</span>
-                    <span class="tag">LLMs</span>
-                </div>
-                <a href="https://fens.sabanciuniv.edu/sites/fens.sabanciuniv.edu/files/2025-08/poster.pdf"
-                    target="_blank" rel="noopener" class="card-link">
-                    Project Poster →
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== EXPERIENCE ========== -->
-
-    <section id="experience" class="section">
-        <div class="container">
-            <h2>Experience</h2>
-
-            <div class="entry">
-                <div class="entry-header">
-                    <h3>Teaching Assistant - CS412 Machine Learning</h3>
-                    <span class="entry-date">Fall 25/26, Spring 25/26</span>
-                </div>
-                <p class="entry-org">Sabancı University</p>
-                <p class="entry-description">
-                    Led recitations, held office hours, and handled grading for the Machine Learning course.
-                </p>
-            </div>
-
-            <div class="entry">
-                <div class="entry-header">
-                    <h3>Data Science Intern</h3>
-                    <span class="entry-date">Jan 2024 – Aug 2024</span>
-                </div>
-                <p class="entry-org">iLab</p>
-                <p class="entry-description">
-                    Built a RAG-based usability testing tool using LangChain, OpenAI API, MongoDB, and Docker.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== EDUCATION ========== -->
-
-    <section id="education" class="section">
-        <div class="container">
-            <h2>Education</h2>
-
-            <div class="entry">
-                <div class="entry-header">
-                    <h3>MS in Data Science</h3>
-                    <span class="entry-date">Sep 2025 – Jun 2027 (Expected)</span>
-                </div>
-                <p class="entry-org">Sabancı University</p>
-            </div>
-
-            <div class="entry">
-                <div class="entry-header">
-                    <h3>BS in Computer Science</h3>
-                    <span class="entry-date">Sep 2020 – Jun 2025</span>
-                </div>
-                <p class="entry-org">Sabancı University</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== INTERACTIVE STUDY GUIDES ========== -->
-
-    <section id="studyguides" class="section">
-        <div class="container">
-            <h2>Interactive Study Guides</h2>
-            <p class="section-intro">I build interactive study guides for courses I TA and take.</p>
-            <div class="guide-cards">
-                <a href="/networkscience/" class="guide-card">
-                    <div class="guide-thumbnail">
-                        <img src="https://api.microlink.io/?url=https%3A%2F%2Fsimaadleyba.com%2Fnetworkscience%2F&screenshot=true&meta=false&embed=screenshot.url&css=nav%7Bdisplay%3Anone%7D" alt="Network Science study guide" loading="lazy">
-                    </div>
-                    <div class="guide-card-body">
-                        <span class="card-type">Interactive Guide</span>
-                        <h3>Network Science</h3>
-                        <p class="card-description">Interactive study guide with visualizations, centrality measures, random graphs, Bethe lattices, and more.</p>
-                    </div>
-                </a>
-                <a href="/machinelearning/" class="guide-card">
-                    <div class="guide-thumbnail">
-                        <img src="https://api.microlink.io/?url=https%3A%2F%2Fsimaadleyba.com%2Fmachinelearning%2Fknn%2F&screenshot=true&meta=false&embed=screenshot.url&css=nav%7Bdisplay%3Anone%7D" alt="Machine Learning study guide" loading="lazy">
-                    </div>
-                    <div class="guide-card-body">
-                        <span class="card-type">Interactive Guide</span>
-                        <h3>Machine Learning</h3>
-                        <p class="card-description">MLPs, backpropagation, loss functions, and more, with interactive visualizations.</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== BEYOND RESEARCH ========== -->
-
-    <section id="beyond" class="section">
-        <div class="container">
-            <h2>Beyond Research</h2>
-
-            <div class="beyond-subsection">
-                <h3>Blogging</h3>
-                <a href="/fieldnotes/" class="card"
-                    style="display:block; text-decoration:none; color:inherit; margin-top:0.6rem;">
-                    <div class="card-meta">
-                        <span class="card-type">Blog</span>
-                    </div>
-                    <h3 style="margin-bottom:0.4rem;">Field Notes</h3>
-                    <p class="card-description" style="margin-bottom:0;">Uncompressed thinking.</p>
-                </a>
-            </div>
-
-            <div class="beyond-subsection">
-                <h3>Photography</h3>
-                <p>I enjoy capturing moments around İstanbul and travels.</p>
-                <div class="photo-grid">
-                    <!-- Reverse chronological: most recent first -->
-                    <div class="photo-grid-item" data-index="0" data-title="self portrait"
-                        data-fullsrc="assets/photos/DSCF6361.JPG" data-location="sabanci university, istanbul"
-                        data-date="march 2026"
-                        data-caption="sima just a few days before removing her lip piercings. felt cool tbh."
-                        onclick="openLightbox(0)"><img src="assets/photos/thumbs/DSCF6361.JPG" alt="self portrait"
-                            loading="lazy"></div>
-                    <div class="photo-grid-item" data-index="1" data-title="ankara_streets_2"
-                        data-fullsrc="assets/photos/DSCF6094.jpg" data-location="kizilay, ankara"
-                        data-date="january 2026" data-caption="just a photo of some street of ankara"
-                        onclick="openLightbox(1)"><img src="assets/photos/thumbs/DSCF6094.jpg" alt="ankara_streets_2"
-                            loading="lazy"></div>
-                    <div class="photo-grid-item" data-index="2" data-title="ankara_streets_1"
-                        data-fullsrc="assets/photos/DSCF6093.jpg" data-location="kizilay, ankara"
-                        data-date="january 2026" data-caption="just a photo of some street of ankara"
-                        onclick="openLightbox(2)"><img src="assets/photos/thumbs/DSCF6093.jpg" alt="ankara_streets_1"
-                            loading="lazy"></div>
-                    <div class="photo-grid-item" data-index="3" data-title="ankaralı amca"
-                        data-fullsrc="assets/photos/DSCF6083.jpg" data-location="ankara" data-date="january 2026"
-                        data-caption="amca commuting using the terrible public transportation of ankara"
-                        onclick="openLightbox(3)"><img src="assets/photos/thumbs/DSCF6083.jpg" alt="ankaralı amca"
-                            loading="lazy"></div>
-                    <div class="photo-grid-item" data-index="4" data-title="welcome to ankara"
-                        data-fullsrc="assets/photos/DSCF6050.jpg" data-location="esenboga airport, ankara"
-                        data-date="january 2026"
-                        data-caption="ankara is known as cold, depressing. when i stepped outside from the esenboga airport, this was the scene that was waiting for me. i guess what i have heard was pretty accurate"
-                        onclick="openLightbox(4)"><img src="assets/photos/thumbs/DSCF6050.jpg" alt="welcome to ankara"
-                            loading="lazy"></div>
-                    <div class="photo-grid-item" data-index="5" data-title="matisse"
-                        data-fullsrc="assets/photos/DSCF5830.JPG" data-location="ataturk kultur merkezi, istanbul"
-                        data-date="october 2025"
-                        data-caption="the lion does not concern herself with understanding matisse"
-                        onclick="openLightbox(5)"><img src="assets/photos/thumbs/DSCF5830.JPG" alt="matisse"
-                            loading="lazy"></div>
-                    <!-- Hidden items — revealed by "show more" -->
-                    <div class="photo-grid-item gallery-hidden" data-index="6" data-title="offtown_4"
-                        data-fullsrc="assets/photos/DSCF4003.JPG" data-location="sabanci university, istanbul"
-                        data-date="may 2025" data-caption="photo from offtown festival of sabanci university."
-                        onclick="openLightbox(6)"><img src="assets/photos/thumbs/DSCF4003.JPG" alt="offtown_4"
-                            loading="lazy"></div>
-                    <div class="photo-grid-item gallery-hidden" data-index="7" data-title="offtown_3"
-                        data-fullsrc="assets/photos/DSCF3953.JPG" data-location="sabanci university, istanbul"
-                        data-date="may 2025" data-caption="photo from offtown festival of sabanci university."
-                        onclick="openLightbox(7)"><img src="assets/photos/thumbs/DSCF3953.JPG" alt="offtown_3"
-                            loading="lazy"></div>
-                    <div class="photo-grid-item gallery-hidden" data-index="8" data-title="offtown_2"
-                        data-fullsrc="assets/photos/DSCF3918.JPG" data-location="sabanci university, istanbul"
-                        data-date="may 2025" data-caption="photo from offtown festival of sabanci university."
-                        onclick="openLightbox(8)"><img src="assets/photos/thumbs/DSCF3918.JPG" alt="offtown_2"
-                            loading="lazy"></div>
-                    <div class="photo-grid-item gallery-hidden" data-index="9" data-title="offtown_1"
-                        data-fullsrc="assets/photos/DSCF3883.JPG" data-location="sabanci university, istanbul"
-                        data-date="may 2025" data-caption="photo from offtown festival of sabanci university."
-                        onclick="openLightbox(9)"><img src="assets/photos/thumbs/DSCF3883.JPG" alt="offtown_1"
-                            loading="lazy"></div>
-                    <div class="photo-grid-item gallery-hidden" data-index="10" data-title="bank"
-                        data-fullsrc="assets/photos/DSCF3325.JPG" data-location="sabanci university, istanbul"
-                        data-date="february 2025"
-                        data-caption="sabanci in winter is something else. listening to jeon jin hee is highly recommended"
-                        onclick="openLightbox(10)"><img src="assets/photos/thumbs/DSCF3325.JPG" alt="bank"
-                            loading="lazy"></div>
-                    <div class="photo-grid-item gallery-hidden" data-index="11"
-                        data-title="authentic street food by teyzeler" data-fullsrc="assets/photos/DSCF3252.JPG"
-                        data-location="ferikoy, istanbul" data-date="october 2024"
-                        data-caption="teyzeler means 'aunts' in turkish. and they were preparing a food. i don't know what. i wasn't interested."
-                        onclick="openLightbox(11)"><img src="assets/photos/thumbs/DSCF3252.JPG"
-                            alt="authentic street food by teyzeler" loading="lazy"></div>
-                    <div class="photo-grid-item gallery-hidden" data-index="12" data-title="two guys in antique market"
-                        data-fullsrc="assets/photos/DSCF3245.JPG" data-location="ferikoy, istanbul"
-                        data-date="october 2024"
-                        data-caption="two guys in antique market. nothing more. maybe a cigarette?"
-                        onclick="openLightbox(12)"><img src="assets/photos/thumbs/DSCF3245.JPG"
-                            alt="two guys in antique market" loading="lazy"></div>
-                    <div class="photo-grid-item gallery-hidden" data-index="13" data-title="museum"
-                        data-fullsrc="assets/photos/DSCF3201.JPG" data-location="istanbul museum of modern arts"
-                        data-date="october 2024" data-caption="museum of modern arts" onclick="openLightbox(13)"><img
-                            src="assets/photos/thumbs/DSCF3201.JPG" alt="museum" loading="lazy"></div>
-                    <div class="photo-grid-item gallery-hidden" data-index="14" data-title="abstract"
-                        data-fullsrc="assets/photos/DSCF3178.JPG" data-location="istanbul museum of modern arts"
-                        data-date="october 2024" data-caption="people in museum, they're always on move"
-                        onclick="openLightbox(14)"><img src="assets/photos/thumbs/DSCF3178.JPG" alt="abstract"
-                            loading="lazy"></div>
-                    <div class="photo-grid-item gallery-hidden" data-index="15" data-title="vapurda"
-                        data-fullsrc="assets/photos/DSCF2858.JPG" data-location="kadikoy, istanbul"
-                        data-date="september 2024" data-caption="a turkish man looking away in the ship"
-                        onclick="openLightbox(15)"><img src="assets/photos/thumbs/DSCF2858.JPG" alt="vapurda"
-                            loading="lazy"></div>
-                    <div class="photo-grid-item gallery-hidden" data-index="16"
-                        data-title="two chairs in middle of nowhere" data-fullsrc="assets/photos/DSCF2459.JPG"
-                        data-location="kocaeli" data-date="june 2024"
-                        data-caption="two chairs in middle of nowhere. idk why." onclick="openLightbox(16)"><img
-                            src="assets/photos/thumbs/DSCF2459.JPG" alt="two chairs in middle of nowhere"
-                            loading="lazy"></div>
-                </div>
-                <button class="show-more-btn" id="show-more-btn" onclick="toggleGallery()">show more</button>
-            </div>
-
-            <div class="beyond-subsection">
-                <h3>Music</h3>
-                <p>I'll listen to almost anything, but lately it's mostly K-pop, rap, Japanese folk, progressive rock, and K-indie. I also play guitar. Though I must say, I like my HSS Strat and how I look with it.</p>
-            </div>
-
-            <div class="beyond-subsection">
-                <h3>Movies</h3>
-                <p>I love whodunnits and murder mysteries and could genuinely talk about them for hours. Also into psychological thrillers and Korean cinema. <a href="https://en.wikipedia.org/wiki/Park_Chan-wook" target="_blank" rel="noopener">Park Chan-wook</a> especially.</p>
-            </div>
-
-            <div class="beyond-subsection">
-                <h3>Other Media</h3>
-                <p>Some YouTube channels I watch regularly and think are worth your time: <a href="https://www.youtube.com/@veritasium" target="_blank" rel="noopener">Veritasium</a>, <a href="https://www.youtube.com/@TheRestIsScience" target="_blank" rel="noopener">The Rest Is Science</a>, <a href="https://www.youtube.com/@Howtown" target="_blank" rel="noopener">Howtown</a>, <a href="https://www.youtube.com/@neoexplains" target="_blank" rel="noopener">neo</a>, <a href="https://www.youtube.com/@fern-tv" target="_blank" rel="noopener">fern</a>, <a href="https://www.youtube.com/@Waveform" target="_blank" rel="noopener">WVFRM Podcast</a>, and <a href="https://www.youtube.com/@MicTheSnare" target="_blank" rel="noopener">Mic The Snare</a>.</p>
-            </div>
-
-            <div class="beyond-subsection">
-                <h3>Other Interests</h3>
-                <p>Linguistics, etymology, mathematics, sociology, urban studies. I game sometimes too.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== LIGHTBOX OVERLAY ========== -->
-
-    <div id="lightbox" class="lightbox">
-        <div class="lightbox-inner">
-            <div class="lightbox-image">
-                <img id="lightbox-img" src="" alt="">
-            </div>
-            <div class="lightbox-info">
-                <a href="#" class="lightbox-close" onclick="closeLightbox(); return false;">[x] close</a>
-                <h3 id="lightbox-title"></h3>
-                <p id="lightbox-meta" class="lightbox-meta"></p>
-                <p id="lightbox-caption" class="lightbox-caption"></p>
-                <div class="lightbox-nav">
-                    <a href="#" onclick="prevLightbox(); return false;">← prev</a>
-                    <a href="#" onclick="nextLightbox(); return false;">next →</a>
-                </div>
-            </div>
-        </div>
+  <div class="hero__bio">
+    <div class="panel-head">
+      <span class="meta-label">Affiliation</span>
+      VRL Lab · Sabancı University
     </div>
 
-    <!-- ========== FOOTER ========== -->
+    <div class="panel-body">
+      <span class="subtitle">MS Student · Data Science</span>
+      <p>
+        I'm a first-year Master's student in Data Science at Sabancı University, advised by
+        <a href="https://www.onurvarol.com/" target="_blank" rel="noopener">Dr. Onur Varol</a>.
+        My research interests lie at the intersection of computational social science, network analysis,
+        and algorithmic fairness.
+      </p>
+      <p>
+        Currently, I'm investigating algorithmic fairness and systemic bias on Bluesky, specifically
+        focusing on how curation mechanisms shape network structure and user exposure.
+      </p>
+    </div>
 
-    <footer class="footer">
-        <div class="container">
-            <p class="footer-email">adleyba [at] sabanciuniv [dot] edu</p>
-            <p class="footer-credit">Source code credits to <a href="https://catherinesyeh.github.io/" target="_blank"
-                    rel="noopener">Catherine Yeh</a></p>
+    <div class="panel-foot">
+      <span class="panel-mono">— 2026 / Vol. I</span>
+      <div class="panel-links">
+        <a href="mailto:adleyba@sabanciuniv.edu" title="Email">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+          </svg>
+        </a>
+        <a href="https://github.com/simaadleyba" target="_blank" rel="noopener" title="GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"></path>
+          </svg>
+        </a>
+        <a href="https://www.linkedin.com/in/simaadleyba/" target="_blank" rel="noopener" title="LinkedIn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__name">
+    <div class="portrait">
+      <img src="assets/photo.JPG" alt="Sima Adleyba portrait" />
+    </div>
+    <div class="name-block">
+      <h1>Sima Adleyba</h1>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ========== RESEARCH ========== -->
+  <section id="research" class="section">
+    <div class="wrap">
+      <aside class="section__label">
+        <span class="num">01 —</span>
+        Research
+        <span class="rule"></span>
+        active studies<br>2025 / 26
+      </aside>
+      <div class="section__body">
+        <h2 class="section__title" style="font-family: &quot;Helvetica Neue&quot;">Research <span class="accent">&amp; field work</span></h2>
+        <p class="section__intro">
+          My research focuses on understanding bias and fairness in social platforms, network effects of
+          algorithmic recommendations.
+        </p>
+
+        <article class="card">
+          <div class="card__meta">
+            <span class="type">MSc Thesis</span>
+            Oct 2025 —<br>Present
+          </div>
+          <div class="card__main">
+            <h3>Measuring Bias on Bluesky</h3>
+            <p class="card__advisor">Advisor — Dr. Onur Varol</p>
+            <p class="card__desc">
+              Investigating the intersection of algorithmic fairness and systemic bias within the
+              Bluesky ecosystem, specifically focusing on curation mechanisms.
+            </p>
+            <div class="tags">
+              <span class="tag">Social Networks</span>
+              <span class="tag">Algorithmic Fairness</span>
+              <span class="tag">Decentralized Platforms</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card__meta">
+            <span class="type">Industry Project</span>
+            Oct 2024 —<br>Jun 2025
+          </div>
+          <div class="card__main">
+            <h3>Kariyer.net Knowledge Base</h3>
+            <p class="card__advisor">Supervisors — Dr. Onur Varol, Ömür Bali</p>
+            <p class="card__desc">
+              Developed a knowledge base for Turkey's largest job platform. Built a skill extraction
+              pipeline using LangChain and GPT-4o-mini, with HDBSCAN clustering for normalization.
+              The resulting graph contains 114,000+ nodes and ~61 million edges.
+            </p>
+            <div class="tags">
+              <span class="tag">NLP</span>
+              <span class="tag">Knowledge Graphs</span>
+              <span class="tag">LLMs</span>
+            </div>
+            <a href="https://fens.sabanciuniv.edu/sites/fens.sabanciuniv.edu/files/2025-08/poster.pdf"
+              target="_blank" rel="noopener" class="card__link">Project Poster →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== EXPERIENCE ========== -->
+  <section id="experience" class="section">
+    <div class="wrap">
+      <aside class="section__label">
+        <span class="num">02 —</span>
+        Experience
+        <span class="rule"></span>
+        teaching<br>industry
+      </aside>
+      <div class="section__body">
+        <h2 class="section__title">Experience</h2>
+
+        <article class="entry">
+          <div class="entry__date">Fall 25/26<br>Spring 25/26</div>
+          <div>
+            <h3>Teaching Assistant — CS412 Machine Learning</h3>
+            <p class="entry__org">Sabancı University</p>
+            <p class="entry__desc">
+              Led recitations, held office hours, and handled grading for the Machine Learning course.
+            </p>
+          </div>
+        </article>
+
+        <article class="entry">
+          <div class="entry__date">Jan 2024 —<br>Aug 2024</div>
+          <div>
+            <h3>Data Science Intern</h3>
+            <p class="entry__org">iLab</p>
+            <p class="entry__desc">
+              Built a RAG-based usability testing tool using LangChain, OpenAI API, MongoDB, and Docker.
+            </p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== EDUCATION ========== -->
+  <section id="education" class="section">
+    <div class="wrap">
+      <aside class="section__label">
+        <span class="num">03 —</span>
+        Education
+        <span class="rule"></span>
+        sabancı<br>university
+      </aside>
+      <div class="section__body">
+        <h2 class="section__title">Education</h2>
+
+        <article class="entry">
+          <div class="entry__date">Sep 2025 —<br>Jun 2027<br><span class="expected">expected</span></div>
+          <div>
+            <h3>MS in Data Science</h3>
+            <p class="entry__org">Sabancı University</p>
+          </div>
+        </article>
+
+        <article class="entry">
+          <div class="entry__date">Sep 2020 —<br>Jun 2025</div>
+          <div>
+            <h3>BS in Computer Science</h3>
+            <p class="entry__org">Sabancı University</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== STUDY GUIDES ========== -->
+  <div class="cloud-band" aria-hidden="true"></div>
+
+  <section id="studyguides" class="section">
+    <div class="wrap">
+      <aside class="section__label">
+        <span class="num">04 —</span>
+        Study Guides
+        <span class="rule"></span>
+        interactive<br>course notes
+      </aside>
+      <div class="section__body">
+        <h2 class="section__title">Interactive <span class="accent">Study Guides</span></h2>
+        <p class="section__intro">I build interactive study guides for courses I TA and take.</p>
+
+        <div class="guides">
+          <a href="/networkscience/" class="guide">
+            <div class="guide__thumb">
+              <img src="https://api.microlink.io/?url=https%3A%2F%2Fsimaadleyba.com%2Fnetworkscience%2F%3Fv%3D2&screenshot=true&meta=false&embed=screenshot.url&css=nav%7Bdisplay%3Anone%7D" alt="Network Science study guide" loading="lazy" />
+            </div>
+            <div class="guide__content">
+              <span class="guide__type">— Interactive Guide</span>
+              <h3>Network Science</h3>
+              <p>Interactive study guide with visualizations, centrality measures, random graphs, Bethe lattices, and more.</p>
+            </div>
+          </a>
+          <a href="/machinelearning/" class="guide">
+            <div class="guide__thumb">
+              <img src="https://api.microlink.io/?url=https%3A%2F%2Fsimaadleyba.com%2Fmachinelearning%2Fknn%2F%3Fv%3D2&screenshot=true&meta=false&embed=screenshot.url&css=nav%7Bdisplay%3Anone%7D" alt="Machine Learning study guide" loading="lazy" />
+            </div>
+            <div class="guide__content">
+              <span class="guide__type">— Interactive Guide</span>
+              <h3>Machine Learning</h3>
+              <p>MLPs, backpropagation, loss functions, and more, with interactive visualizations.</p>
+            </div>
+          </a>
         </div>
-    </footer>
+      </div>
+    </div>
+  </section>
 
-    <!-- Analytics -->
-    <script src="analytics/config.js"></script>
-    <script src="analytics/tracker.js"></script>
+  <!-- ========== BEYOND ========== -->
+  <section id="beyond" class="section">
+    <div class="wrap">
+      <aside class="section__label">
+        <span class="num">05 —</span>
+        Beyond
+        <span class="rule"></span>
+        photography<br>music, media,<br>other
+      </aside>
+      <div class="section__body">
+        <h2 class="section__title">Beyond <span class="accent">Research</span></h2>
 
-    <script>
-        // Gallery show more / show less toggle
-        function toggleGallery() {
-            const hidden = document.querySelectorAll('.gallery-hidden');
-            const btn = document.getElementById('show-more-btn');
-            const isShowing = btn.textContent === 'show less';
+        <a href="/fieldnotes/" class="blog-card">
+          <span class="type">— Blog</span>
+          <h3>Field Notes <span class="arrow">→</span></h3>
+          <p>Uncompressed thinking.</p>
+        </a>
 
-            hidden.forEach(el => el.classList.toggle('show'));
-            btn.textContent = isShowing ? 'show more' : 'show less';
-        }
+        <h3 class="beyond__heading">— Photography</h3>
+        <p class="beyond__intro">I enjoy capturing moments around İstanbul and travels.</p>
 
-        // Close mobile nav when clicking a link
-        document.querySelectorAll('#nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                document.getElementById('nav-links').classList.remove('open');
-            });
-        });
+        <div class="photo-spread">
+          <div class="ph s-tall photo-grid-item" data-index="0" data-title="self portrait"
+            data-fullsrc="assets/photos/DSCF6361.JPG" data-location="sabanci university, istanbul"
+            data-date="march 2026"
+            data-caption="sima just a few days before removing her lip piercings. felt cool tbh."
+            onclick="openLightbox(0)">
+            <img src="assets/photos/thumbs/DSCF6361.JPG" alt="self portrait" loading="lazy" />
+            <div class="ph__cap">self portrait · sabancı · 03.2026</div>
+          </div>
 
-        // ——— Lightbox ———
-        let currentIndex = 0;
-        const items = document.querySelectorAll('.photo-grid-item');
+          <div class="ph s-wide offset-down photo-grid-item" data-index="1" data-title="ankara_streets_2"
+            data-fullsrc="assets/photos/DSCF6094.jpg" data-location="kizilay, ankara"
+            data-date="january 2026" data-caption="just a photo of some street of ankara"
+            onclick="openLightbox(1)">
+            <img src="assets/photos/thumbs/DSCF6094.jpg" alt="ankara_streets_2" loading="lazy" />
+            <div class="ph__cap">ankara streets II · kızılay · 01.2026</div>
+          </div>
 
-        function openLightbox(index) {
-            currentIndex = index;
-            updateLightbox();
-            document.getElementById('lightbox').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
+          <div class="ph s-med photo-grid-item" data-index="2" data-title="ankara_streets_1"
+            data-fullsrc="assets/photos/DSCF6093.jpg" data-location="kizilay, ankara"
+            data-date="january 2026" data-caption="just a photo of some street of ankara"
+            onclick="openLightbox(2)">
+            <img src="assets/photos/thumbs/DSCF6093.jpg" alt="ankara_streets_1" loading="lazy" />
+            <div class="ph__cap">ankara streets I · kızılay · 01.2026</div>
+          </div>
 
-        function closeLightbox() {
-            document.getElementById('lightbox').classList.remove('active');
-            document.body.style.overflow = '';
-        }
+          <div class="ph s-med offset-up photo-grid-item" data-index="3" data-title="ankaralı amca"
+            data-fullsrc="assets/photos/DSCF6083.jpg" data-location="ankara" data-date="january 2026"
+            data-caption="amca commuting using the terrible public transportation of ankara"
+            onclick="openLightbox(3)">
+            <img src="assets/photos/thumbs/DSCF6083.jpg" alt="ankaralı amca" loading="lazy" />
+            <div class="ph__cap">ankaralı amca · 01.2026</div>
+          </div>
 
-        function prevLightbox() {
-            currentIndex = (currentIndex - 1 + items.length) % items.length;
-            updateLightbox();
-        }
+          <div class="ph s-sq photo-grid-item" data-index="4" data-title="welcome to ankara"
+            data-fullsrc="assets/photos/DSCF6050.jpg" data-location="esenboga airport, ankara"
+            data-date="january 2026"
+            data-caption="ankara is known as cold, depressing. when i stepped outside from the esenboga airport, this was the scene that was waiting for me. i guess what i have heard was pretty accurate"
+            onclick="openLightbox(4)">
+            <img src="assets/photos/thumbs/DSCF6050.jpg" alt="welcome to ankara" loading="lazy" />
+            <div class="ph__cap">welcome to ankara · esenboğa · 01.2026</div>
+          </div>
 
-        function nextLightbox() {
-            currentIndex = (currentIndex + 1) % items.length;
-            updateLightbox();
-        }
+          <div class="ph s-wide offset-down photo-grid-item" data-index="5" data-title="matisse"
+            data-fullsrc="assets/photos/DSCF5830.JPG" data-location="ataturk kultur merkezi, istanbul"
+            data-date="october 2025"
+            data-caption="the lion does not concern herself with understanding matisse"
+            onclick="openLightbox(5)">
+            <img src="assets/photos/thumbs/DSCF5830.JPG" alt="matisse" loading="lazy" />
+            <div class="ph__cap">matisse · akm · 10.2025</div>
+          </div>
 
-        function updateLightbox() {
-            const item = items[currentIndex];
-            const lbImg = document.getElementById('lightbox-img');
+          <div class="ph s-port gallery-hidden photo-grid-item" data-index="6" data-title="offtown_4"
+            data-fullsrc="assets/photos/DSCF4003.JPG" data-location="sabanci university, istanbul"
+            data-date="may 2025" data-caption="photo from offtown festival of sabanci university."
+            onclick="openLightbox(6)">
+            <img src="assets/photos/thumbs/DSCF4003.JPG" alt="offtown_4" loading="lazy" />
+            <div class="ph__cap">offtown IV · sabancı · 05.2025</div>
+          </div>
+          <div class="ph s-port gallery-hidden photo-grid-item" data-index="7" data-title="offtown_3"
+            data-fullsrc="assets/photos/DSCF3953.JPG" data-location="sabanci university, istanbul"
+            data-date="may 2025" data-caption="photo from offtown festival of sabanci university."
+            onclick="openLightbox(7)">
+            <img src="assets/photos/thumbs/DSCF3953.JPG" alt="offtown_3" loading="lazy" />
+            <div class="ph__cap">offtown III · sabancı · 05.2025</div>
+          </div>
+          <div class="ph s-port gallery-hidden photo-grid-item" data-index="8" data-title="offtown_2"
+            data-fullsrc="assets/photos/DSCF3918.JPG" data-location="sabanci university, istanbul"
+            data-date="may 2025" data-caption="photo from offtown festival of sabanci university."
+            onclick="openLightbox(8)">
+            <img src="assets/photos/thumbs/DSCF3918.JPG" alt="offtown_2" loading="lazy" />
+            <div class="ph__cap">offtown II · sabancı · 05.2025</div>
+          </div>
+          <div class="ph s-port gallery-hidden photo-grid-item" data-index="9" data-title="offtown_1"
+            data-fullsrc="assets/photos/DSCF3883.JPG" data-location="sabanci university, istanbul"
+            data-date="may 2025" data-caption="photo from offtown festival of sabanci university."
+            onclick="openLightbox(9)">
+            <img src="assets/photos/thumbs/DSCF3883.JPG" alt="offtown_1" loading="lazy" />
+            <div class="ph__cap">offtown I · sabancı · 05.2025</div>
+          </div>
+          <div class="ph s-wide gallery-hidden photo-grid-item" data-index="10" data-title="bank"
+            data-fullsrc="assets/photos/DSCF3325.JPG" data-location="sabanci university, istanbul"
+            data-date="february 2025"
+            data-caption="sabanci in winter is something else. listening to jeon jin hee is highly recommended"
+            onclick="openLightbox(10)">
+            <img src="assets/photos/thumbs/DSCF3325.JPG" alt="bank" loading="lazy" />
+            <div class="ph__cap">bank · sabancı · 02.2025</div>
+          </div>
+          <div class="ph s-med gallery-hidden photo-grid-item" data-index="11"
+            data-title="authentic street food by teyzeler" data-fullsrc="assets/photos/DSCF3252.JPG"
+            data-location="ferikoy, istanbul" data-date="october 2024"
+            data-caption="teyzeler means 'aunts' in turkish. and they were preparing a food. i don't know what. i wasn't interested."
+            onclick="openLightbox(11)">
+            <img src="assets/photos/thumbs/DSCF3252.JPG" alt="authentic street food by teyzeler" loading="lazy" />
+            <div class="ph__cap">teyzeler · feriköy · 10.2024</div>
+          </div>
+          <div class="ph s-med gallery-hidden offset-up photo-grid-item" data-index="12"
+            data-title="two guys in antique market" data-fullsrc="assets/photos/DSCF3245.JPG"
+            data-location="ferikoy, istanbul" data-date="october 2024"
+            data-caption="two guys in antique market. nothing more. maybe a cigarette?"
+            onclick="openLightbox(12)">
+            <img src="assets/photos/thumbs/DSCF3245.JPG" alt="two guys in antique market" loading="lazy" />
+            <div class="ph__cap">antique market · feriköy · 10.2024</div>
+          </div>
+          <div class="ph s-tall gallery-hidden photo-grid-item" data-index="13" data-title="museum"
+            data-fullsrc="assets/photos/DSCF3201.JPG" data-location="istanbul museum of modern arts"
+            data-date="october 2024" data-caption="museum of modern arts" onclick="openLightbox(13)">
+            <img src="assets/photos/thumbs/DSCF3201.JPG" alt="museum" loading="lazy" />
+            <div class="ph__cap">museum · istanbul modern · 10.2024</div>
+          </div>
+          <div class="ph s-sq gallery-hidden photo-grid-item" data-index="14" data-title="abstract"
+            data-fullsrc="assets/photos/DSCF3178.JPG" data-location="istanbul museum of modern arts"
+            data-date="october 2024" data-caption="people in museum, they're always on move"
+            onclick="openLightbox(14)">
+            <img src="assets/photos/thumbs/DSCF3178.JPG" alt="abstract" loading="lazy" />
+            <div class="ph__cap">abstract · istanbul modern · 10.2024</div>
+          </div>
+          <div class="ph s-sq gallery-hidden offset-down photo-grid-item" data-index="15" data-title="vapurda"
+            data-fullsrc="assets/photos/DSCF2858.JPG" data-location="kadikoy, istanbul"
+            data-date="september 2024" data-caption="a turkish man looking away in the ship"
+            onclick="openLightbox(15)">
+            <img src="assets/photos/thumbs/DSCF2858.JPG" alt="vapurda" loading="lazy" />
+            <div class="ph__cap">vapurda · kadıköy · 09.2024</div>
+          </div>
+          <div class="ph s-wide gallery-hidden photo-grid-item" data-index="16"
+            data-title="two chairs in middle of nowhere" data-fullsrc="assets/photos/DSCF2459.JPG"
+            data-location="kocaeli" data-date="june 2024"
+            data-caption="two chairs in middle of nowhere. idk why." onclick="openLightbox(16)">
+            <img src="assets/photos/thumbs/DSCF2459.JPG" alt="two chairs in middle of nowhere" loading="lazy" />
+            <div class="ph__cap">two chairs · kocaeli · 06.2024</div>
+          </div>
+        </div>
+        <button class="show-more-btn" id="show-more-btn" onclick="toggleGallery()">show more →</button>
 
-            // Load full-resolution image for the lightbox
-            const fullSrc = item.dataset.fullsrc;
-            if (fullSrc) {
-                lbImg.src = fullSrc;
-                lbImg.alt = item.dataset.title || '';
-                lbImg.style.background = '';
-                lbImg.style.minHeight = '';
-            } else {
-                const thumbImg = item.querySelector('img');
-                if (thumbImg) {
-                    lbImg.src = thumbImg.src;
-                    lbImg.alt = thumbImg.alt || item.dataset.title || '';
-                }
-            }
+        <div class="journal">
+          <div class="journal__item">
+            <div class="journal__tag">— Music</div>
+            <p class="journal__note">
+              I'll listen to almost anything, but lately it's mostly K-pop, rap, Japanese folk, progressive rock, and K-indie. I also play guitar. Though I must say, <span class="pull">I like my HSS Strat and how I look with it.</span>
+            </p>
+          </div>
 
-            document.getElementById('lightbox-title').textContent = item.dataset.title || `Photo ${currentIndex + 1}`;
+          <div class="journal__item">
+            <div class="journal__tag">— Movies</div>
+            <p class="journal__note">
+              I love whodunnits and murder mysteries and could genuinely talk about them for hours. Also into psychological thrillers and Korean cinema. <a href="https://en.wikipedia.org/wiki/Park_Chan-wook" target="_blank" rel="noopener">Park Chan-wook</a> especially.
+            </p>
+          </div>
 
-            // Build meta line: date + location
-            const date = item.dataset.date || '';
-            const location = item.dataset.location || '';
-            let metaParts = [];
-            if (date) metaParts.push(date);
-            if (location) metaParts.push(location);
-            document.getElementById('lightbox-meta').textContent = metaParts.join(' · ');
+          <div class="journal__item">
+            <div class="journal__tag">— Other Media</div>
+            <p class="journal__note">
+              Some YouTube channels I watch regularly and think are worth your time: <a href="https://www.youtube.com/@veritasium" target="_blank" rel="noopener">Veritasium</a>, <a href="https://www.youtube.com/@TheRestIsScience" target="_blank" rel="noopener">The Rest Is Science</a>, <a href="https://www.youtube.com/@Howtown" target="_blank" rel="noopener">Howtown</a>, <a href="https://www.youtube.com/@neoexplains" target="_blank" rel="noopener">neo</a>, <a href="https://www.youtube.com/@fern-tv" target="_blank" rel="noopener">fern</a>, <a href="https://www.youtube.com/@Waveform" target="_blank" rel="noopener">WVFRM Podcast</a>, and <a href="https://www.youtube.com/@MicTheSnare" target="_blank" rel="noopener">Mic The Snare</a>.
+            </p>
+          </div>
 
-            document.getElementById('lightbox-caption').textContent = item.dataset.caption || '';
-        }
+          <div class="journal__item">
+            <div class="journal__tag">— Other Interests</div>
+            <p class="journal__note">
+              Linguistics, etymology, mathematics, sociology, urban studies. I game sometimes too.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        // Close on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowLeft') prevLightbox();
-            if (e.key === 'ArrowRight') nextLightbox();
-        });
+</main>
 
-        // Close when clicking outside the content
-        document.getElementById('lightbox').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('lightbox')) closeLightbox();
-        });
-    </script>
+<!-- ========== LIGHTBOX ========== -->
+<div id="lightbox" class="lightbox">
+  <div class="lightbox-inner">
+    <div class="lightbox-image">
+      <img id="lightbox-img" src="" alt="" />
+    </div>
+    <div class="lightbox-info">
+      <a href="#" class="lightbox-close" onclick="closeLightbox(); return false;">[×] close</a>
+      <h3 id="lightbox-title"></h3>
+      <p id="lightbox-meta" class="lightbox-meta"></p>
+      <p id="lightbox-caption" class="lightbox-caption"></p>
+      <div class="lightbox-nav">
+        <a href="#" onclick="prevLightbox(); return false;">← prev</a>
+        <a href="#" onclick="nextLightbox(); return false;">next →</a>
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="footer-bg" aria-hidden="true"></div>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <p class="footer-email">adleyba [at] sabanciuniv [dot] edu</p>
+    </div>
+    <p class="footer-copy">© 2026 — SIMA ADLEYBA</p>
+  </div>
+</footer>
+
+<!-- ========== TWEAKS PANEL ========== -->
+<div id="tweaks-panel">
+  <div class="tw-head">
+    <span><span class="tw-dot"></span>Tweaks</span>
+    <button type="button" id="tw-close" aria-label="Close">×</button>
+  </div>
+  <div class="tw-body">
+    <div class="tw-row">
+      <div class="tw-label">
+        <span>Glass opacity</span>
+        <span class="tw-value" id="tw-glass-opacity-val">0.06</span>
+      </div>
+      <input type="range" min="0" max="0.28" step="0.01" id="tw-glass-opacity" />
+    </div>
+    <div class="tw-row">
+      <div class="tw-label">
+        <span>Glass blur</span>
+        <span class="tw-value" id="tw-glass-blur-val">14px</span>
+      </div>
+      <input type="range" min="0" max="32" step="1" id="tw-glass-blur" />
+    </div>
+    <div class="tw-row">
+      <div class="tw-label">
+        <span>Hero darken</span>
+        <span class="tw-value" id="tw-hero-darken-val">0.55</span>
+      </div>
+      <input type="range" min="0" max="0.85" step="0.05" id="tw-hero-darken" />
+    </div>
+    <div class="tw-row">
+      <div class="tw-label"><span>Accent</span></div>
+      <div class="tw-swatches" id="tw-accent">
+        <div class="tw-swatch" data-accent="#3d4a5a" style="background:#3d4a5a" title="Steel"></div>
+        <div class="tw-swatch" data-accent="#6a7684" style="background:#6a7684" title="Fog"></div>
+        <div class="tw-swatch" data-accent="#9aa6b3" style="background:#9aa6b3" title="Mist"></div>
+        <div class="tw-swatch" data-accent="#1d232c" style="background:#1d232c" title="Ink"></div>
+      </div>
+    </div>
+    <div class="tw-row">
+      <label class="tw-toggle">
+        <span>Scroll hint</span>
+        <input type="checkbox" id="tw-show-scroll" />
+        <span class="tw-switch"></span>
+      </label>
+    </div>
+    <div class="tw-row">
+      <label class="tw-toggle">
+        <span>Cloud divider</span>
+        <input type="checkbox" id="tw-show-cloud-band" />
+        <span class="tw-switch"></span>
+      </label>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Nav scrolled state
+  const nav = document.getElementById('nav');
+  const onScroll = () => {
+    if (window.scrollY > 60) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Gallery show more / show less toggle
+  function toggleGallery() {
+    const hidden = document.querySelectorAll('.gallery-hidden');
+    const btn = document.getElementById('show-more-btn');
+    const isShowing = btn.textContent.trim().startsWith('show less');
+    hidden.forEach(el => el.classList.toggle('show'));
+    btn.textContent = isShowing ? 'show more →' : 'show less ↑';
+  }
+
+  // Close mobile nav when clicking a link
+  document.querySelectorAll('#nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.getElementById('nav-links').classList.remove('open');
+    });
+  });
+
+  // ——— Lightbox ———
+  let currentIndex = 0;
+  const items = document.querySelectorAll('.photo-grid-item');
+
+  function openLightbox(index) {
+    currentIndex = index;
+    updateLightbox();
+    document.getElementById('lightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function prevLightbox() {
+    currentIndex = (currentIndex - 1 + items.length) % items.length;
+    updateLightbox();
+  }
+
+  function nextLightbox() {
+    currentIndex = (currentIndex + 1) % items.length;
+    updateLightbox();
+  }
+
+  function updateLightbox() {
+    const item = items[currentIndex];
+    const lbImg = document.getElementById('lightbox-img');
+    const fullSrc = item.dataset.fullsrc;
+    if (fullSrc) {
+      lbImg.src = fullSrc;
+      lbImg.alt = item.dataset.title || '';
+    } else {
+      const thumbImg = item.querySelector('img');
+      if (thumbImg) {
+        lbImg.src = thumbImg.src;
+        lbImg.alt = thumbImg.alt || item.dataset.title || '';
+      }
+    }
+    document.getElementById('lightbox-title').textContent = item.dataset.title || `Photo ${currentIndex + 1}`;
+    const date = item.dataset.date || '';
+    const location = item.dataset.location || '';
+    let metaParts = [];
+    if (date) metaParts.push(date);
+    if (location) metaParts.push(location);
+    document.getElementById('lightbox-meta').textContent = metaParts.join(' · ');
+    document.getElementById('lightbox-caption').textContent = item.dataset.caption || '';
+  }
+
+  // Keyboard nav
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') prevLightbox();
+    if (e.key === 'ArrowRight') nextLightbox();
+  });
+  document.getElementById('lightbox').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('lightbox')) closeLightbox();
+  });
+
+  // ———————————————————————————————————
+  // Tweaks panel
+  // ———————————————————————————————————
+  const TWEAKS_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "glassOpacity": 0.05,
+    "glassBlur": 14,
+    "heroDarken": 0.55,
+    "accent": "#3d4a5a",
+    "showScrollHint": true,
+    "showCloudBand": true
+  }/*EDITMODE-END*/;
+  const tweaks = { ...TWEAKS_DEFAULTS };
+  const panel = document.getElementById('tweaks-panel');
+
+  function applyTweaks() {
+    const r = document.documentElement;
+    r.style.setProperty('--glass-opacity', tweaks.glassOpacity);
+    r.style.setProperty('--glass-blur', tweaks.glassBlur + 'px');
+    r.style.setProperty('--hero-darken', tweaks.heroDarken);
+    r.style.setProperty('--steel', tweaks.accent);
+    document.body.classList.toggle('hide-scroll-hint', !tweaks.showScrollHint);
+    document.body.classList.toggle('hide-cloud-band', !tweaks.showCloudBand);
+
+    // sync UI
+    document.getElementById('tw-glass-opacity').value = tweaks.glassOpacity;
+    document.getElementById('tw-glass-opacity-val').textContent = (+tweaks.glassOpacity).toFixed(2);
+    document.getElementById('tw-glass-blur').value = tweaks.glassBlur;
+    document.getElementById('tw-glass-blur-val').textContent = tweaks.glassBlur + 'px';
+    document.getElementById('tw-hero-darken').value = tweaks.heroDarken;
+    document.getElementById('tw-hero-darken-val').textContent = (+tweaks.heroDarken).toFixed(2);
+    document.getElementById('tw-show-scroll').checked = tweaks.showScrollHint;
+    document.getElementById('tw-show-cloud-band').checked = tweaks.showCloudBand;
+    document.querySelectorAll('#tw-accent .tw-swatch').forEach(s =>
+      s.classList.toggle('active', s.dataset.accent.toLowerCase() === String(tweaks.accent).toLowerCase()));
+  }
+
+  function setTweak(key, val) {
+    tweaks[key] = val;
+    applyTweaks();
+    try {
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { [key]: val } }, '*');
+    } catch (_) {}
+  }
+
+  document.getElementById('tw-glass-opacity').addEventListener('input', e => setTweak('glassOpacity', parseFloat(e.target.value)));
+  document.getElementById('tw-glass-blur').addEventListener('input', e => setTweak('glassBlur', parseInt(e.target.value, 10)));
+  document.getElementById('tw-hero-darken').addEventListener('input', e => setTweak('heroDarken', parseFloat(e.target.value)));
+  document.getElementById('tw-show-scroll').addEventListener('change', e => setTweak('showScrollHint', e.target.checked));
+  document.getElementById('tw-show-cloud-band').addEventListener('change', e => setTweak('showCloudBand', e.target.checked));
+  document.querySelectorAll('#tw-accent .tw-swatch').forEach(s => {
+    s.addEventListener('click', () => setTweak('accent', s.dataset.accent));
+  });
+  document.getElementById('tw-close').addEventListener('click', () => {
+    panel.classList.remove('open');
+    try { window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*'); } catch (_) {}
+  });
+
+  // Host protocol
+  window.addEventListener('message', (e) => {
+    if (!e || !e.data) return;
+    if (e.data.type === '__activate_edit_mode') panel.classList.add('open');
+    else if (e.data.type === '__deactivate_edit_mode') panel.classList.remove('open');
+  });
+
+  applyTweaks();
+  try { window.parent.postMessage({ type: '__edit_mode_available' }, '*'); } catch (_) {}
+</script>
+
+<!-- Analytics -->
+<script src="analytics/config.js"></script>
+<script src="analytics/tracker.js"></script>
 </body>
-
 </html>

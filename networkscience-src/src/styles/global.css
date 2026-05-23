@@ -1,15 +1,18 @@
-/* ── CSS Variables ── */
 :root {
-  --bg: #f8f9fc;
-  --text: #242424;
-  --muted: #5b5b5b;
-  --accent: #5b6eae;
-  --accent-hover: #4a5c99;
-  --accent-light: #8b9bd4;
-  --accent-bg: #eef1f8;
-  --card-bg: #ffffff;
-  --border: #e2e4ea;
-  --nav-height: 3.2rem;
+  --bg: #e7ebef;        /* matches --paper */
+  --text: #14181f;      /* matches --ink */
+  --muted: rgba(20, 24, 31, 0.72); /* matches --mute-2 */
+  --accent: #3d4a5a;    /* matches --steel */
+  --accent-hover: #2a313b; /* matches --ink-3 */
+  --accent-light: #bcc4cd; /* matches --paper-3 */
+  --accent-bg: #d6dce3;    /* matches --paper-2 */
+  --card-bg: rgba(255, 255, 255, 0.45); /* glassmorphic */
+  --border: rgba(20, 24, 31, 0.14);    /* matches --line */
+  --nav-height: 3.5rem;
+  --ff-heading:  "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --ff-body:     "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --ff-mono:     "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+  --gut: clamp(1.25rem, 4vw, 3.5rem);
 }
 
 /* ── Reset & Base ── */
@@ -24,7 +27,7 @@ html {
 }
 
 body {
-  font-family: 'Noto Sans', sans-serif;
+  font-family: var(--ff-body);
   background: var(--bg);
   color: var(--text);
   line-height: 1.65;
@@ -117,7 +120,7 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  font-family: 'Noto Sans', sans-serif;
+  font-family: var(--ff-body);
   font-size: 0.82rem;
   color: var(--muted);
   padding: 0.3rem 0.5rem;
@@ -228,13 +231,14 @@ body {
 
 /* ── Artifact card (light) ── */
 .artifact-card {
-  background: var(--card-bg);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 1.5rem;
   margin: 2rem 0;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(91, 110, 174, 0.06);
 }
 
 .artifact-card h4 {
@@ -248,18 +252,18 @@ body {
 
 /* ── Formula card ── */
 .formula-card {
-  background: var(--card-bg);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 1.2rem 1.5rem;
   margin: 1.2rem 0;
-  box-shadow: 0 2px 8px rgba(91, 110, 174, 0.06);
-  transition: box-shadow 0.3s, transform 0.3s;
+  transition: border-color 0.2s ease;
 }
 
 .formula-card:hover {
-  box-shadow: 0 6px 20px rgba(91, 110, 174, 0.1);
-  transform: translateY(-2px);
+  border-color: #2a3a5a;
 }
 
 /* ── Formula tooltip ── */
@@ -336,71 +340,91 @@ a:hover {
   text-decoration: underline;
 }
 
-/* ── Navbar (matches main site #nav exactly) ── */
 .ns-nav {
   position: fixed;
-  top: 0; left: 0;
+  top: 0; left: 0; right: 0;
   z-index: 9999;
-  width: 100%;
-  background: rgba(248, 249, 252, 0.78);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  padding: 0 2rem;
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: var(--nav-height);
+  justify-content: space-between;
+  padding: 1.1rem var(--gut);
+  background: rgba(231, 235, 239, 0.82);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
 }
 
-.ns-nav::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(90deg, var(--accent-light), var(--accent), var(--accent-light));
-  bottom: 0; left: 0;
-  opacity: 0.4;
+.nav-mark {
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: inherit;
+  border: none;
+}
+.nav-mark .dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  margin-right: 0.55em;
+  transform: translateY(-1px);
+  opacity: 0.9;
 }
 
 .ns-nav-links {
   display: flex;
-  justify-content: center;
-  gap: 1.5rem;
   align-items: center;
+  gap: 1.6rem;
 }
 
 .ns-nav-links a {
-  font-size: 0.82rem;
-  font-family: monospace;
-  color: var(--muted);
-  text-transform: lowercase;
-  letter-spacing: 0.02em;
-  transition: color 0.25s;
-  padding: 0.15rem 0;
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: inherit;
+  opacity: 0.7;
+  border: none;
+  padding: 0.25rem 0;
+  position: relative;
   text-decoration: none;
 }
 
 .ns-nav-links a:hover {
-  color: var(--accent);
   opacity: 1;
+  color: inherit;
+  text-decoration: none;
 }
 
-.ns-nav-links a.ns-selected {
-  font-weight: 700;
+.ns-nav-links a.field-notes {
+  opacity: 1;
+  padding-left: 0.9rem;
+}
+.ns-nav-links a.field-notes::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 50%;
+  width: 14px; height: 1px;
+  background: currentColor;
+  transform: translateY(-50%);
+}
+.nav-pipe {
+  opacity: 0.4;
+  font-family: var(--ff-mono);
+  user-select: none;
   color: var(--text);
-  pointer-events: none;
 }
 
 .ns-nav-burger {
   display: none;
+  color: inherit;
+  font-size: 18px;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid currentColor;
   background: none;
-  border: none;
-  font-size: 1.3rem;
   cursor: pointer;
-  margin-left: auto;
-  padding: 0;
-  color: var(--text);
-  line-height: 1;
 }
 
 /* ── Mobile responsive ── */
@@ -409,31 +433,28 @@ a:hover {
     padding: 0 1rem;
   }
 
-  .ns-nav-burger {
+    .ns-nav-burger {
     display: block;
   }
-
   .ns-nav-links {
     display: none;
-    flex-direction: column;
-    width: 100%;
-    background: rgba(248, 249, 252, 0.98);
     position: absolute;
-    top: var(--nav-height);
-    left: 0;
-    padding: 0.8rem 1.5rem;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-    gap: 0;
+    top: 100%; left: 0; right: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.4rem var(--gut);
+    background: rgba(231, 235, 239, 0.97);
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
   }
-
   .ns-nav-links.mobile-open {
     display: flex;
   }
-
   .ns-nav-links a {
-    padding: 0.5rem 0;
-    font-size: 0.95rem;
-    width: 100%;
+    width: auto;
+    padding: 0.25rem 0;
+    font-size: 11px;
   }
 
   .ns-header {
@@ -465,7 +486,7 @@ a:hover {
     border: 1px solid var(--border);
     border-radius: 8px;
     color: var(--accent);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ff-body);
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
@@ -491,11 +512,75 @@ a:hover {
   }
 
   .artifact-card {
-    padding: 1rem 0.9rem;
-    margin: 1.2rem 0;
-  }
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  overflow: hidden;
+}
 
   .formula-card {
-    padding: 0.9rem 1rem;
-  }
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.2rem 1.5rem;
+  margin: 1.2rem 0;
+  transition: border-color 0.2s ease;
+}
+
+.formula-card:hover {
+  border-color: #2a3a5a;
+}}
+
+/* ── Footer ── */
+footer.footer {
+  padding: clamp(2.5rem,6vh,4rem) var(--gut) 2rem;
+  background: var(--text);
+  color: var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+.footer-bg {
+  position: absolute; inset: 0;
+  background-image: url("/assets/hero-clouds.jpeg");
+  background-size: cover;
+  background-position: center 30%;
+  opacity: 0.18;
+  filter: grayscale(0.4);
+}
+.footer-inner {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+}
+.footer-left {
+  display: flex;
+  flex-direction: column;
+}
+.footer-email {
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: lowercase;
+  color: rgba(231,235,239,0.85);
+  margin: 0;
+}
+.footer-copy {
+  font-family: var(--ff-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(231,235,239,0.5);
+  margin: 0;
+  text-align: right;
 }
