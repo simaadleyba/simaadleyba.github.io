@@ -1094,7 +1094,7 @@
 
   @media (max-width: 768px) {
     .section:first-of-type {
-      padding-top: 3.5rem;
+      padding-top: 0;
     }
   }
 
