@@ -411,13 +411,15 @@
   /* Subtle ghosted cloud band carries the hero DNA into the page */
   .cloud-band {
     height: clamp(140px, 22vh, 240px);
-    width: 100%;
+    width: calc(100% + 2 * clamp(1rem, 4vw, 3rem));
     background-image: url("assets/hero-clouds.jpeg");
     background-size: cover;
     background-position: center 60%;
     filter: saturate(0.55) brightness(1.04);
     position: relative;
     border: none;
+    margin-left: calc(-1 * clamp(1rem, 4vw, 3rem));
+    margin-right: calc(-1 * clamp(1rem, 4vw, 3rem));
   }
   .cloud-band__caption {
     position: absolute;
