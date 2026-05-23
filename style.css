@@ -419,16 +419,6 @@
     position: relative;
     border: none;
   }
-  .cloud-band::after {
-    content: "";
-    position: absolute; inset: 0;
-    background:
-      linear-gradient(180deg,
-        var(--paper) 0%,
-        rgba(231,235,239,0.35) 28%,
-        rgba(231,235,239,0.25) 72%,
-        var(--paper) 100%);
-  }
   .cloud-band__caption {
     position: absolute;
     left: var(--gut);
