@@ -10,14 +10,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+    <!-- KaTeX for live preview -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
 
     <style>
         body { padding-top: calc(var(--nav-height) + 2rem); }
 
+        /* ── Containers ── */
         .admin-container {
-            max-width: 760px;
+            max-width: 1300px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 0 1.5rem 4rem;
+        }
+
+        .admin-meta {
+            max-width: 700px;
         }
 
         /* ── Tabs ── */
@@ -34,7 +43,7 @@
             border-bottom: 2px solid transparent;
             margin-bottom: -1px;
             padding: 0.45rem 1.1rem;
-            font-family: monospace;
+            font-family: var(--ff-mono);
             font-size: 0.85rem;
             color: var(--muted);
             cursor: pointer;
@@ -66,7 +75,7 @@
             background: none;
             border: 1px solid var(--border);
             color: var(--accent);
-            font-family: monospace;
+            font-family: var(--ff-mono);
             font-size: 0.82rem;
             padding: 0.6rem 1.2rem;
             border-radius: 8px;
@@ -93,8 +102,7 @@
         }
 
         .field input[type="text"],
-        .field input[type="date"],
-        .field textarea {
+        .field input[type="date"] {
             width: 100%;
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -107,8 +115,7 @@
             box-sizing: border-box;
         }
 
-        .field input:focus,
-        .field textarea:focus {
+        .field input:focus {
             outline: none;
             border-color: var(--accent-light);
         }
@@ -117,14 +124,6 @@
             opacity: 0.6;
             background: var(--bg);
             cursor: not-allowed;
-        }
-
-        .field textarea {
-            min-height: 280px;
-            resize: vertical;
-            font-family: monospace;
-            font-size: 0.88rem;
-            line-height: 1.6;
         }
 
         .tag-checkboxes {
@@ -158,7 +157,7 @@
 
         .tag-checkboxes input[type="checkbox"] { display: none; }
 
-        /* ── Submit button ── */
+        /* ── Submit ── */
         .submit-btn {
             background: var(--accent);
             color: #fff;
@@ -193,7 +192,7 @@
 
         .submit-btn.loading .spinner { display: inline-block; }
 
-        /* ── Status messages ── */
+        /* ── Status ── */
         .status-msg {
             margin-top: 1rem;
             padding: 0.75rem 1rem;
@@ -202,20 +201,8 @@
             display: none;
         }
 
-        .status-msg.success {
-            background: #eefaf0;
-            border: 1px solid #a8ddb5;
-            color: #2d6a4f;
-            display: block;
-        }
-
-        .status-msg.error {
-            background: #fef2f2;
-            border: 1px solid #fca5a5;
-            color: #991b1b;
-            display: block;
-        }
-
+        .status-msg.success { background: #eefaf0; border: 1px solid #a8ddb5; color: #2d6a4f; display: block; }
+        .status-msg.error   { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; display: block; }
         .status-msg a { color: inherit; text-decoration: underline; }
 
         /* ── Hints ── */
@@ -223,7 +210,7 @@
             font-size: 0.78rem;
             color: var(--muted);
             margin-top: 0.3rem;
-            font-family: monospace;
+            font-family: var(--ff-mono);
         }
 
         .body-note {
@@ -232,27 +219,461 @@
             background: #fffbeb;
             border: 1px solid #fde68a;
             border-radius: 6px;
-            padding: 0.3rem 0.7rem;
-            margin-top: 0.4rem;
-            font-family: monospace;
+            padding: 0.35rem 0.75rem;
+            margin: 0 0 0.6rem;
+            font-family: var(--ff-mono);
             display: none;
         }
 
-        /* ── PAT controls ── */
-        .pat-controls { margin-top: 1rem; }
+        /* ── PAT ── */
+        .pat-controls { margin-top: 1.2rem; }
 
         .pat-reset-btn {
             background: none;
             border: none;
             color: var(--muted);
             font-size: 0.78rem;
-            font-family: monospace;
+            font-family: var(--ff-mono);
             cursor: pointer;
             padding: 0;
             text-decoration: underline;
         }
 
         .pat-reset-btn:hover { color: var(--accent); }
+
+        /* ════════════════════════════════════════════════════
+           RICH EDITOR
+           ════════════════════════════════════════════════════ */
+
+        /* Section divider between meta and editor */
+        .editor-section { margin-top: 1.8rem; }
+
+        .editor-section > .field-label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.6rem;
+        }
+
+        /* Toolbar */
+        .editor-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            align-items: center;
+            padding: 0.4rem 0.6rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px 8px 0 0;
+            border-bottom: none;
+        }
+
+        .tb-btn {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 0.18rem 0.55rem;
+            font-size: 0.75rem;
+            font-family: var(--ff-mono);
+            color: var(--ink);
+            cursor: pointer;
+            line-height: 1.5;
+            white-space: nowrap;
+            transition: background 0.15s, border-color 0.15s, color 0.15s;
+        }
+
+        .tb-btn:hover {
+            background: var(--accent-bg);
+            border-color: var(--steel);
+            color: var(--steel);
+        }
+
+        .tb-btn.slash {
+            border-style: dashed;
+            color: var(--fog);
+        }
+
+        .tb-btn.slash:hover {
+            border-color: var(--steel);
+            border-style: dashed;
+            color: var(--steel);
+        }
+
+        .tb-sep {
+            width: 1px;
+            height: 1.2rem;
+            background: var(--border);
+            margin: 0 0.1rem;
+            flex-shrink: 0;
+        }
+
+        /* Split layout */
+        .editor-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border: 1px solid var(--border);
+            border-radius: 0 0 8px 8px;
+            overflow: hidden;
+            min-height: 500px;
+        }
+
+        .editor-pane {
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            max-height: 75vh;
+            background: var(--paper);
+        }
+
+        .preview-pane {
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            max-height: 75vh;
+            position: sticky;
+            top: calc(var(--nav-height) + 1rem);
+        }
+
+        .preview-hdr {
+            background: var(--paper-2);
+            border-bottom: 1px solid var(--border);
+            padding: 0.35rem 1rem;
+            font-size: 0.7rem;
+            font-family: var(--ff-mono);
+            color: var(--fog);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            flex-shrink: 0;
+        }
+
+        .preview-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.1rem 1.4rem;
+            font-family: var(--ff-body);
+            font-size: 0.91rem;
+            line-height: 1.72;
+            color: var(--ink);
+        }
+
+        /* ── Segment elements ── */
+        .editor-segment {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .editor-segment:last-child {
+            border-bottom: none;
+        }
+
+        /* Text segment textarea */
+        .seg-text-ta {
+            width: 100%;
+            border: none;
+            resize: none;
+            min-height: 72px;
+            background: transparent;
+            padding: 0.65rem 0.9rem;
+            font-family: var(--ff-mono);
+            font-size: 0.83rem;
+            line-height: 1.65;
+            color: var(--ink);
+            box-sizing: border-box;
+            display: block;
+            overflow: hidden;
+        }
+
+        .seg-text-ta:focus {
+            outline: none;
+            background: rgba(255,255,255,0.65);
+        }
+
+        .seg-text-ta::placeholder {
+            color: var(--paper-3);
+            font-style: italic;
+        }
+
+        /* Block header shared */
+        .blk-hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.28rem 0.65rem;
+            background: var(--paper-2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .blk-hdr-label {
+            font-size: 0.7rem;
+            font-family: var(--ff-mono);
+            color: var(--fog);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .blk-rm {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+            line-height: 1;
+            transition: color 0.15s, background 0.15s;
+        }
+
+        .blk-rm:hover { color: #b91c1c; background: rgba(185,28,28,0.08); }
+
+        /* Artifact */
+        .seg-artifact-ta {
+            width: 100%;
+            border: none;
+            resize: vertical;
+            min-height: 180px;
+            background: #1a1e27;
+            color: #abb2bf;
+            padding: 0.7rem 0.9rem;
+            font-family: var(--ff-mono);
+            font-size: 0.79rem;
+            line-height: 1.55;
+            box-sizing: border-box;
+            display: block;
+            tab-size: 2;
+        }
+
+        .seg-artifact-ta:focus { outline: none; }
+
+        /* Image */
+        .seg-img-drop {
+            margin: 0.65rem;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 1.3rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .seg-img-drop:hover, .seg-img-drop.dragover {
+            border-color: var(--steel);
+            background: var(--accent-bg);
+        }
+
+        .seg-img-drop p {
+            margin: 0.35rem 0 0;
+            font-size: 0.76rem;
+            color: var(--muted);
+            font-family: var(--ff-mono);
+        }
+
+        .seg-img-choose-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.28rem 0.72rem;
+            font-size: 0.77rem;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .seg-img-choose-btn:hover { background: var(--paper-2); }
+
+        .seg-img-preview-area {
+            display: none;
+            padding: 0.65rem;
+        }
+
+        .seg-img-preview-area img {
+            max-width: 100%;
+            max-height: 160px;
+            object-fit: cover;
+            border-radius: 6px;
+            display: block;
+            margin-bottom: 0.45rem;
+        }
+
+        .seg-img-caption {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.3rem 0.6rem;
+            font-family: inherit;
+            font-size: 0.82rem;
+            background: var(--card-bg);
+            color: var(--ink);
+            box-sizing: border-box;
+            margin-bottom: 0.4rem;
+        }
+
+        .seg-img-caption:focus { outline: none; border-color: var(--steel); }
+
+        .seg-img-upload-btn {
+            background: var(--steel);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.28rem 0.75rem;
+            font-size: 0.77rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .seg-img-upload-btn:hover { background: var(--ink-3); }
+        .seg-img-upload-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .seg-img-upload-btn.done { background: #2d6a4f; }
+
+        .seg-img-status {
+            font-size: 0.73rem;
+            font-family: var(--ff-mono);
+            margin-top: 0.3rem;
+            min-height: 1.1em;
+        }
+
+        .seg-img-status.ok  { color: #2d6a4f; }
+        .seg-img-status.err { color: #991b1b; }
+
+        /* TOC placeholder */
+        .seg-toc-ph {
+            padding: 0.8rem 1rem;
+            background: var(--accent-bg);
+            border-left: 3px solid var(--steel);
+            font-family: var(--ff-mono);
+            font-size: 0.77rem;
+            color: var(--fog);
+            letter-spacing: 0.02em;
+        }
+
+        /* References */
+        .seg-refs-ta {
+            width: 100%;
+            border: none;
+            resize: vertical;
+            min-height: 90px;
+            background: transparent;
+            padding: 0.65rem 0.9rem;
+            font-family: var(--ff-mono);
+            font-size: 0.79rem;
+            line-height: 1.65;
+            color: var(--ink);
+            box-sizing: border-box;
+            display: block;
+        }
+
+        .seg-refs-ta:focus { outline: none; background: rgba(255,255,255,0.65); }
+
+        /* ── Preview sub-elements ── */
+        .preview-body h1, .preview-body h2, .preview-body h3 {
+            margin-top: 1.3rem;
+            margin-bottom: 0.4rem;
+            font-family: var(--ff-heading);
+        }
+
+        .preview-body h2 { font-size: 1.15rem; }
+        .preview-body h3 { font-size: 1rem; }
+        .preview-body p  { margin-bottom: 0.75rem; }
+
+        .preview-body a  { color: var(--steel); border-bottom: 1px solid var(--line-2); }
+
+        .preview-body code {
+            background: var(--paper-2);
+            padding: 0.08em 0.3em;
+            border-radius: 3px;
+            font-size: 0.84em;
+            font-family: var(--ff-mono);
+        }
+
+        .preview-body pre {
+            background: var(--paper-2);
+            padding: 0.7rem 0.9rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 0.75rem;
+        }
+
+        .preview-body blockquote {
+            border-left: 3px solid var(--paper-3);
+            margin: 0 0 0.75rem;
+            padding: 0.2rem 0.75rem;
+            color: var(--muted);
+        }
+
+        .preview-body ul, .preview-body ol {
+            margin-bottom: 0.75rem;
+            padding-left: 1.3rem;
+        }
+
+        .preview-body figure { margin: 0.9rem 0; }
+        .preview-body figure img { max-width: 100%; border-radius: 6px; display: block; }
+        .preview-body figcaption { font-size: 0.79rem; color: var(--muted); margin-top: 0.3rem; font-style: italic; }
+
+        .preview-artifact {
+            margin: 0.9rem 0;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .preview-artifact iframe { display: block; width: 100%; border: none; }
+
+        .preview-empty-block {
+            padding: 0.85rem;
+            background: var(--paper-2);
+            text-align: center;
+            font-size: 0.76rem;
+            color: var(--fog);
+            font-family: var(--ff-mono);
+            margin: 0.8rem 0;
+            border-radius: 6px;
+        }
+
+        .preview-toc-box {
+            background: var(--paper-2);
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            padding: 0.7rem 0.9rem;
+            margin: 0.8rem 0;
+        }
+
+        .preview-toc-title {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            color: var(--fog);
+            margin-bottom: 0.45rem;
+            font-family: var(--ff-mono);
+        }
+
+        .preview-toc-box a {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--ink);
+            padding: 0.08rem 0;
+            text-decoration: none;
+            border-bottom: none;
+        }
+
+        .preview-toc-box a:hover { color: var(--steel); }
+
+        .preview-toc-box a.toc-h3 {
+            padding-left: 0.85rem;
+            font-size: 0.77rem;
+            color: var(--fog);
+        }
+
+        .preview-body .katex-display { overflow-x: auto; margin: 0.6rem 0; }
+
+        /* ── Responsive ── */
+        @media (max-width: 920px) {
+            .editor-layout { grid-template-columns: 1fr; min-height: auto; }
+            .editor-pane { border-right: none; border-bottom: 1px solid var(--border); max-height: 45vh; }
+            .preview-pane { max-height: 45vh; position: static; }
+        }
     </style>
 </head>
 
@@ -283,7 +704,7 @@
             <button class="admin-tab" id="tab-edit" onclick="switchTab('edit')">edit post</button>
         </div>
 
-        <!-- Edit-mode slug loader (only visible in edit tab before post is loaded) -->
+        <!-- Edit-mode slug loader -->
         <div id="edit-loader" style="display:none;">
             <div class="load-row">
                 <div class="field">
@@ -295,59 +716,99 @@
             <div class="status-msg" id="load-status"></div>
         </div>
 
-        <!-- Main form (shared by both modes) -->
+        <!-- Main form -->
         <form id="post-form">
-            <div class="field">
-                <label for="title">Title</label>
-                <input type="text" id="title" name="title" required placeholder="Post title" />
+
+            <!-- ── Metadata fields (narrow) ── -->
+            <div class="admin-meta">
+
+                <div class="field">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" required placeholder="Post title" />
+                </div>
+
+                <div class="field">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date" required />
+                </div>
+
+                <div class="field">
+                    <label for="slug">Slug</label>
+                    <input type="text" id="slug" name="slug" required placeholder="url-friendly-slug" />
+                    <p class="slug-hint">→ /fieldnotes/posts/<span id="slug-preview">...</span>.html</p>
+                </div>
+
+                <div class="field">
+                    <label for="summary">Summary</label>
+                    <input type="text" id="summary" name="summary" required placeholder="One-sentence description" />
+                </div>
+
+                <div class="field">
+                    <label for="tags">Tags</label>
+                    <input type="text" id="tags" name="tags" placeholder="research, bluesky, personal..." />
+                    <p class="slug-hint">comma-separated</p>
+                </div>
+
+            </div><!-- /admin-meta -->
+
+            <!-- ── Rich editor (full width) ── -->
+            <div class="editor-section">
+
+                <span class="field-label">Body</span>
+
+                <p class="body-note" id="body-note">⚠ Loaded as rendered HTML — editing in source mode. Re-save to apply any changes.</p>
+
+                <!-- Toolbar -->
+                <div class="editor-toolbar" id="editor-toolbar">
+                    <!-- Markdown shortcuts -->
+                    <button type="button" class="tb-btn" title="Bold" onclick="toolbarAction('bold')"><strong>B</strong></button>
+                    <button type="button" class="tb-btn" title="Italic" onclick="toolbarAction('italic')"><em>I</em></button>
+                    <button type="button" class="tb-btn" title="Inline code" onclick="toolbarAction('code')">`code`</button>
+                    <button type="button" class="tb-btn" title="Heading (##)" onclick="toolbarAction('heading')">## H</button>
+                    <div class="tb-sep"></div>
+                    <!-- Slash command blocks -->
+                    <button type="button" class="tb-btn slash" title="Insert artifact block" onclick="toolbarAction('artifact')">/artifact</button>
+                    <button type="button" class="tb-btn slash" title="Insert image block" onclick="toolbarAction('image')">/image</button>
+                    <button type="button" class="tb-btn slash" title="Insert TOC block" onclick="toolbarAction('toc')">/toc</button>
+                    <button type="button" class="tb-btn slash" title="Insert references block" onclick="toolbarAction('references')">/references</button>
+                </div>
+
+                <!-- Split view -->
+                <div class="editor-layout">
+                    <div class="editor-pane" id="editor-pane">
+                        <div id="editor-blocks"></div>
+                    </div>
+                    <div class="preview-pane">
+                        <div class="preview-hdr">live preview</div>
+                        <div class="preview-body" id="preview-body"></div>
+                    </div>
+                </div>
+
+            </div><!-- /editor-section -->
+
+            <!-- ── Submit (narrow) ── -->
+            <div class="admin-meta" style="margin-top:1.5rem;">
+                <button type="submit" class="submit-btn" id="submit-btn">
+                    <span class="spinner"></span>
+                    <span id="submit-label">Publish</span>
+                </button>
+                <div class="status-msg" id="status"></div>
             </div>
 
-            <div class="field">
-                <label for="date">Date</label>
-                <input type="date" id="date" name="date" required />
-            </div>
-
-            <div class="field">
-                <label for="slug">Slug</label>
-                <input type="text" id="slug" name="slug" required placeholder="url-friendly-slug" />
-                <p class="slug-hint">→ /fieldnotes/posts/<span id="slug-preview">...</span>.html</p>
-            </div>
-
-            <div class="field">
-                <label for="summary">Summary</label>
-                <input type="text" id="summary" name="summary" required placeholder="One-sentence description" />
-            </div>
-
-            <div class="field">
-                <label for="tags">Tags</label>
-                <input type="text" id="tags" name="tags" placeholder="research, bluesky, personal..." />
-                <p class="slug-hint">comma-separated</p>
-            </div>
-
-            <div class="field">
-                <label for="body">Body (Markdown)</label>
-                <textarea id="body" name="body" placeholder="Write your post in Markdown..."></textarea>
-                <p class="body-note" id="body-note">⚠ Loaded as rendered HTML — will be re-rendered from this content on save.</p>
-            </div>
-
-            <button type="submit" class="submit-btn" id="submit-btn">
-                <span class="spinner"></span>
-                <span id="submit-label">Publish</span>
-            </button>
-            <div class="status-msg" id="status"></div>
-        </form>
+        </form><!-- /post-form -->
 
         <div class="pat-controls">
             <button class="pat-reset-btn" onclick="resetPAT()">reset GitHub token</button>
         </div>
-    </div>
+
+    </div><!-- /admin-container -->
 
     <script>
         const OWNER      = 'simaadleyba';
         const REPO       = 'simaadleyba.github.io';
         const POSTS_PATH = 'fieldnotes/posts.json';
 
-        // ── Password gate ──
+        // ── Password gate ──────────────────────────────────────────────────────
         const PASSWORD = 'tasbak-5tydhy-carBih';
         (function checkPassword() {
             const stored = sessionStorage.getItem('admin_auth');
@@ -360,7 +821,7 @@
             }
         })();
 
-        // ── GitHub PAT ──
+        // ── GitHub PAT ─────────────────────────────────────────────────────────
         function getPAT() { return localStorage.getItem('gh_pat'); }
 
         function promptPAT() {
@@ -377,14 +838,13 @@
 
         if (!getPAT()) promptPAT();
 
-        // ── Mode state ──
+        // ── Mode state ─────────────────────────────────────────────────────────
         let currentMode = 'new';
 
         function switchTab(mode) {
             currentMode = mode;
             document.getElementById('tab-new').classList.toggle('active', mode === 'new');
             document.getElementById('tab-edit').classList.toggle('active', mode === 'edit');
-
             clearStatus('status');
             clearStatus('load-status');
 
@@ -403,7 +863,7 @@
             }
         }
 
-        // ── Load post for editing ──
+        // ── Load post for editing ──────────────────────────────────────────────
         async function loadPost() {
             const slug = document.getElementById('edit-slug-input').value.trim();
             if (!slug) return;
@@ -415,35 +875,33 @@
 
             const pat = getPAT();
             try {
-                // 1. Fetch posts.json, find entry
                 const postsFile = await ghFetch(POSTS_PATH, 'GET', null, pat);
                 const posts = JSON.parse(atob(postsFile.content.replace(/\n/g, '')));
                 const post = posts.find(p => p.slug === slug);
                 if (!post) throw new Error(`No post found with slug "${slug}"`);
 
-                // 2. Fetch post HTML, extract .post-body
                 const postFile = await ghFetch(`fieldnotes/posts/${slug}.html`, 'GET', null, pat);
-                const rawHtml = atob(postFile.content.replace(/\n/g, ''));
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(rawHtml, 'text/html');
-                const postBodyEl = doc.querySelector('.post-body');
-                const bodyContent = postBodyEl ? postBodyEl.innerHTML.trim() : '';
+                const rawHtml  = atob(postFile.content.replace(/\n/g, ''));
+                const parser   = new DOMParser();
+                const doc      = parser.parseFromString(rawHtml, 'text/html');
+                const bodyEl   = doc.querySelector('.post-body');
+                const bodyContent = bodyEl ? bodyEl.innerHTML.trim() : '';
 
-                // 3. Pre-fill form fields
+                // Populate metadata
                 document.getElementById('title').value   = post.title   || '';
                 document.getElementById('date').value    = post.date    || '';
                 document.getElementById('slug').value    = post.slug    || '';
                 document.getElementById('slug-preview').textContent = post.slug || '...';
                 document.getElementById('summary').value = post.summary || '';
                 document.getElementById('tags').value    = (post.tags || []).join(', ');
-                document.getElementById('body').value    = bodyContent;
 
-                // 4. Lock slug, show body note, update button
+                // Initialize editor with loaded HTML
+                segments = [newTextSeg(bodyContent)];
+                renderEditorBlocks();
+
                 document.getElementById('slug').readOnly = true;
                 document.getElementById('body-note').style.display = 'block';
                 document.getElementById('submit-label').textContent = 'Save Changes';
-
-                // 5. Show form
                 document.getElementById('post-form').style.display = 'block';
 
             } catch (err) {
@@ -454,15 +912,14 @@
             loadBtn.textContent = 'Load Post';
         }
 
-        // Allow pressing Enter in the slug input to trigger load
         document.getElementById('edit-slug-input').addEventListener('keydown', function (e) {
             if (e.key === 'Enter') { e.preventDefault(); loadPost(); }
         });
 
-        // ── Date default ──
+        // ── Date default ───────────────────────────────────────────────────────
         document.getElementById('date').value = new Date().toISOString().slice(0, 10);
 
-        // ── Slug auto-generation (new mode only) ──
+        // ── Slug auto-gen ──────────────────────────────────────────────────────
         document.getElementById('title').addEventListener('input', function () {
             if (currentMode === 'edit') return;
             const slug = toSlug(this.value);
@@ -482,13 +939,646 @@
                 .replace(/^-+|-+$/g, '');
         }
 
-        // ── Form submit ──
+        // ══════════════════════════════════════════════════════════════════
+        //   SEGMENT DATA MODEL
+        // ══════════════════════════════════════════════════════════════════
+
+        let segments = [];
+        let segIdCounter = 0;
+        let lastFocusedSegId = null;
+        let previewTimer = null;
+
+        function mkId() { return 's' + (segIdCounter++); }
+
+        function newTextSeg(content) {
+            return { id: mkId(), type: 'text', content: content || '' };
+        }
+
+        function newArtifactSeg() {
+            return { id: mkId(), type: 'artifact', code: '' };
+        }
+
+        function newImageSeg() {
+            return { id: mkId(), type: 'image', filename: '', caption: '', dataUrl: '', uploaded: false, file: null };
+        }
+
+        function newTocSeg() {
+            return { id: mkId(), type: 'toc' };
+        }
+
+        function newRefsSeg() {
+            return { id: mkId(), type: 'references', text: '' };
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        //   DOM ↔ DATA SYNC
+        // ══════════════════════════════════════════════════════════════════
+
+        function syncFromDom() {
+            segments.forEach(seg => {
+                const wrap = document.querySelector(`[data-seg="${seg.id}"]`);
+                if (!wrap) return;
+                if (seg.type === 'text') {
+                    const ta = wrap.querySelector('.seg-text-ta');
+                    if (ta) seg.content = ta.value;
+                } else if (seg.type === 'artifact') {
+                    const ta = wrap.querySelector('.seg-artifact-ta');
+                    if (ta) seg.code = ta.value;
+                } else if (seg.type === 'references') {
+                    const ta = wrap.querySelector('.seg-refs-ta');
+                    if (ta) seg.text = ta.value;
+                } else if (seg.type === 'image') {
+                    const cap = wrap.querySelector('.seg-img-caption');
+                    if (cap) seg.caption = cap.value;
+                }
+            });
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        //   RENDER EDITOR BLOCKS
+        // ══════════════════════════════════════════════════════════════════
+
+        function renderEditorBlocks(focusSegId, cursorPos) {
+            syncFromDom();
+            const container = document.getElementById('editor-blocks');
+            container.innerHTML = '';
+
+            // Ensure at least one text segment
+            if (segments.length === 0) {
+                segments.push(newTextSeg());
+            }
+
+            segments.forEach(seg => {
+                container.appendChild(buildSegmentEl(seg));
+            });
+
+            // Restore focus
+            if (focusSegId) {
+                const ta = container.querySelector(`[data-seg="${focusSegId}"] textarea`);
+                if (ta) {
+                    ta.focus();
+                    if (cursorPos != null) ta.setSelectionRange(cursorPos, cursorPos);
+                }
+            }
+
+            schedulePreviewUpdate();
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        //   BUILD SEGMENT ELEMENT
+        // ══════════════════════════════════════════════════════════════════
+
+        function buildSegmentEl(seg) {
+            const wrap = document.createElement('div');
+            wrap.className = 'editor-segment';
+            wrap.dataset.seg = seg.id;
+
+            if (seg.type === 'text') {
+                const ta = document.createElement('textarea');
+                ta.className = 'seg-text-ta';
+                ta.value = seg.content;
+                ta.placeholder = 'Markdown + $KaTeX$ — on a new line type /artifact, /image, /toc, or /references then Enter';
+                ta.spellcheck = true;
+
+                ta.addEventListener('input', () => {
+                    seg.content = ta.value;
+                    autoResize(ta);
+                    schedulePreviewUpdate();
+                });
+
+                ta.addEventListener('focus', () => { lastFocusedSegId = seg.id; });
+                ta.addEventListener('keydown', e => handleTextKeydown(e, seg));
+
+                wrap.appendChild(ta);
+                setTimeout(() => autoResize(ta), 0);
+
+            } else {
+                // Block types share a header
+                const hdr = makeBlockHeader(seg.type, seg.id);
+                wrap.appendChild(hdr);
+
+                if (seg.type === 'artifact') {
+                    const ta = document.createElement('textarea');
+                    ta.className = 'seg-artifact-ta';
+                    ta.value = seg.code;
+                    ta.placeholder = '<!-- Paste a complete self-contained HTML file here -->\n<!DOCTYPE html>\n<html>...</html>';
+                    ta.spellcheck = false;
+                    ta.addEventListener('input', () => {
+                        seg.code = ta.value;
+                        schedulePreviewUpdate();
+                    });
+                    ta.addEventListener('focus', () => { lastFocusedSegId = null; });
+                    wrap.appendChild(ta);
+
+                } else if (seg.type === 'image') {
+                    wrap.appendChild(buildImageBlock(seg));
+
+                } else if (seg.type === 'toc') {
+                    const ph = document.createElement('div');
+                    ph.className = 'seg-toc-ph';
+                    ph.textContent = 'TOC — auto-generated from ## and ### headings';
+                    wrap.appendChild(ph);
+
+                } else if (seg.type === 'references') {
+                    const ta = document.createElement('textarea');
+                    ta.className = 'seg-refs-ta';
+                    ta.value = seg.text;
+                    ta.placeholder = 'One reference per line:\nSmith, J. (2024). Title. Journal. URL\nMerriam-Webster. (n.d.). Entry. URL';
+                    ta.spellcheck = false;
+                    ta.addEventListener('input', () => {
+                        seg.text = ta.value;
+                        autoResize(ta);
+                        schedulePreviewUpdate();
+                    });
+                    ta.addEventListener('focus', () => { lastFocusedSegId = null; });
+                    wrap.appendChild(ta);
+                    setTimeout(() => autoResize(ta), 0);
+                }
+            }
+
+            return wrap;
+        }
+
+        function makeBlockHeader(type, segId) {
+            const labels = {
+                artifact   : '⚙ artifact',
+                image      : '🖼 image',
+                toc        : '📑 table of contents',
+                references : '📚 references',
+            };
+
+            const hdr = document.createElement('div');
+            hdr.className = 'blk-hdr';
+
+            const lbl = document.createElement('span');
+            lbl.className = 'blk-hdr-label';
+            lbl.textContent = labels[type] || type;
+
+            const rm = document.createElement('button');
+            rm.type = 'button';
+            rm.className = 'blk-rm';
+            rm.title = 'Remove block';
+            rm.textContent = '✕';
+            rm.addEventListener('click', () => removeBlock(segId));
+
+            hdr.appendChild(lbl);
+            hdr.appendChild(rm);
+            return hdr;
+        }
+
+        // ── Image block ────────────────────────────────────────────────────────
+        function buildImageBlock(seg) {
+            const outer = document.createElement('div');
+
+            // ─ Drop zone ─
+            const dropZone = document.createElement('div');
+            dropZone.className = 'seg-img-drop';
+
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.style.display = 'none';
+
+            const chooseBtn = document.createElement('button');
+            chooseBtn.type = 'button';
+            chooseBtn.className = 'seg-img-choose-btn';
+            chooseBtn.textContent = 'Choose image';
+            chooseBtn.addEventListener('click', () => fileInput.click());
+
+            const dropText = document.createElement('p');
+            dropText.textContent = 'or drag & drop here';
+
+            dropZone.appendChild(fileInput);
+            dropZone.appendChild(chooseBtn);
+            dropZone.appendChild(dropText);
+
+            // ─ Preview area ─
+            const previewArea = document.createElement('div');
+            previewArea.className = 'seg-img-preview-area';
+            if (seg.dataUrl) previewArea.style.display = 'block';
+
+            const previewImg = document.createElement('img');
+            previewImg.alt = 'preview';
+            if (seg.dataUrl) previewImg.src = seg.dataUrl;
+
+            const captionIn = document.createElement('input');
+            captionIn.type = 'text';
+            captionIn.className = 'seg-img-caption';
+            captionIn.placeholder = 'Caption (optional)';
+            captionIn.value = seg.caption || '';
+            captionIn.addEventListener('input', () => {
+                seg.caption = captionIn.value;
+                schedulePreviewUpdate();
+            });
+
+            const uploadBtn = document.createElement('button');
+            uploadBtn.type = 'button';
+            uploadBtn.className = 'seg-img-upload-btn' + (seg.uploaded ? ' done' : '');
+            uploadBtn.textContent = seg.uploaded ? '✓ uploaded' : 'Upload to GitHub';
+            if (seg.uploaded) uploadBtn.disabled = true;
+
+            const statusEl = document.createElement('div');
+            statusEl.className = 'seg-img-status' + (seg.uploaded ? ' ok' : '');
+            if (seg.uploaded && seg.filename) {
+                statusEl.textContent = '✓ /fieldnotes/assets/' + seg.filename;
+            }
+
+            previewArea.appendChild(previewImg);
+            previewArea.appendChild(captionIn);
+            previewArea.appendChild(uploadBtn);
+            previewArea.appendChild(statusEl);
+
+            // ─ File handler ─
+            function handleFile(file) {
+                if (!file || !file.type.startsWith('image/')) return;
+                seg.file = file;
+                seg.filename = file.name;
+                seg.uploaded = false;
+                uploadBtn.disabled = false;
+                uploadBtn.className = 'seg-img-upload-btn';
+                uploadBtn.textContent = 'Upload to GitHub';
+                statusEl.className = 'seg-img-status';
+                statusEl.textContent = '';
+
+                const reader = new FileReader();
+                reader.onload = () => {
+                    seg.dataUrl = reader.result;
+                    previewImg.src = seg.dataUrl;
+                    dropZone.style.display = 'none';
+                    previewArea.style.display = 'block';
+                    schedulePreviewUpdate();
+                };
+                reader.readAsDataURL(file);
+            }
+
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files[0]) handleFile(fileInput.files[0]);
+            });
+
+            dropZone.addEventListener('dragover', e => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+            dropZone.addEventListener('drop', e => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+            });
+
+            // ─ Upload to GitHub ─
+            uploadBtn.addEventListener('click', async () => {
+                if (!seg.file) return;
+                const pat = getPAT();
+                if (!pat) { promptPAT(); return; }
+
+                uploadBtn.disabled = true;
+                uploadBtn.textContent = 'Uploading…';
+                statusEl.className = 'seg-img-status';
+                statusEl.textContent = '';
+
+                try {
+                    const base64 = await fileToBase64(seg.file);
+                    const safeName = seg.file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+                    seg.filename = safeName;
+                    await createFile(`fieldnotes/assets/${safeName}`, base64, `Add image: ${safeName}`, pat, true);
+                    seg.uploaded = true;
+                    uploadBtn.className = 'seg-img-upload-btn done';
+                    uploadBtn.textContent = '✓ uploaded';
+                    statusEl.className = 'seg-img-status ok';
+                    statusEl.textContent = '✓ /fieldnotes/assets/' + safeName;
+                    schedulePreviewUpdate();
+                } catch (err) {
+                    uploadBtn.disabled = false;
+                    uploadBtn.textContent = 'Upload to GitHub';
+                    statusEl.className = 'seg-img-status err';
+                    statusEl.textContent = 'Error: ' + err.message;
+                }
+            });
+
+            outer.appendChild(dropZone);
+            outer.appendChild(previewArea);
+            return outer;
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        //   SLASH COMMAND DETECTION
+        // ══════════════════════════════════════════════════════════════════
+
+        function handleTextKeydown(e, seg) {
+            if (e.key !== 'Enter') return;
+
+            const ta = e.target;
+            const pos = ta.selectionStart;
+            const text = ta.value;
+
+            // Identify current line
+            const lineStart = text.lastIndexOf('\n', pos - 1) + 1;
+            const lineEnd   = text.indexOf('\n', pos);
+            const line      = text.slice(lineStart, lineEnd === -1 ? pos : lineEnd).trim();
+
+            const CMDS = ['/artifact', '/image', '/toc', '/references'];
+            if (!CMDS.includes(line.toLowerCase())) return;
+
+            e.preventDefault();
+
+            // Content before the slash command line
+            const beforeCmd = lineStart === 0 ? '' : text.slice(0, lineStart - 1);
+            // Content after the cursor
+            const afterCmd  = lineEnd === -1 ? '' : text.slice(lineEnd + 1);
+
+            seg.content = beforeCmd;
+
+            const idx = segments.findIndex(s => s.id === seg.id);
+            const cmd = line.slice(1).toLowerCase();
+
+            let newBlock;
+            switch (cmd) {
+                case 'artifact':   newBlock = newArtifactSeg(); break;
+                case 'image':      newBlock = newImageSeg();    break;
+                case 'toc':        newBlock = newTocSeg();       break;
+                case 'references': newBlock = newRefsSeg();      break;
+            }
+
+            const nextText = newTextSeg(afterCmd);
+            segments.splice(idx + 1, 0, newBlock, nextText);
+            renderEditorBlocks(nextText.id, 0);
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        //   REMOVE BLOCK
+        // ══════════════════════════════════════════════════════════════════
+
+        function removeBlock(segId) {
+            syncFromDom();
+            const idx = segments.findIndex(s => s.id === segId);
+            if (idx === -1) return;
+
+            const prev = idx > 0 ? segments[idx - 1] : null;
+            const next = idx < segments.length - 1 ? segments[idx + 1] : null;
+
+            if (prev && prev.type === 'text' && next && next.type === 'text') {
+                // Merge surrounding text segments
+                const merged = prev.content + (prev.content && next.content ? '\n' : '') + next.content;
+                prev.content = merged;
+                segments.splice(idx, 2); // remove block + next text
+                renderEditorBlocks(prev.id, merged.length);
+            } else {
+                segments.splice(idx, 1);
+                if (segments.length === 0) segments.push(newTextSeg());
+                const focusSeg = segments.find(s => s.type === 'text') || segments[0];
+                renderEditorBlocks(focusSeg ? focusSeg.id : null);
+            }
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        //   TOOLBAR ACTIONS
+        // ══════════════════════════════════════════════════════════════════
+
+        function toolbarAction(action) {
+            if (['artifact', 'image', 'toc', 'references'].includes(action)) {
+                syncFromDom();
+
+                // Find insert index: after focused segment, else at end
+                let insertIdx = segments.length - 1;
+                if (lastFocusedSegId) {
+                    const fi = segments.findIndex(s => s.id === lastFocusedSegId);
+                    if (fi !== -1) insertIdx = fi;
+                }
+
+                let newBlock;
+                switch (action) {
+                    case 'artifact':   newBlock = newArtifactSeg(); break;
+                    case 'image':      newBlock = newImageSeg();    break;
+                    case 'toc':        newBlock = newTocSeg();       break;
+                    case 'references': newBlock = newRefsSeg();      break;
+                }
+
+                const atSeg = segments[insertIdx];
+                if (atSeg && atSeg.type === 'text') {
+                    // Split at cursor if focused, else at end
+                    let splitPos = atSeg.content.length;
+                    if (lastFocusedSegId === atSeg.id) {
+                        const ta = document.querySelector(`[data-seg="${atSeg.id}"] .seg-text-ta`);
+                        if (ta && document.activeElement === ta) splitPos = ta.selectionStart;
+                    }
+                    const before = atSeg.content.slice(0, splitPos);
+                    const after  = atSeg.content.slice(splitPos);
+                    atSeg.content = before;
+                    const nextText = newTextSeg(after);
+                    segments.splice(insertIdx + 1, 0, newBlock, nextText);
+                    renderEditorBlocks(nextText.id, 0);
+                } else {
+                    const nextText = newTextSeg();
+                    segments.splice(insertIdx + 1, 0, newBlock, nextText);
+                    renderEditorBlocks(nextText.id, 0);
+                }
+
+            } else {
+                // Markdown wrap
+                wrapSelection(action);
+            }
+        }
+
+        function wrapSelection(action) {
+            let before, after, isLinePrefix = false;
+            switch (action) {
+                case 'bold':    before = '**'; after = '**'; break;
+                case 'italic':  before = '_';  after = '_';  break;
+                case 'code':    before = '`';  after = '`';  break;
+                case 'heading': before = '## '; after = ''; isLinePrefix = true; break;
+                default: return;
+            }
+
+            let ta = null;
+            if (lastFocusedSegId) {
+                ta = document.querySelector(`[data-seg="${lastFocusedSegId}"] .seg-text-ta`);
+            }
+            if (!ta) {
+                const all = document.querySelectorAll('.seg-text-ta');
+                if (all.length) ta = all[all.length - 1];
+            }
+            if (!ta) return;
+
+            const start    = ta.selectionStart;
+            const end      = ta.selectionEnd;
+            const selected = ta.value.slice(start, end);
+
+            if (isLinePrefix) {
+                const lineStart = ta.value.lastIndexOf('\n', start - 1) + 1;
+                ta.setRangeText(before, lineStart, lineStart, 'end');
+                ta.setSelectionRange(lineStart + before.length, lineStart + before.length + selected.length);
+            } else {
+                ta.setRangeText(before + selected + after, start, end, 'select');
+                ta.setSelectionRange(start + before.length, start + before.length + selected.length);
+            }
+
+            ta.focus();
+            const seg = segments.find(s => s.id === lastFocusedSegId);
+            if (seg) seg.content = ta.value;
+            autoResize(ta);
+            schedulePreviewUpdate();
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        //   LIVE PREVIEW
+        // ══════════════════════════════════════════════════════════════════
+
+        function schedulePreviewUpdate() {
+            clearTimeout(previewTimer);
+            previewTimer = setTimeout(updatePreview, 280);
+        }
+
+        function updatePreview() {
+            syncFromDom();
+            const container = document.getElementById('preview-body');
+            if (!container) return;
+
+            const headings = [];
+            const parts    = [];
+
+            segments.forEach(seg => {
+                if (seg.type === 'text') {
+                    const md = seg.content || '';
+                    if (!md.trim()) return;
+                    const html = marked.parse(md);
+
+                    // Collect headings for TOC
+                    const tmp = document.createElement('div');
+                    tmp.innerHTML = html;
+                    tmp.querySelectorAll('h2, h3').forEach(h => {
+                        headings.push({ level: h.tagName, text: h.textContent.trim() });
+                    });
+
+                    parts.push(html);
+
+                } else if (seg.type === 'artifact') {
+                    const code = seg.code || '';
+                    if (code.trim()) {
+                        const srcdoc = code.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+                        parts.push(`<div class="preview-artifact"><iframe srcdoc="${srcdoc}" sandbox="allow-scripts" style="height:280px;"></iframe></div>`);
+                    } else {
+                        parts.push(`<div class="preview-empty-block">[ artifact — write HTML above ]</div>`);
+                    }
+
+                } else if (seg.type === 'image') {
+                    if (seg.dataUrl) {
+                        parts.push(`<figure><img src="${seg.dataUrl}" alt="${esc(seg.caption||'')}"><figcaption>${esc(seg.caption||'')}</figcaption></figure>`);
+                    } else {
+                        parts.push(`<div class="preview-empty-block">[ image — upload above ]</div>`);
+                    }
+
+                } else if (seg.type === 'toc') {
+                    parts.push('__TOC__');
+
+                } else if (seg.type === 'references') {
+                    const lines = (seg.text || '').split('\n').filter(l => l.trim());
+                    if (lines.length) {
+                        const items = lines.map(l => `<li>${l.trim()}</li>`).join('');
+                        parts.push(`<ol>${items}</ol>`);
+                    } else {
+                        parts.push(`<div class="preview-empty-block">[ references — one per line above ]</div>`);
+                    }
+                }
+            });
+
+            // Build TOC
+            let tocHtml;
+            if (headings.length) {
+                const links = headings.map(h =>
+                    `<a href="#" class="${h.level === 'H3' ? 'toc-h3' : ''}">${esc(h.text)}</a>`
+                ).join('');
+                tocHtml = `<div class="preview-toc-box"><div class="preview-toc-title">Contents</div>${links}</div>`;
+            } else {
+                tocHtml = `<div class="preview-toc-box"><div class="preview-toc-title">TOC — auto-generated from ## and ### headings</div><p style="font-size:0.76rem;color:var(--fog);font-style:italic;margin:0;">No ## or ### headings found yet</p></div>`;
+            }
+
+            container.innerHTML = parts.join('\n').replace(/__TOC__/g, tocHtml);
+
+            // Render KaTeX if available
+            if (window.renderMathInElement) {
+                try {
+                    renderMathInElement(container, {
+                        trust: true,
+                        throwOnError: false,
+                        delimiters: [
+                            { left: '$$', right: '$$', display: true  },
+                            { left: '$',  right: '$',  display: false },
+                        ],
+                    });
+                } catch (_) {}
+            }
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        //   ASSEMBLE BODY FOR PUBLISHING
+        // ══════════════════════════════════════════════════════════════════
+
+        function assembleBody() {
+            syncFromDom();
+            const parts = [];
+
+            segments.forEach(seg => {
+                if (seg.type === 'text') {
+                    const md = (seg.content || '').trim();
+                    if (md) parts.push(marked.parse(md));
+
+                } else if (seg.type === 'artifact') {
+                    const code = (seg.code || '').trim();
+                    if (code) {
+                        const srcdoc = code.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+                        parts.push(
+                            `<div class="post-artifact">\n` +
+                            `<iframe srcdoc="${srcdoc}" sandbox="allow-scripts allow-same-origin" ` +
+                            `style="width:100%;height:420px;border:none;border-radius:8px;display:block;resize:vertical;overflow:auto;" ` +
+                            `loading="lazy"></iframe>\n</div>`
+                        );
+                    }
+
+                } else if (seg.type === 'image') {
+                    if (seg.uploaded && seg.filename) {
+                        const cap = (seg.caption || '').trim();
+                        parts.push(
+                            `<figure class="post-figure">\n` +
+                            `<img src="/fieldnotes/assets/${seg.filename}" alt="${esc(cap)}">\n` +
+                            (cap ? `<figcaption>${esc(cap)}</figcaption>\n` : '') +
+                            `</figure>`
+                        );
+                    }
+
+                } else if (seg.type === 'toc') {
+                    // Marker for the post template — TOC is rendered by page JS
+                    parts.push(`<div class="post-toc-anchor"></div>`);
+
+                } else if (seg.type === 'references') {
+                    const lines = (seg.text || '').split('\n').filter(l => l.trim());
+                    if (lines.length) {
+                        const items = lines.map(l => `  <li>${l.trim()}</li>`).join('\n');
+                        parts.push(`<ol class="post-references">\n${items}\n</ol>`);
+                    }
+                }
+            });
+
+            return parts.join('\n');
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        //   FORM SUBMIT
+        // ══════════════════════════════════════════════════════════════════
+
         document.getElementById('post-form').addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            const isEdit  = currentMode === 'edit';
-            const btn     = document.getElementById('submit-btn');
-            const label   = document.getElementById('submit-label');
+            const isEdit = currentMode === 'edit';
+            const btn    = document.getElementById('submit-btn');
+            const label  = document.getElementById('submit-label');
+
+            // Check for unuploaded images
+            const unuploaded = segments.filter(s => s.type === 'image' && s.file && !s.uploaded);
+            if (unuploaded.length) {
+                showStatus('status', 'error', `${unuploaded.length} image(s) selected but not yet uploaded to GitHub. Click "Upload to GitHub" in each image block first.`);
+                return;
+            }
 
             btn.disabled = true;
             btn.classList.add('loading');
@@ -503,12 +1593,12 @@
             const slug    = document.getElementById('slug').value.trim();
             const summary = document.getElementById('summary').value.trim();
             const tags    = document.getElementById('tags').value.split(',').map(t => t.trim()).filter(Boolean);
-            const body    = document.getElementById('body').value;
             const today   = new Date().toISOString().slice(0, 10);
+            const hasToc  = segments.some(s => s.type === 'toc');
 
             const post = isEdit
-                ? { title, date, slug, summary, tags, lastEdited: today }
-                : { title, date, slug, summary, tags };
+                ? { title, date, slug, summary, tags, lastEdited: today, ...(hasToc ? { hasToc: true } : {}) }
+                : { title, date, slug, summary, tags, ...(hasToc ? { hasToc: true } : {}) };
 
             try {
                 if (isEdit) {
@@ -517,12 +1607,15 @@
                     await addPostToJson(post, pat);
                 }
 
-                const postHtml = buildPostHtml(post, marked.parse(body));
+                const bodyHtml = assembleBody();
+                const postHtml = buildPostHtml(post, bodyHtml);
+
                 await createFile(
                     `fieldnotes/posts/${slug}.html`,
                     postHtml,
                     `${isEdit ? 'Edit' : 'Add'} post: ${title}`,
-                    pat
+                    pat,
+                    false
                 );
 
                 showStatus('status', 'success',
@@ -530,6 +1623,7 @@
                 );
 
                 if (!isEdit) resetForm();
+
             } catch (err) {
                 showStatus('status', 'error', 'Error: ' + err.message);
             }
@@ -539,7 +1633,10 @@
             label.textContent = isEdit ? 'Save Changes' : 'Publish';
         });
 
-        // ── GitHub API helpers ──
+        // ══════════════════════════════════════════════════════════════════
+        //   GITHUB API HELPERS
+        // ══════════════════════════════════════════════════════════════════
+
         async function ghFetch(path, method, body, pat) {
             const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
                 method,
@@ -559,47 +1656,194 @@
 
         async function addPostToJson(newPost, pat) {
             const current = await ghFetch(POSTS_PATH, 'GET', null, pat);
-            const posts = JSON.parse(atob(current.content.replace(/\n/g, '')));
+            const posts   = JSON.parse(atob(current.content.replace(/\n/g, '')));
             posts.unshift(newPost);
             await ghFetch(POSTS_PATH, 'PUT', {
                 message: `Add post: ${newPost.title}`,
                 content: btoa(unescape(encodeURIComponent(JSON.stringify(posts, null, 2) + '\n'))),
-                sha: current.sha,
+                sha    : current.sha,
             }, pat);
         }
 
         async function updatePostInJson(updatedPost, pat) {
             const current = await ghFetch(POSTS_PATH, 'GET', null, pat);
-            const posts = JSON.parse(atob(current.content.replace(/\n/g, '')));
-            const idx = posts.findIndex(p => p.slug === updatedPost.slug);
+            const posts   = JSON.parse(atob(current.content.replace(/\n/g, '')));
+            const idx     = posts.findIndex(p => p.slug === updatedPost.slug);
             if (idx === -1) throw new Error(`Post "${updatedPost.slug}" not found in posts.json`);
             posts[idx] = updatedPost;
             await ghFetch(POSTS_PATH, 'PUT', {
                 message: `Edit post: ${updatedPost.title}`,
                 content: btoa(unescape(encodeURIComponent(JSON.stringify(posts, null, 2) + '\n'))),
-                sha: current.sha,
+                sha    : current.sha,
             }, pat);
         }
-        async function createFile(path, content, message, pat) {
+
+        // isBinary = true → content is already base64, skip the text-encoding path
+        async function createFile(path, content, message, pat, isBinary) {
             let sha;
             try {
                 const existing = await ghFetch(path, 'GET', null, pat);
                 sha = existing.sha;
             } catch (_) { sha = undefined; }
-            const body = { message, content: btoa(unescape(encodeURIComponent(content))) };
+
+            const encoded = isBinary
+                ? content
+                : btoa(unescape(encodeURIComponent(content)));
+
+            const body = { message, content: encoded };
             if (sha) body.sha = sha;
             await ghFetch(path, 'PUT', body, pat);
         }
 
-        // ── Post HTML template ──
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload  = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        //   POST HTML TEMPLATE
+        // ══════════════════════════════════════════════════════════════════
+
         function buildPostHtml(post, bodyHtml) {
             const tagSpans = (post.tags || [])
                 .map(t => `<span class="post-tag">${esc(t)}</span>`)
                 .join('');
 
-            const lastEditedBlock = post.lastEdited
-                ? `\n    <div class="post-last-edited">Last edited: ${esc(fmtDate(post.lastEdited))}</div>`
+            const hasToc = !!post.hasToc;
+
+            const lastEditedNormal = post.lastEdited
+                ? `\n            <div class="post-last-edited">Last edited: ${esc(fmtDate(post.lastEdited))}</div>`
                 : '';
+
+            const lastEditedToc = post.lastEdited
+                ? `\n                <div class="post-last-edited" style="max-width:none;margin:0 !important;">Last edited: ${esc(fmtDate(post.lastEdited))}</div>`
+                : '';
+
+            // ── Feature CSS always included ──
+            const featureCss = `
+        /* ── Figures ── */
+        .post-body figure { margin: 1.5rem 0; }
+        .post-body figure img { max-width: 100%; border-radius: 8px; display: block; }
+        .post-body figcaption { font-size: 0.82rem; color: var(--mute-2); margin-top: 0.4rem; font-style: italic; }
+
+        /* ── Artifact iframes ── */
+        .post-artifact { margin: 1.5rem 0; }
+        .post-artifact iframe { width: 100%; min-height: 420px; border: 1px solid var(--line); border-radius: 8px; display: block; resize: vertical; overflow: auto; }
+
+        /* ── KaTeX display ── */
+        .post-body .katex-display { overflow-x: auto; margin: 0.75rem 0; }`;
+
+            // ── TOC CSS only when hasToc ──
+            const tocCss = hasToc ? `
+        /* ── TOC two-column layout ── */
+        .post-toc-layout {
+            display: grid;
+            grid-template-columns: 210px 1fr;
+            gap: 3.5rem;
+            align-items: start;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 var(--gut);
+        }
+        .post-toc-sidebar {
+            position: sticky;
+            top: calc(var(--nav-height, 56px) + 2rem);
+            max-height: calc(100vh - var(--nav-height, 56px) - 4rem);
+            overflow-y: auto;
+        }
+        .post-toc-sidebar nav .toc-heading {
+            font-family: var(--ff-mono);
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--mute-2);
+            margin-bottom: 0.65rem;
+            font-weight: 600;
+        }
+        .post-toc-sidebar nav a {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--mute-2);
+            text-decoration: none;
+            border-bottom: none;
+            padding: 0.12rem 0;
+            transition: color 0.15s;
+        }
+        .post-toc-sidebar nav a:hover { color: var(--steel); border-bottom: none; }
+        .post-toc-sidebar nav a.toc-h3 { padding-left: 0.75rem; font-size: 0.77rem; }
+        .post-toc-sidebar nav a.toc-active { color: var(--steel); }
+        .post-body--toc { max-width: none !important; margin: 0 !important; padding-left: 0 !important; padding-right: 0 !important; }
+        @media (max-width: 768px) {
+            .post-toc-layout { grid-template-columns: 1fr; padding: 0 1.5rem; }
+            .post-toc-sidebar { position: static; max-height: none; border-bottom: 1px solid var(--line); margin-bottom: 1.2rem; padding-bottom: 0.8rem; }
+        }` : '';
+
+            // ── Body section ──
+            const sectionHtml = hasToc ? `
+    <section class="section">
+        <div class="post-toc-layout">
+            <div class="post-toc-sidebar">
+                <nav id="post-toc-nav"></nav>
+            </div>
+            <div>
+                <div class="post-body post-body--toc">
+                    ${bodyHtml}
+                </div>${lastEditedToc}
+            </div>
+        </div>
+    </section>` : `
+    <section class="section">
+        <div class="container">
+            <div class="post-body">
+                ${bodyHtml}
+            </div>${lastEditedNormal}
+        </div>
+    </section>`;
+
+            // ── TOC generation script ──
+            const tocScript = hasToc ? `
+        // Auto-build TOC
+        (function() {
+            var nav = document.getElementById('post-toc-nav');
+            if (!nav) return;
+            var body = document.querySelector('.post-body');
+            if (!body) return;
+            var hs = Array.from(body.querySelectorAll('h2, h3'));
+            if (!hs.length) return;
+
+            var title = document.createElement('div');
+            title.className = 'toc-heading';
+            title.textContent = 'Contents';
+            nav.appendChild(title);
+
+            hs.forEach(function(h, i) {
+                if (!h.id) {
+                    h.id = 'h-' + h.textContent.trim()
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/^-+|-+$/, '') + '-' + i;
+                }
+                var a = document.createElement('a');
+                a.href = '#' + h.id;
+                a.textContent = h.textContent;
+                if (h.tagName === 'H3') a.className = 'toc-h3';
+                nav.appendChild(a);
+            });
+
+            // Intersection-based active highlight
+            var obs = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    var link = nav.querySelector('a[href="#' + entry.target.id + '"]');
+                    if (link) link.classList.toggle('toc-active', entry.isIntersecting);
+                });
+            }, { rootMargin: '-10% 0% -80% 0%' });
+
+            hs.forEach(function(h) { obs.observe(h); });
+        })();` : '';
 
             return `<!DOCTYPE html>
 <html lang="en">
@@ -614,12 +1858,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/style.css?v=2" />
     <link rel="icon" type="image/png" href="/assets/icon.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"><\/script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+        onload="renderMathInElement(document.body,{trust:true,throwOnError:false,delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"
+    ><\/script>
     <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+        body { display: flex; flex-direction: column; min-height: 100vh; }
 
         .post-back {
             font-family: var(--ff-mono);
@@ -629,11 +1874,7 @@
             margin-bottom: 1rem;
             border-bottom: 1px solid transparent;
         }
-
-        .post-back:hover {
-            color: #fff;
-            border-bottom-color: #fff;
-        }
+        .post-back:hover { color: #fff; border-bottom-color: #fff; }
 
         .post-body {
             max-width: 65ch;
@@ -641,7 +1882,6 @@
             padding: 2.2rem 0 1rem;
             overflow-wrap: break-word;
         }
-
         .post-body h1, .post-body h2, .post-body h3 { margin-top: 1.8rem; margin-bottom: 0.5rem; }
         .post-body p { margin-bottom: 1rem; }
         .post-body a { color: var(--steel); border-bottom: 1px solid var(--line-2); }
@@ -667,23 +1907,14 @@
         }
 
         @media (max-width: 768px) {
-            section.section {
-                padding-top: 1rem;
-            }
-            .post-body {
-                padding-top: 0.5rem;
-                padding-left: 1.5rem;
-                padding-right: 1.5rem;
-            }
-            .post-last-edited {
-                padding-left: 1.5rem;
-                padding-right: 1.5rem;
-            }
+            section.section { padding-top: 1rem; }
+            .post-body { padding-top: 0.5rem; padding-left: 1.5rem; padding-right: 1.5rem; }
+            .post-last-edited { padding-left: 1.5rem; padding-right: 1.5rem; }
         }
 
-        footer.footer {
-            margin-top: auto;
-        }
+        footer.footer { margin-top: auto; }
+        ${featureCss}
+        ${tocCss}
     </style>
 </head>
 
@@ -706,7 +1937,6 @@
         </div>
     </nav>
 
-    <!-- ========== HEADER STRIP ========== -->
     <header class="header-strip">
         <div class="header-strip__inner" style="display: block;">
             <a href="/fieldnotes/" class="post-back">← field notes</a>
@@ -715,14 +1945,7 @@
             <div class="post-card__tags">${tagSpans}</div>
         </div>
     </header>
-
-    <section class="section">
-        <div class="container">
-            <div class="post-body">
-                ${bodyHtml}
-            </div>${lastEditedBlock}
-        </div>
-    </section>
+    ${sectionHtml}
 
     <footer class="footer">
         <div class="footer-bg" aria-hidden="true"></div>
@@ -735,29 +1958,32 @@
     </footer>
 
     <script>
-        // Nav scrolled state
-        const nav = document.getElementById('nav');
-        const onScroll = () => {
+        var nav = document.getElementById('nav');
+        var onScroll = function() {
             if (window.scrollY > 60) nav.classList.add('scrolled');
             else nav.classList.remove('scrolled');
         };
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
 
-        document.querySelectorAll('#nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
+        document.querySelectorAll('#nav-links a').forEach(function(link) {
+            link.addEventListener('click', function() {
                 document.getElementById('nav-links').classList.remove('open');
             });
         });
+        ${tocScript}
     <\/script>
 
 </body>
-</html>`;
+<\/html>`;
         }
 
-        // ── Utilities ──
+        // ══════════════════════════════════════════════════════════════════
+        //   UTILITIES
+        // ══════════════════════════════════════════════════════════════════
+
         function esc(str) {
-            return String(str)
+            return String(str || '')
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
@@ -782,6 +2008,11 @@
             el.innerHTML = '';
         }
 
+        function autoResize(ta) {
+            ta.style.height = 'auto';
+            ta.style.height = ta.scrollHeight + 'px';
+        }
+
         function resetForm() {
             document.getElementById('post-form').reset();
             document.getElementById('date').value = new Date().toISOString().slice(0, 10);
@@ -790,14 +2021,26 @@
             document.getElementById('body-note').style.display = 'none';
             document.getElementById('submit-label').textContent = 'Publish';
             clearStatus('status');
+            // Reset editor to a fresh empty state
+            segments = [newTextSeg()];
+            renderEditorBlocks();
         }
 
-        // Close mobile nav on link click
+        // ── Nav scroll ─────────────────────────────────────────────────────────
         document.querySelectorAll('#nav-links a').forEach(link => {
             link.addEventListener('click', () => {
                 document.getElementById('nav-links').classList.remove('open');
             });
         });
+
+        // ══════════════════════════════════════════════════════════════════
+        //   INIT
+        // ══════════════════════════════════════════════════════════════════
+
+        // Boot with one empty text segment
+        segments = [newTextSeg()];
+        renderEditorBlocks();
+
     </script>
 
 </body>
