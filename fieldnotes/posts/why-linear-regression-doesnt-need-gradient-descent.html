@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>why linear regression doesn't need gradient descent — Sima Adleyba</title>
+    <meta name="description" content="i pent one hour getting confused about gradient descent only to learn that linear regression doesn't use it.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css?v=2" />
+    <link rel="icon" type="image/png" href="/assets/icon.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+        onload="renderMathInElement(document.body,{trust:true,throwOnError:false,delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"
+    ></script>
+    <style>
+        body { display: flex; flex-direction: column; min-height: 100vh; }
+
+        .post-back {
+            font-family: var(--ff-mono);
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.78);
+            display: inline-block;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid transparent;
+        }
+        .post-back:hover { color: #fff; border-bottom-color: #fff; }
+
+        .post-body {
+            max-width: 65ch;
+            margin: 0 auto !important;
+            padding: 2.2rem 0 1rem;
+            overflow-wrap: break-word;
+        }
+        .post-body h1, .post-body h2, .post-body h3 { margin-top: 1.8rem; margin-bottom: 0.5rem; }
+        .post-body p { margin-bottom: 1rem; }
+        .post-body a { color: var(--steel); border-bottom: 1px solid var(--line-2); }
+        .post-body a:hover { color: var(--ink-3); border-color: var(--ink-3); }
+        .post-body code { background: var(--paper-2); padding: 0.1em 0.35em; border-radius: 4px; font-size: 0.87em; font-family: var(--ff-mono); }
+        .post-body pre { background: var(--paper-2); padding: 1rem; border-radius: 8px; overflow-x: auto; margin-bottom: 1rem; }
+        .post-body pre code { background: none; padding: 0; font-size: 0.85em; }
+        .post-body blockquote { border-left: 3px solid var(--paper-3); margin: 0 0 1rem; padding: 0.3rem 1rem; color: var(--mute-2); }
+        .post-body img { max-width: 100%; border-radius: 8px; margin: 0.5rem 0; }
+        .post-body ul, .post-body ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+        .post-body li { margin-bottom: 0.3rem; }
+        .post-body hr { border: none; border-top: 1px solid var(--line); margin: 2rem 0; }
+
+        .post-last-edited {
+            max-width: 65ch;
+            margin: 0 auto !important;
+            font-family: var(--ff-mono);
+            font-size: 0.76rem;
+            color: var(--mute-2);
+            padding: 0.8rem 0 1.6rem;
+            border-top: 1px solid var(--line);
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            section.section { padding-top: 1rem; }
+            .post-body { padding-top: 0.5rem; padding-left: 1.5rem; padding-right: 1.5rem; }
+            .post-last-edited { padding-left: 1.5rem; padding-right: 1.5rem; }
+        }
+
+        footer.footer { margin-top: auto; }
+        
+        /* ── Figures ── */
+        .post-body figure { margin: 1.5rem 0; }
+        .post-body figure img { max-width: 100%; border-radius: 8px; display: block; }
+        .post-body figcaption { font-size: 0.82rem; color: var(--mute-2); margin-top: 0.4rem; font-style: italic; }
+
+        /* ── Artifact iframes ── */
+        .post-artifact { margin: 1.5rem 0; }
+        .post-artifact iframe { width: 100%; min-height: 420px; border: 1px solid var(--line); border-radius: 8px; display: block; resize: vertical; overflow: auto; }
+
+        /* ── KaTeX display ── */
+        .post-body .katex-display { overflow-x: auto; margin: 0.75rem 0; }
+        
+        /* ── TOC two-column layout ── */
+        .post-toc-layout {
+            display: grid;
+            grid-template-columns: 210px 1fr;
+            gap: 3.5rem;
+            align-items: start;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 var(--gut);
+        }
+        .post-toc-sidebar {
+            position: sticky;
+            top: calc(var(--nav-height, 56px) + 2rem);
+            max-height: calc(100vh - var(--nav-height, 56px) - 4rem);
+            overflow-y: auto;
+        }
+        .post-toc-sidebar nav .toc-heading {
+            font-family: var(--ff-mono);
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--mute-2);
+            margin-bottom: 0.65rem;
+            font-weight: 600;
+        }
+        .post-toc-sidebar nav a {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--mute-2);
+            text-decoration: none;
+            border-bottom: none;
+            padding: 0.12rem 0;
+            transition: color 0.15s;
+        }
+        .post-toc-sidebar nav a:hover { color: var(--steel); border-bottom: none; }
+        .post-toc-sidebar nav a.toc-h3 { padding-left: 0.75rem; font-size: 0.77rem; }
+        .post-toc-sidebar nav a.toc-active { color: var(--steel); }
+        .post-body--toc { max-width: none !important; margin: 0 !important; padding-left: 0 !important; padding-right: 0 !important; }
+        @media (max-width: 768px) {
+            .post-toc-layout { grid-template-columns: 1fr; padding: 0 1.5rem; }
+            .post-toc-sidebar { position: static; max-height: none; border-bottom: 1px solid var(--line); margin-bottom: 1.2rem; padding-bottom: 0.8rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav id="nav">
+        <a class="nav-mark" href="/"><span class="dot"></span></a>
+        <button id="burger-icon" aria-label="Toggle menu"
+            onclick="document.getElementById('nav-links').classList.toggle('open')">☰</button>
+        <div id="nav-links">
+            <a href="/#about">about</a>
+            <a href="/#research">research</a>
+            <a href="/#experience">experience</a>
+            <a href="/#education">education</a>
+            <a href="/#studyguides">study guides</a>
+            <a href="/#beyond">beyond</a>
+            <a href="/" target="_blank" rel="noopener">cv</a>
+            <span class="nav-pipe">|</span>
+            <a href="/fieldnotes/" class="field-notes">field notes</a>
+        </div>
+    </nav>
+
+    <header class="header-strip">
+        <div class="header-strip__inner" style="display: block;">
+            <a href="/fieldnotes/" class="post-back">← field notes</a>
+            <p style="font-family: var(--ff-mono); font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.72); margin: 0 0 0.5rem;">May 25, 2026</p>
+            <h1 style="font-family: var(--ff-display); font-weight: 700; font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.1; margin: 0 0 0.8rem; color: #fff; text-transform: lowercase;">why linear regression doesn't need gradient descent</h1>
+            <div class="post-card__tags"><span class="post-tag">maths</span><span class="post-tag">statistics</span><span class="post-tag">machine learning</span></div>
+        </div>
+    </header>
+    
+    <section class="section">
+        <div class="post-toc-layout">
+            <div class="post-toc-sidebar">
+                <nav id="post-toc-nav"></nav>
+            </div>
+            <div>
+                <div class="post-body post-body--toc">
+                    <h2>Intro</h2>
+<p>I&#39;m taking a Statistical Inference course this semester. It&#39;s been hard, the kind of hard where you think you understand something and then realize you were just pattern-matching to a familiar shape.</p>
+<p>We finally got to linear regression, and I thought: <em>finally, something I know</em>. I&#39;ve seen this in machine learning, I&#39;ve implemented it, I&#39;ve debugged it. So when the lecture notes wrote out the RSS and started manipulating it in matrix form, I was nodding along.</p>
+<p>Then something happened.</p>
+<p>We took the derivative of the RSS with respect to $\boldsymbol{\beta}$, set it to zero, and solved. No learning rate. No iterations. No update rule. Just solved.</p>
+<p>I was confused because... I don&#39;t now, I was waiting a gradient descent-like solution? Like, doesn&#39;t the gradient give us a direction? Don&#39;t we then multiply by a learning rate and update? But nope. The notes just algebraically solved for $\tilde{\boldsymbol{\beta}}$ directly. I had gradient descent so wired into my intuition that I couldn&#39;t see why you&#39;d ever just stop after one step.</p>
+<p>Apparently, the answer is convexity.</p>
+<hr>
+<h2>The Setup</h2>
+<p>We have $n$ observations. Each observation $i$ has a feature vector $x_i \in$ ${R}^{k+1}$ (with $x_{i,0} = 1$ for the intercept) and a response $y_i \in \mathbb{R}$. Stacked into matrices:</p>
+<p>$$y = X\boldsymbol{\beta} + \mathbf{e}$$</p>
+<p>where $X$ is $n \times (k+1)$, $\boldsymbol{\beta} = (\beta_0, \beta_1, \dots, \beta_k)^T$, and $\mathbf{e}$ is the noise vector. The residual sum of squares is:</p>
+<p>$$\text{RSS}(\boldsymbol{\beta}) = |y - X\boldsymbol{\beta}|_2^2 = (y - X\boldsymbol{\beta})^T(y - X\boldsymbol{\beta})$$</p>
+<p>Expanding:</p>
+<p>$$\text{RSS}(\boldsymbol{\beta}) = y^Ty - 2\boldsymbol{\beta}^TX^Ty + \boldsymbol{\beta}^TX^TX\boldsymbol{\beta}$$</p>
+<p>Look at this carefully. In $\boldsymbol{\beta}$, this is a quadratic, one quadratic term $\boldsymbol{\beta}^TX^TX\boldsymbol{\beta}$, one linear term $-2\boldsymbol{\beta}^TX^Ty$, and a constant $y^Ty$. The shape of the loss landscape is determined entirely by that quadratic term.</p>
+<hr>
+<h2>The Closed-Form Solution</h2>
+<p>Since RSS is differentiable, we find its minimum by setting the gradient to zero. The gradient with respect to $\boldsymbol{\beta}$ is:</p>
+<p>$$\nabla_{\boldsymbol{\beta}} \text{RSS} = -2X^Ty + 2X^TX\boldsymbol{\beta}$$</p>
+<p>Setting this to zero:</p>
+<p>$$X^TX\boldsymbol{\beta} = X^Ty$$</p>
+<p>These are the <strong>normal equations</strong>. If $X$ has rank $k+1$ (no perfect multicollinearity among features), then $X^TX$ is invertible, and we get the unique solution directly:</p>
+<p>$$\tilde{\boldsymbol{\beta}} = (X^TX)^{-1}X^Ty$$</p>
+<p>No iterations. No learning rate. We set the gradient to zero, solve the linear system, done. The reason this works, the reason setting the gradient to zero is <em>guaranteed</em> to give a global minimum and not some saddle point or local minimum, is that RSS is convex.</p>
+<hr>
+<h2>Why RSS is Convex: The Hessian Proof</h2>
+<p>A twice-differentiable function is convex if and only if its Hessian is positive semi-definite (PSD) everywhere. Positive semi-definite means: for any non-zero vector $\mathbf{z}$,</p>
+<p>$$\mathbf{z}^T H \mathbf{z} \geq 0$$</p>
+<p>The Hessian of RSS with respect to $\boldsymbol{\beta}$ is just the matrix of second derivatives. From the gradient $-2X^Ty + 2X^TX\boldsymbol{\beta}$, differentiating again:</p>
+<p>$$H = 2X^TX$$</p>
+<p>Now we check PSD. Take any $\mathbf{z} \in \mathbb{R}^{k+1}$:</p>
+<p>$$\mathbf{z}^T H \mathbf{z} = 2\mathbf{z}^T X^T X \mathbf{z} = 2(X\mathbf{z})^T(X\mathbf{z}) = 2|X\mathbf{z}|_2^2$$</p>
+<p>The squared $\ell_2$-norm of any vector is non-negative. So:</p>
+<p>$$\mathbf{z}^T H \mathbf{z} \geq 0 \quad \forall \mathbf{z}$$</p>
+<p>$H$ is PSD everywhere, which means RSS is convex everywhere. If $X$ has full column rank, $X\mathbf{z} = 0$ only when $\mathbf{z} = 0$, so the inequality is strict, RSS is <em>strictly</em> convex, with a single unique global minimum.</p>
+<p>This is the thing I was missing. The landscape isn&#39;t just bowl-shaped by coincidence or by the grace of your dataset. It&#39;s bowl-shaped by construction, because the loss is a quadratic form in $\boldsymbol{\beta}$ with a PSD coefficient matrix.</p>
+<hr>
+<h2>Why Other Models Need Gradient Descent</h2>
+<p>Linear regression is special. The moment you move to logistic regression, the loss is a sum of log-sigmoids, no longer quadratic in the parameters, no closed form. Neural networks compose nonlinearities across layers; the loss landscape becomes non-convex, full of saddle points and local minima. You <em>need</em> iterative methods because there&#39;s no algebraic shortcut to the bottom.</p>
+<p>The gradient descent intuition I came in with, compute gradient, get a direction, step, repeat, isn&#39;t wrong. It&#39;s just solving a harder problem. Linear regression&#39;s convexity means you can skip directly to where gradient descent would eventually converge anyway, and get there in one shot.</p>
+<hr>
+<h2>Interactive: The Loss Landscape</h2>
+
+<div class="post-toc-anchor"></div>
+<div class="post-artifact">
+<iframe srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;/>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/>
+<title>Loss Landscape Explorer</title>
+<script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js&quot;></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #181c27;
+    --surface-2: #1e2330;
+    --border: rgba(255,255,255,0.08);
+    --accent: #7eb8f7;
+    --accent-2: #f7a07e;
+    --text: #e8eaf0;
+    --muted: rgba(232,234,240,0.5);
+    --ff-mono: &quot;JetBrains Mono&quot;, ui-monospace, monospace;
+    --ff-body: &quot;IBM Plex Sans&quot;, system-ui, sans-serif;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--ff-body);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 1.5rem;
+  }
+
+  h1 {
+    font-family: var(--ff-mono);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--ff-mono);
+    letter-spacing: 0.1em;
+    margin-bottom: 1.5rem;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    width: fit-content;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .tab {
+    font-family: var(--ff-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.55rem 1.1rem;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    border-right: 1px solid var(--border);
+  }
+  .tab:last-child { border-right: none; }
+  .tab.active {
+    background: var(--accent);
+    color: #0f1117;
+    font-weight: 500;
+  }
+  .tab:hover:not(.active) { background: var(--surface-2); color: var(--text); }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ===== PANEL 1: BOWL ===== */
+  .bowl-grid {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 1.2rem;
+    align-items: start;
+  }
+
+  canvas {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--surface);
+    width: 100%;
+  }
+
+  .controls {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .control-group label {
+    display: block;
+    font-family: var(--ff-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .control-group .val {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  input[type=range] {
+    width: 100%;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .btn {
+    font-family: var(--ff-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    border-radius: 3px;
+    transition: border-color 0.2s, background 0.2s;
+    width: 100%;
+  }
+  .btn:hover { border-color: var(--accent); background: rgba(126,184,247,0.07); color: var(--accent); }
+  .btn.running { border-color: var(--accent-2); color: var(--accent-2); }
+
+  .info-box {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.9rem 1rem;
+    font-family: var(--ff-mono);
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+  .info-box .highlight { color: var(--accent); }
+  .info-box .highlight2 { color: var(--accent-2); }
+
+  /* ===== PANEL 2: COMPARISON ===== */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+  }
+
+  .compare-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1rem;
+  }
+
+  .compare-card h3 {
+    font-family: var(--ff-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+
+  .convex-label { color: var(--accent); }
+  .nonconvex-label { color: var(--accent-2); }
+
+  .compare-card p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+    line-height: 1.5;
+  }
+
+  /* ===== PANEL 3: NORMAL EQ ===== */
+  .neq-grid {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 1.2rem;
+    align-items: start;
+  }
+
+  .data-canvas-wrap { position: relative; }
+
+  .neq-controls {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--ff-mono);
+    font-size: 11px;
+  }
+  .stat-row .k { color: var(--muted); letter-spacing: 0.12em; }
+  .stat-row .v { color: var(--accent); font-weight: 500; }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+  }
+
+  .note {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<h1>Loss Landscape Explorer</h1>
+<p class=&quot;subtitle&quot;>convexity of rss &amp;middot; normal equations &amp;middot; gradient descent</p>
+
+<div class=&quot;tabs&quot;>
+  <button class=&quot;tab active&quot; onclick=&quot;switchTab(0)&quot;>01 &amp;mdash; Bowl</button>
+  <button class=&quot;tab&quot; onclick=&quot;switchTab(1)&quot;>02 &amp;mdash; Compare</button>
+  <button class=&quot;tab&quot; onclick=&quot;switchTab(2)&quot;>03 &amp;mdash; Normal Equations</button>
+</div>
+
+<!-- ===== PANEL 1: BOWL ===== -->
+<div class=&quot;panel active&quot; id=&quot;panel-0&quot;>
+  <div class=&quot;bowl-grid&quot;>
+    <div>
+      <canvas id=&quot;bowl-canvas&quot; height=&quot;380&quot;></canvas>
+    </div>
+    <div class=&quot;controls&quot;>
+      <div class=&quot;control-group&quot;>
+        <label>Learning rate <span class=&quot;val&quot; id=&quot;lr-val&quot;>0.05</span></label>
+        <input type=&quot;range&quot; id=&quot;lr-slider&quot; min=&quot;0.005&quot; max=&quot;0.18&quot; step=&quot;0.005&quot; value=&quot;0.05&quot; oninput=&quot;updateLR()&quot;>
+      </div>
+      <div class=&quot;control-group&quot;>
+        <label>Start &amp;beta;<sub>0</sub> <span class=&quot;val&quot; id=&quot;b0-val&quot;>-2.5</span></label>
+        <input type=&quot;range&quot; id=&quot;b0-slider&quot; min=&quot;-3&quot; max=&quot;3&quot; step=&quot;0.1&quot; value=&quot;-2.5&quot; oninput=&quot;resetGD()&quot;>
+      </div>
+      <div class=&quot;control-group&quot;>
+        <label>Start &amp;beta;<sub>1</sub> <span class=&quot;val&quot; id=&quot;b1-val&quot;>2.5</span></label>
+        <input type=&quot;range&quot; id=&quot;b1-slider&quot; min=&quot;-3&quot; max=&quot;3&quot; step=&quot;0.1&quot; value=&quot;2.5&quot; oninput=&quot;resetGD()&quot;>
+      </div>
+      <button class=&quot;btn&quot; id=&quot;gd-btn&quot; onclick=&quot;toggleGD()&quot;>Run Gradient Descent</button>
+      <button class=&quot;btn&quot; onclick=&quot;resetGD()&quot;>Reset</button>
+      <div class=&quot;info-box&quot; id=&quot;bowl-info&quot;>
+        Contour plot of RSS(&amp;beta;<sub>0</sub>, &amp;beta;<sub>1</sub>) for a toy dataset.<br><br>
+        <span class=&quot;highlight&quot;>&amp;starf; = closed-form optimum</span><br>
+        <span class=&quot;highlight2&quot;>&amp;bull; = GD path</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PANEL 2: COMPARE ===== -->
+<div class=&quot;panel&quot; id=&quot;panel-1&quot;>
+  <div class=&quot;compare-grid&quot;>
+    <div class=&quot;compare-card&quot;>
+      <h3 class=&quot;convex-label&quot;>Convex &amp;mdash; RSS (Linear Regression)</h3>
+      <p>Quadratic in &amp;beta;. Single global minimum. Gradient descent always converges here.</p>
+      <canvas id=&quot;convex-canvas&quot; height=&quot;280&quot;></canvas>
+    </div>
+    <div class=&quot;compare-card&quot;>
+      <h3 class=&quot;nonconvex-label&quot;>Non-Convex &amp;mdash; Toy Neural Net Loss</h3>
+      <p>Multiple local minima. Saddle points. Where you end up depends on initialization.</p>
+      <canvas id=&quot;nonconvex-canvas&quot; height=&quot;280&quot;></canvas>
+    </div>
+  </div>
+  <div style=&quot;margin-top:1rem;&quot;>
+    <div class=&quot;info-box&quot;>
+      The convex loss has <span class=&quot;highlight&quot;>H = 2X&amp;sup;TX &amp;succeq; 0</span> everywhere &amp;mdash; proven via &amp;Vert;Xz&amp;Vert;&amp;sup2; &amp;ge; 0.<br>
+      The non-convex loss has regions where the Hessian is <span class=&quot;highlight2&quot;>indefinite</span>: neither PSD nor NSD. Gradient descent can get stuck.
+    </div>
+  </div>
+</div>
+
+<!-- ===== PANEL 3: NORMAL EQUATIONS ===== -->
+<div class=&quot;panel&quot; id=&quot;panel-2&quot;>
+  <div class=&quot;neq-grid&quot;>
+    <div>
+      <canvas id=&quot;neq-canvas&quot; height=&quot;380&quot;></canvas>
+      <p style=&quot;font-size:11px; color:var(--muted); margin-top:0.5rem; font-family:var(--ff-mono);&quot;>
+        Click canvas to add points. Min 3 points needed.
+      </p>
+    </div>
+    <div class=&quot;neq-controls&quot;>
+      <div>
+        <div style=&quot;font-family:var(--ff-mono);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:0.7rem;&quot;>Normal Equations</div>
+        <div class=&quot;stat-row&quot;><span class=&quot;k&quot;>n points</span><span class=&quot;v&quot; id=&quot;neq-n&quot;>0</span></div>
+        <div class=&quot;divider&quot; style=&quot;margin:0.5rem 0;&quot;></div>
+        <div class=&quot;stat-row&quot;><span class=&quot;k&quot;>&amp;beta;&amp;#770;<sub>0</sub> (intercept)</span><span class=&quot;v&quot; id=&quot;neq-b0&quot;>--</span></div>
+        <div class=&quot;stat-row&quot;><span class=&quot;k&quot;>&amp;beta;&amp;#770;<sub>1</sub> (slope)</span><span class=&quot;v&quot; id=&quot;neq-b1&quot;>--</span></div>
+        <div class=&quot;divider&quot; style=&quot;margin:0.5rem 0;&quot;></div>
+        <div class=&quot;stat-row&quot;><span class=&quot;k&quot;>RSS</span><span class=&quot;v&quot; id=&quot;neq-rss&quot;>--</span></div>
+      </div>
+      <button class=&quot;btn&quot; onclick=&quot;clearNEQ()&quot;>Clear Points</button>
+      <button class=&quot;btn&quot; onclick=&quot;addRandomNEQ()&quot;>Add Random Points</button>
+      <div class=&quot;note&quot;>
+        &amp;beta;&amp;#770; = (X&amp;sup;TX)&amp;sup;&amp;#8315;&amp;sup;&amp;#185;X&amp;sup;Ty<br><br>
+        No iterations. One matrix solve. The bowl guarantees this is the global minimum.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// SHARED STATE
+// ============================================================
+let activeTab = 0;
+
+function switchTab(i) {
+  document.querySelectorAll('.tab').forEach((t,j) => t.classList.toggle('active', i===j));
+  document.querySelectorAll('.panel').forEach((p,j) => p.classList.toggle('active', i===j));
+  activeTab = i;
+  if (i === 0) drawBowl();
+  if (i === 1) drawCompare();
+  if (i === 2) drawNEQ();
+}
+
+// ============================================================
+// PANEL 1: BOWL + GRADIENT DESCENT
+// ============================================================
+// Toy dataset: y = 0.8x + 1.2 + noise
+const toyX = [-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5];
+const toyY = toyX.map(x => 0.8*x + 1.2 + (Math.random()-0.5)*0.4);
+
+function rss(b0, b1) {
+  return toyX.reduce((s,x,i) => s + (b0 + b1*x - toyY[i])**2, 0);
+}
+
+function rssGrad(b0, b1) {
+  let g0=0, g1=0;
+  for (let i=0;i<toyX.length;i++) {
+    const e = b0 + b1*toyX[i] - toyY[i];
+    g0 += 2*e;
+    g1 += 2*e*toyX[i];
+  }
+  return [g0, g1];
+}
+
+// Closed-form optimum
+function closedForm() {
+  const n = toyX.length;
+  const sx = toyX.reduce((a,b)=>a+b,0);
+  const sy = toyY.reduce((a,b)=>a+b,0);
+  const sxx = toyX.reduce((a,x)=>a+x*x,0);
+  const sxy = toyX.reduce((a,x,i)=>a+x*toyY[i],0);
+  const b1 = (n*sxy - sx*sy)/(n*sxx - sx*sx);
+  const b0 = (sy - b1*sx)/n;
+  return [b0, b1];
+}
+
+const [optB0, optB1] = closedForm();
+
+let gdPath = [];
+let gdRunning = false;
+let gdInterval = null;
+let lr = 0.05;
+let startB0 = -2.5, startB1 = 2.5;
+
+function updateLR() {
+  lr = parseFloat(document.getElementById('lr-slider').value);
+  document.getElementById('lr-val').textContent = lr.toFixed(3);
+}
+
+function resetGD() {
+  startB0 = parseFloat(document.getElementById('b0-slider').value);
+  startB1 = parseFloat(document.getElementById('b1-slider').value);
+  document.getElementById('b0-val').textContent = startB0.toFixed(1);
+  document.getElementById('b1-val').textContent = startB1.toFixed(1);
+  stopGD();
+  gdPath = [];
+  drawBowl();
+}
+
+function stopGD() {
+  gdRunning = false;
+  clearInterval(gdInterval);
+  const btn = document.getElementById('gd-btn');
+  btn.textContent = 'Run Gradient Descent';
+  btn.classList.remove('running');
+}
+
+function toggleGD() {
+  if (gdRunning) { stopGD(); return; }
+  if (gdPath.length === 0) gdPath = [[startB0, startB1]];
+  gdRunning = true;
+  const btn = document.getElementById('gd-btn');
+  btn.textContent = 'Stop';
+  btn.classList.add('running');
+  gdInterval = setInterval(() => {
+    const [b0,b1] = gdPath[gdPath.length-1];
+    const [g0,g1] = rssGrad(b0,b1);
+    const nb0 = b0 - lr*g0;
+    const nb1 = b1 - lr*g1;
+    gdPath.push([nb0,nb1]);
+    drawBowl();
+    // Check convergence
+    if (Math.abs(g0) < 0.001 &amp;&amp; Math.abs(g1) < 0.001) stopGD();
+    if (gdPath.length > 500) stopGD();
+  }, 40);
+}
+
+function drawBowl() {
+  const canvas = document.getElementById('bowl-canvas');
+  if (!canvas) return;
+  const W = canvas.parentElement.clientWidth;
+  canvas.width = W;
+  canvas.height = 380;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+
+  const range = 3.5;
+  // Map param space to canvas
+  const toC = (b0,b1) => [
+    (b0+range)/(2*range)*w,
+    h - (b1+range)/(2*range)*h
+  ];
+
+  // Compute RSS grid
+  const steps = 120;
+  const vals = [];
+  let minV = Infinity, maxV = -Infinity;
+  for (let i=0;i<=steps;i++) {
+    vals[i] = [];
+    for (let j=0;j<=steps;j++) {
+      const b0 = -range + 2*range*i/steps;
+      const b1 = -range + 2*range*j/steps;
+      const v = rss(b0,b1);
+      vals[i][j] = v;
+      if (v < minV) minV = v;
+      if (v > maxV) maxV = v;
+    }
+  }
+
+  // Draw filled contours via pixel manipulation
+  const img = ctx.createImageData(w,h);
+  const levels = 18;
+  for (let px=0;px<w;px++) {
+    for (let py=0;py<h;py++) {
+      const b0 = -range + 2*range*px/w;
+      const b1 = -range + 2*range*(h-py)/h;
+      const v = rss(b0,b1);
+      const t = Math.pow((v-minV)/(maxV-minV), 0.45);
+      // Color: dark blue -> light blue -> white
+      const r = Math.round(15 + t*220);
+      const g = Math.round(17 + t*210);
+      const bl = Math.round(35 + t*190);
+      const idx = (py*w+px)*4;
+      img.data[idx]   = r;
+      img.data[idx+1] = g;
+      img.data[idx+2] = bl;
+      img.data[idx+3] = 255;
+    }
+  }
+  ctx.putImageData(img,0,0);
+
+  // Draw contour lines
+  ctx.strokeStyle = 'rgba(126,184,247,0.18)';
+  ctx.lineWidth = 1;
+  const contourLevels = 12;
+  for (let l=1;l<contourLevels;l++) {
+    const target = minV + (maxV-minV)*Math.pow(l/contourLevels, 0.45);
+    // Simple marching: draw on iso-level
+    for (let px=0;px<w-1;px++) {
+      for (let py=0;py<h-1;py++) {
+        const b0 = -range + 2*range*px/w;
+        const b1 = -range + 2*range*(h-py)/h;
+        const v = rss(b0,b1);
+        const vr = rss(b0+2*range/w, b1);
+        const vd = rss(b0, b1-2*range/h);
+        if ((v-target)*(vr-target)<0 || (v-target)*(vd-target)<0) {
+          ctx.beginPath();
+          ctx.arc(px,py,0.6,0,Math.PI*2);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  // Axes labels
+  ctx.fillStyle = 'rgba(232,234,240,0.35)';
+  ctx.font = '10px JetBrains Mono, monospace';
+  ctx.fillText('β₀', w-20, h/2);
+  ctx.fillText('β₁', w/2, 12);
+
+  // GD path
+  if (gdPath.length > 1) {
+    ctx.strokeStyle = '#f7a07e';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    const [cx,cy] = toC(gdPath[0][0], gdPath[0][1]);
+    ctx.moveTo(cx,cy);
+    for (let i=1;i<gdPath.length;i++) {
+      const [px,py] = toC(gdPath[i][0],gdPath[i][1]);
+      ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+    // Dots every 5 steps
+    ctx.fillStyle = '#f7a07e';
+    for (let i=0;i<gdPath.length;i+=5) {
+      const [px,py] = toC(gdPath[i][0],gdPath[i][1]);
+      ctx.beginPath();
+      ctx.arc(px,py,3,0,Math.PI*2);
+      ctx.fill();
+    }
+  }
+
+  // Optimum star
+  const [ox,oy] = toC(optB0, optB1);
+  ctx.fillStyle = '#7eb8f7';
+  ctx.font = 'bold 16px sans-serif';
+  ctx.fillText('★', ox-8, oy+6);
+
+  // Start point
+  if (gdPath.length === 0) {
+    const [sx2,sy2] = toC(startB0, startB1);
+    ctx.fillStyle = '#f7a07e';
+    ctx.beginPath();
+    ctx.arc(sx2,sy2,5,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  // Info update
+  if (gdPath.length > 0) {
+    const last = gdPath[gdPath.length-1];
+    document.getElementById('bowl-info').innerHTML =
+      `Step: <span class=&quot;highlight&quot;>${gdPath.length-1}</span><br>` +
+      `&amp;beta;<sub>0</sub>: <span class=&quot;highlight&quot;>${last[0].toFixed(4)}</span><br>` +
+      `&amp;beta;<sub>1</sub>: <span class=&quot;highlight&quot;>${last[1].toFixed(4)}</span><br>` +
+      `RSS: <span class=&quot;highlight&quot;>${rss(last[0],last[1]).toFixed(4)}</span><br><br>` +
+      `Closed-form:<br>` +
+      `&amp;beta;<sub>0</sub>: <span class=&quot;highlight2&quot;>${optB0.toFixed(4)}</span><br>` +
+      `&amp;beta;<sub>1</sub>: <span class=&quot;highlight2&quot;>${optB1.toFixed(4)}</span>`;
+  }
+}
+
+// ============================================================
+// PANEL 2: COMPARE
+// ============================================================
+function drawCurve(canvasId, fn, color, label) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  canvas.width = canvas.parentElement.clientWidth - 32;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const pad = 30;
+
+  ctx.fillStyle = '#181c27';
+  ctx.fillRect(0,0,w,h);
+
+  // Sample
+  const pts = [];
+  for (let i=0;i<=200;i++) {
+    const x = -4 + 8*i/200;
+    pts.push([x, fn(x)]);
+  }
+  const ys = pts.map(p=>p[1]);
+  const minY = Math.min(...ys), maxY = Math.max(...ys);
+
+  const cx = (x) => pad + (x+4)/8*(w-2*pad);
+  const cy = (y) => h-pad - (y-minY)/(maxY-minY)*(h-2*pad);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 1;
+  for (let i=0;i<=4;i++) {
+    const x = -4+2*i;
+    ctx.beginPath(); ctx.moveTo(cx(x),pad); ctx.lineTo(cx(x),h-pad); ctx.stroke();
+  }
+
+  // Curve
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  pts.forEach(([x,y],i) => i===0 ? ctx.moveTo(cx(x),cy(y)) : ctx.lineTo(cx(x),cy(y)));
+  ctx.stroke();
+
+  // Fill under curve lightly
+  ctx.fillStyle = color.replace(')', ',0.06)').replace('rgb','rgba').replace('#7eb8f7','rgba(126,184,247,0.06)').replace('#f7a07e','rgba(247,160,126,0.06)');
+  ctx.beginPath();
+  pts.forEach(([x,y],i) => i===0 ? ctx.moveTo(cx(x),cy(y)) : ctx.lineTo(cx(x),cy(y)));
+  ctx.lineTo(cx(pts[pts.length-1][0]), h-pad);
+  ctx.lineTo(cx(pts[0][0]), h-pad);
+  ctx.closePath();
+  ctx.fill();
+
+  // Minima markers
+  const minima = [];
+  for (let i=1;i<pts.length-1;i++) {
+    if (pts[i][1] < pts[i-1][1] &amp;&amp; pts[i][1] < pts[i+1][1]) minima.push(pts[i]);
+  }
+  minima.forEach(([x,y]) => {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(cx(x),cy(y),5,0,Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.fillText('min', cx(x)+7, cy(y)+4);
+  });
+
+  // Axis
+  ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(pad,h-pad); ctx.lineTo(w-pad,h-pad); ctx.stroke();
+
+  ctx.fillStyle = 'rgba(232,234,240,0.4)';
+  ctx.font = '10px JetBrains Mono, monospace';
+  ctx.fillText('θ', w-pad+4, h-pad+4);
+  ctx.fillText('J(θ)', pad, pad-6);
+}
+
+function drawCompare() {
+  // Convex: simple parabola
+  drawCurve('convex-canvas', x => 0.5*x*x + 0.3*x + 0.2, '#7eb8f7');
+  // Non-convex: multi-modal
+  drawCurve('nonconvex-canvas', x => Math.sin(1.5*x) + 0.15*x*x - 0.5*Math.cos(3*x+1) + 0.5, '#f7a07e');
+}
+
+// ============================================================
+// PANEL 3: NORMAL EQUATIONS
+// ============================================================
+let neqPoints = [];
+
+function drawNEQ() {
+  const canvas = document.getElementById('neq-canvas');
+  if (!canvas) return;
+  canvas.width = canvas.parentElement.clientWidth;
+  canvas.height = 380;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const pad = 40;
+
+  ctx.fillStyle = '#181c27';
+  ctx.fillRect(0,0,w,h);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 1;
+  for (let i=0;i<=10;i++) {
+    const x = pad + i*(w-2*pad)/10;
+    const y = pad + i*(h-2*pad)/10;
+    ctx.beginPath(); ctx.moveTo(x,pad); ctx.lineTo(x,h-pad); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(w-pad,y); ctx.stroke();
+  }
+
+  // Axes
+  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(pad,pad); ctx.lineTo(pad,h-pad); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(pad,h-pad); ctx.lineTo(w-pad,h-pad); ctx.stroke();
+
+  ctx.fillStyle = 'rgba(232,234,240,0.35)';
+  ctx.font = '10px JetBrains Mono, monospace';
+  ctx.fillText('x', w-pad+5, h-pad+4);
+  ctx.fillText('y', pad-4, pad-6);
+
+  if (neqPoints.length < 2) {
+    ctx.fillStyle = 'rgba(232,234,240,0.2)';
+    ctx.font = '12px JetBrains Mono, monospace';
+    ctx.fillText('click to add points', w/2-80, h/2);
+    updateNEQStats(null, null);
+    return;
+  }
+
+  // Fit
+  const xs = neqPoints.map(p=>p.xv);
+  const ys2 = neqPoints.map(p=>p.yv);
+  const n = xs.length;
+  const sx = xs.reduce((a,b)=>a+b,0);
+  const sy = ys2.reduce((a,b)=>a+b,0);
+  const sxx = xs.reduce((a,x)=>a+x*x,0);
+  const sxy = xs.reduce((a,x,i)=>a+x*ys2[i],0);
+  const denom = n*sxx - sx*sx;
+  let b0=null, b1=null;
+  if (Math.abs(denom) > 1e-10) {
+    b1 = (n*sxy - sx*sy)/denom;
+    b0 = (sy - b1*sx)/n;
+  }
+
+  // Draw regression line
+  if (b0 !== null) {
+    const minX = Math.min(...xs)-0.5, maxX = Math.max(...xs)+0.5;
+    const allY = [...ys2, b0+b1*minX, b0+b1*maxX];
+    const minY = Math.min(...allY)-0.5, maxY = Math.max(...allY)+0.5;
+
+    const cx = x => pad + (x-minX)/(maxX-minX)*(w-2*pad);
+    const cy = y => h-pad - (y-minY)/(maxY-minY)*(h-2*pad);
+
+    // Residual lines
+    ctx.strokeStyle = 'rgba(247,160,126,0.35)';
+    ctx.lineWidth = 1;
+    neqPoints.forEach(p => {
+      const yhat = b0 + b1*p.xv;
+      ctx.beginPath();
+      ctx.moveTo(cx(p.xv), cy(p.yv));
+      ctx.lineTo(cx(p.xv), cy(yhat));
+      ctx.stroke();
+    });
+
+    // Regression line
+    ctx.strokeStyle = '#7eb8f7';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx(minX), cy(b0+b1*minX));
+    ctx.lineTo(cx(maxX), cy(b0+b1*maxX));
+    ctx.stroke();
+
+    // Points
+    neqPoints.forEach(p => {
+      ctx.fillStyle = '#e8eaf0';
+      ctx.beginPath();
+      ctx.arc(cx(p.xv), cy(p.yv), 5, 0, Math.PI*2);
+      ctx.fill();
+    });
+
+    const rssVal = ys2.reduce((s,y,i) => s + (b0+b1*xs[i]-y)**2, 0);
+    updateNEQStats(b0, b1, rssVal, n);
+  }
+}
+
+function updateNEQStats(b0, b1, rssVal, n) {
+  document.getElementById('neq-n').textContent = neqPoints.length;
+  document.getElementById('neq-b0').textContent = b0 !== null ? b0.toFixed(4) : '--';
+  document.getElementById('neq-b1').textContent = b1 !== null ? b1.toFixed(4) : '--';
+  document.getElementById('neq-rss').textContent = rssVal !== undefined ? rssVal.toFixed(4) : '--';
+}
+
+function clearNEQ() {
+  neqPoints = [];
+  drawNEQ();
+}
+
+function addRandomNEQ() {
+  const trueB0 = 0.5 + Math.random();
+  const trueB1 = 0.8 + Math.random()*0.8;
+  for (let i=0;i<8;i++) {
+    const x = Math.random()*6 - 3;
+    const y = trueB0 + trueB1*x + (Math.random()-0.5)*0.8;
+    neqPoints.push({xv:x, yv:y});
+  }
+  drawNEQ();
+}
+
+document.getElementById('neq-canvas').addEventListener('click', function(e) {
+  const rect = this.getBoundingClientRect();
+  const px = e.clientX - rect.left;
+  const py = e.clientY - rect.top;
+  const w = this.width, h = this.height;
+  const pad = 40;
+  // Map to a fixed value space [-4,4] x [-4,4] when no points, else relative
+  const xv = (px-pad)/(w-2*pad)*8 - 4;
+  const yv = 4 - (py-pad)/(h-2*pad)*8;
+  neqPoints.push({xv, yv});
+  drawNEQ();
+});
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('load', () => {
+  drawBowl();
+});
+
+window.addEventListener('resize', () => {
+  if (activeTab === 0) drawBowl();
+  if (activeTab === 1) drawCompare();
+  if (activeTab === 2) drawNEQ();
+});
+</script>
+</body>
+</html>" sandbox="allow-scripts allow-same-origin" style="width:100%;height:420px;border:none;border-radius:8px;display:block;resize:vertical;overflow:auto;" loading="lazy"></iframe>
+</div>
+<hr>
+<p>I spent one hour getting confused about gradient descent only to learn that linear regression doesn&#39;t use it.</p>
+<p>But in the and, I learned something.</p>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-bg" aria-hidden="true"></div>
+        <div class="footer-inner">
+            <div class="footer-left">
+                <p class="footer-email">adleyba [at] sabanciuniv [dot] edu</p>
+            </div>
+            <p class="footer-copy">© 2026 — SIMA ADLEYBA</p>
+        </div>
+    </footer>
+
+    <script>
+        var nav = document.getElementById('nav');
+        var onScroll = function() {
+            if (window.scrollY > 60) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+
+        document.querySelectorAll('#nav-links a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                document.getElementById('nav-links').classList.remove('open');
+            });
+        });
+        
+        // Auto-build TOC
+        (function() {
+            var nav = document.getElementById('post-toc-nav');
+            if (!nav) return;
+            var body = document.querySelector('.post-body');
+            if (!body) return;
+            var hs = Array.from(body.querySelectorAll('h2, h3'));
+            if (!hs.length) return;
+
+            var title = document.createElement('div');
+            title.className = 'toc-heading';
+            title.textContent = 'Contents';
+            nav.appendChild(title);
+
+            hs.forEach(function(h, i) {
+                if (!h.id) {
+                    h.id = 'h-' + h.textContent.trim()
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/^-+|-+$/, '') + '-' + i;
+                }
+                var a = document.createElement('a');
+                a.href = '#' + h.id;
+                a.textContent = h.textContent;
+                if (h.tagName === 'H3') a.className = 'toc-h3';
+                nav.appendChild(a);
+            });
+
+            // Intersection-based active highlight
+            var obs = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    var link = nav.querySelector('a[href="#' + entry.target.id + '"]');
+                    if (link) link.classList.toggle('toc-active', entry.isIntersecting);
+                });
+            }, { rootMargin: '-10% 0% -80% 0%' });
+
+            hs.forEach(function(h) { obs.observe(h); });
+        })();
+    </script>
+
+</body>
+</html>
