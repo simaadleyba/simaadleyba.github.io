@@ -1,5 +1,17 @@
 [
   {
+    "title": "why linear regression doesn't need gradient descent",
+    "date": "2026-05-25",
+    "slug": "why-linear-regression-doesnt-need-gradient-descent",
+    "summary": "i pent one hour getting confused about gradient descent only to learn that linear regression doesn't use it.",
+    "tags": [
+      "maths",
+      "statistics",
+      "machine learning"
+    ],
+    "hasToc": true
+  },
+  {
     "title": "is grad school harder than undergrad?",
     "date": "2026-05-22",
     "slug": "is-grad-school-harder-than-undergrad",
