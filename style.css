@@ -1274,7 +1274,7 @@
     margin: 0;
   }
 
-  /* ── Field Notes Redesign Styles ── */
+  /* ── Legacy blog listing styles ── */
 .strip-spacer {
     height: clamp(4rem, 7vh, 5.5rem);
   }
