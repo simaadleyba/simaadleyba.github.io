@@ -51,7 +51,7 @@ function Navbar() {
         <a href="/#beyond" onClick={() => setMenuOpen(false)}>beyond</a>
         <a href="/" target="_blank" rel="noopener" onClick={() => setMenuOpen(false)}>cv</a>
         <span className="nav-pipe">|</span>
-        <a href="/fieldnotes/" className="field-notes" onClick={() => setMenuOpen(false)}>field notes</a>
+        <a href="https://kimchikorelileriniskembesidir.com" className="field-notes" target="_blank" rel="noopener" onClick={() => setMenuOpen(false)}>personal blog</a>
       </div>
     </nav>
   );
