@@ -8,7 +8,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
 <link rel="icon" type="image/png" href="assets/icon.png" />
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
@@ -42,13 +42,6 @@
   <div class="hero__bg"></div>
   <div class="hero__grain"></div>
 
-  <div class="hero__top">
-    <div class="meta-block">
-      <span class="meta-label">40.8920° N · 29.3786° E</span>
-    </div>
-  </div>
-
-
   <div class="hero__bio">
     <div class="panel-head">
       <span class="meta-label">Affiliation</span>
@@ -70,7 +63,6 @@
     </div>
 
     <div class="panel-foot">
-      <span class="panel-mono">— 2026 / VOL. II</span>
       <div class="panel-links">
         <a href="mailto:adleyba@sabanciuniv.edu" title="Email">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
@@ -94,9 +86,9 @@
   </div>
 
   <div class="hero__name">
-    <div class="portrait">
+    <a class="portrait" href="assets/photo.JPG" target="_blank" rel="noopener" aria-label="Open portrait image">
       <img src="assets/photo.JPG" alt="Sima Adleyba portrait" />
-    </div>
+    </a>
     <div class="name-block">
       <h1>Sima Adleyba</h1>
     </div>
@@ -115,7 +107,7 @@
         active studies<br>2025 / 26
       </aside>
       <div class="section__body">
-        <h2 class="section__title" style="font-family: &quot;Helvetica Neue&quot;">Research <span class="accent">&amp; field work</span></h2>
+        <h2 class="section__title">Research</h2>
         <p class="section__intro">
           My research focuses on understanding bias and fairness in social platforms, network effects of
           algorithmic recommendations.
@@ -253,7 +245,7 @@
         <div class="guides">
           <a href="/networkscience/" class="guide">
             <div class="guide__thumb">
-              <img src="assets/thumbnails/network_science_thumbnail.png" alt="Network Science study guide" loading="lazy" />
+              <img src="assets/thumbnails/network_science_thumbnail.png?v=20260803" alt="Network Science study guide" loading="lazy" />
             </div>
             <div class="guide__content">
               <span class="guide__type">— Interactive Guide</span>
@@ -263,7 +255,7 @@
           </a>
           <a href="/machinelearning/" class="guide">
             <div class="guide__thumb">
-              <img src="assets/thumbnails/machine_learning_thumbnail.png" alt="Machine Learning study guide" loading="lazy" />
+              <img src="assets/thumbnails/machine_learning_thumbnail.png?v=20260803" alt="Machine Learning study guide" loading="lazy" />
             </div>
             <div class="guide__content">
               <span class="guide__type">— Interactive Guide</span>
@@ -492,6 +484,7 @@
     <div class="footer-left">
       <p class="footer-email">adleyba [at] sabanciuniv [dot] edu</p>
     </div>
+    <p class="footer-volume">— 2026 / VOL. II</p>
     <p class="footer-copy">© 2026 — SIMA ADLEYBA</p>
   </div>
 </footer>
@@ -527,7 +520,7 @@
     <div class="tw-row">
       <div class="tw-label"><span>Accent</span></div>
       <div class="tw-swatches" id="tw-accent">
-        <div class="tw-swatch" data-accent="#3d4a5a" style="background:#3d4a5a" title="Steel"></div>
+        <div class="tw-swatch" data-accent="#245cff" style="background:#245cff" title="Cobalt"></div>
         <div class="tw-swatch" data-accent="#6a7684" style="background:#6a7684" title="Fog"></div>
         <div class="tw-swatch" data-accent="#9aa6b3" style="background:#9aa6b3" title="Mist"></div>
         <div class="tw-swatch" data-accent="#1d232c" style="background:#1d232c" title="Ink"></div>
@@ -579,6 +572,17 @@
   // ——— Lightbox ———
   let currentIndex = 0;
   const items = document.querySelectorAll('.photo-grid-item');
+
+  items.forEach((item, index) => {
+    item.setAttribute('role', 'button');
+    item.tabIndex = 0;
+    item.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openLightbox(index);
+      }
+    });
+  });
 
   function openLightbox(index) {
     currentIndex = index;
@@ -643,7 +647,7 @@
     "glassOpacity": 0.05,
     "glassBlur": 14,
     "heroDarken": 0.55,
-    "accent": "#3d4a5a",
+    "accent": "#245cff",
     "showScrollHint": true,
     "showCloudBand": true
   }/*EDITMODE-END*/;
