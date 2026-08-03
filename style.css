@@ -2373,7 +2373,11 @@ nav#nav.scrolled {
 .footer-inner {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
-  align-items: end;
+  align-items: center;
+}
+
+footer.footer {
+  padding: 2rem var(--gut);
 }
 
 .footer-volume {
