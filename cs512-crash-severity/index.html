@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Traffic Accident Severity Prediction — Sima Adleyba</title>
+<meta name="description" content="CS512 Machine Learning course project: model selection and explainability in traffic accident severity prediction on CRSS data, with ordinal XGBoost, Linear SVM, SHAP, LIME, and DiCE." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="icon" type="image/png" href="../assets/icon.png" />
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="Sima Adleyba" />
+
+<link rel="stylesheet" href="../style.css" />
+</head>
+
+<body class="pp-page">
+
+<!-- ========== NAV ========== -->
+<nav id="nav">
+  <a class="nav-mark" href="../"><span class="dot"></span></a>
+  <button id="burger-icon" aria-label="Toggle menu"
+    onclick="document.getElementById('nav-links').classList.toggle('open')">☰</button>
+  <div id="nav-links">
+    <a href="../">about</a>
+    <a href="../#research">research</a>
+    <a href="../#experience">experience</a>
+    <a href="../#education">education</a>
+    <a href="../#studyguides">study guides</a>
+    <a href="../#beyond">beyond</a>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<header class="pp-hero">
+  <div class="pp-hero__inner">
+    <p class="pp-hero__eyebrow">CS512 — Machine Learning · Course Project · Sabancı University</p>
+    <h1>Model Selection and Explainability in Traffic Accident Severity Prediction</h1>
+    <p class="pp-hero__meta">
+      <span><b>Oct 2025 – Jan 2026</b></span>
+      <span><b>Sima Adleyba</b> · Başak Çarhacıoğlu · Ahmet İhsan Gül</span>
+    </p>
+    <p class="pp-hero__desc">
+      Can we predict how severe a traffic crash will be — and explain why the model thinks so?
+      This project tackles four-class injury-severity prediction on 101,904 U.S. police-reported
+      crashes (CRSS, 2016–2023), comparing a class-weighted Linear SVM with an ordinal XGBoost
+      pipeline, and auditing both with SHAP, LIME, and DiCE counterfactual explanations.
+    </p>
+    <div class="pp-hero__actions">
+      <a class="pp-btn" href="../assets/cs512/cs512-traffic-accident-severity.pdf" download>Download report — PDF ↓</a>
+      <a class="pp-btn pp-btn--ghost" href="#overview">Read the overview</a>
+    </div>
+  </div>
+</header>
+
+<!-- ========== STICKY SECTION NAV ========== -->
+<div class="pp-subnav" id="pp-subnav">
+  <div class="pp-subnav__inner">
+    <a href="#overview" class="active">Overview</a>
+    <a href="#dataset">Dataset</a>
+    <a href="#selection">Model selection</a>
+    <a href="#methods">Methods</a>
+    <a href="#explainability">Explainability</a>
+    <a href="#results">Results</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#materials">Materials</a>
+  </div>
+</div>
+
+<main>
+
+  <!-- ========== OVERVIEW ========== -->
+  <section id="overview" class="section">
+    <div class="wrap">
+      <aside class="section__label">
+        <span class="num">01 —</span>
+        Overview
+        <span class="rule"></span>
+        one minute
+      </aside>
+      <div class="section__body">
+        <h2 class="section__title">In one minute</h2>
+        <p class="section__intro">
+          The essentials, for someone who won't read the full report.
+        </p>
+
+        <div class="pp-cells">
+          <div class="pp-cell">
+            <span class="pp-cell__label">Problem</span>
+            <p>Predict the maximum injury severity of a traffic crash — no injury, minor, severe,
+              or fatal — from crash-level records. Fatal crashes make up only ~2.4% of cases.</p>
+          </div>
+          <div class="pp-cell">
+            <span class="pp-cell__label">Dataset</span>
+            <p>101,904 police-reported U.S. crashes from the Crash Report Sampling System
+              (CRSS, 2016–2023), flattened from 28 relational tables into 163 features.</p>
+          </div>
+          <div class="pp-cell">
+            <span class="pp-cell__label">Models</span>
+            <p>A class-weighted Linear SVM and an ordinal XGBoost pipeline that decomposes the
+              4-class problem into three cumulative binary classifiers.</p>
+          </div>
+          <div class="pp-cell">
+            <span class="pp-cell__label">Explainability</span>
+            <p>SHAP for global feature attribution, LIME for local instance-level explanations,
+              and DiCE for counterfactuals — plus an explanation-driven feature-reduction test.</p>
+          </div>
+          <div class="pp-cell">
+            <span class="pp-cell__label">Takeaway</span>
+            <p>Both models reach ≈0.59 accuracy / 0.53–0.54 macro-F1. Oversampling lifts
+              fatal-class F1 from 0.26 to 0.59 — but feature reduction doesn't generalize.</p>
+          </div>
+        </div>
+
+        <div class="pp-block pp-prose">
+          <p>
+            <b>Why recall matters more than precision here.</b> Correctly identifying fatal
+            injuries is of paramount importance: predicting a non-fatal case as fatal has far
+            less severe consequences than missing a truly fatal one. That asymmetry shaped both
+            the evaluation (macro-F1, per-class F1) and the oversampling strategy.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== DATASET ========== -->
+  <section id="dataset" class="section">
+    <div class="wrap">
+      <aside class="section__label">
+        <span class="num">02 —</span>
+        Dataset
+        <span class="rule"></span>
+        CRSS 2016–23
+      </aside>
+      <div class="section__body">
+        <h2 class="section__title">Dataset &amp; task</h2>
+        <p class="section__intro">
+          Official U.S. police-reported crash records, released as the Crash Report Sampling
+          System (CRSS). The raw data are 28 relational tables — <code>ACCIDENT</code>,
+          <code>VEHICLE</code>, <code>PERSON</code>, and more — linked by a unique crash identifier.
+        </p>
+
+        <div class="pp-stats">
+          <div class="pp-stat">
+            <span class="pp-stat__value">101,904</span>
+            <span class="pp-stat__label">crashes in the full dataset</span>
+          </div>
+          <div class="pp-stat">
+            <span class="pp-stat__value">163</span>
+            <span class="pp-stat__label">crash-level features</span>
+          </div>
+          <div class="pp-stat">
+            <span class="pp-stat__value">28</span>
+            <span class="pp-stat__label">relational source tables</span>
+          </div>
+          <div class="pp-stat">
+            <span class="pp-stat__value">40.9%</span>
+            <span class="pp-stat__label">of records contain an unknown indicator</span>
+          </div>
+        </div>
+
+        <div class="pp-block pp-prose">
+          <p>
+            <b>From tables to vectors.</b> Each crash becomes one feature vector: entity-level
+            attributes (vehicles, drivers, occupants) are aggregated to the crash level as counts,
+            proportions, and summary statistics, with indexed slots for repeated roles
+            (<code>TRAV_SP_1</code>, <code>TRAV_SP_2</code>, …). The target is
+            <code>MAX_SEV</code> — the maximum injury severity in the crash — remapped to an
+            ordered four-class label: <b>0</b> no injury, <b>1</b> minor, <b>2</b> severe,
+            <b>3</b> fatal (with “possible injury” merged into minor).
+          </p>
+          <p>
+            <b>Missingness is encoded, not hidden.</b> Structured unknowns become explicit
+            <code>_UNKNOWN</code> (attribute missing) and <code>_NOT_APPLICABLE</code>
+            (conceptually irrelevant) indicator features — and they turn out to carry predictive
+            signal of their own (see Explainability). Two data representations are kept apart: a
+            leakage-safe predictive feature set, and an imputed, explanation-only view used for
+            LIME and DiCE.
+          </p>
+          <p>
+            <b>Class imbalance and SMOTE.</b> A SMOTE-oversampled variant is created on the
+            training split only, raising fatal prevalence from 2.38% to 5.38% — about half the
+            prevalence of the severe class, rather than full balancing. Both variants are trained
+            and compared side by side.
+          </p>
+        </div>
+
+        <div class="pp-block">
+          <h3 class="pp-h3">Class distribution — held-out test split</h3>
+          <div class="pp-bars">
+            <div class="pp-bar">
+              <span class="pp-bar__label">0 — no injury</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill" style="width:48.87%"></span></span>
+              <span class="pp-bar__value">48.87%</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">1 — minor</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill" style="width:37.69%"></span></span>
+              <span class="pp-bar__value">37.69%</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">2 — severe</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill" style="width:11.08%"></span></span>
+              <span class="pp-bar__value">11.08%</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">3 — fatal</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill" style="width:2.37%"></span></span>
+              <span class="pp-bar__value">2.37%</span>
+            </div>
+          </div>
+          <p class="pp-bars__note">Splits — train 71,332 · validation 15,286 · test 15,286 (final report, Table 1)</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MODEL SELECTION ========== -->
+  <section id="selection" class="section">
+    <div class="wrap">
+      <aside class="section__label">
+        <span class="num">03 —</span>
+        Selection
+        <span class="rule"></span>
+        screening
+      </aside>
+      <div class="section__body">
+        <h2 class="section__title">Why SVM and XGBoost</h2>
+        <p class="section__intro">
+          The final report picks up the story after the finalists were chosen. This is how they
+          were chosen — five model families screened head to head.
+        </p>
+
+        <div class="pp-prelim">
+          <span class="pp-prelim__badge">Preliminary analysis — 20k subset (batch_1), progress stage</span>
+
+          <div class="pp-bars">
+            <div class="pp-bars__legend">
+              <span><i></i>Selected for the final study</span>
+              <span><i class="mute"></i>Screened out</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">Logistic regression</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill pp-bar__fill--mute" style="width:37.8%"></span></span>
+              <span class="pp-bar__value">0.378</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">Linear SVM</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill" style="width:38.4%"></span></span>
+              <span class="pp-bar__value">0.384</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">Linear SVM + SMOTE</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill" style="width:44.3%"></span></span>
+              <span class="pp-bar__value">0.443</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">Nyström SVM (kernel approx.)</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill pp-bar__fill--mute" style="width:41.9%"></span></span>
+              <span class="pp-bar__value">0.419</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">Random Forest (best config)</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill pp-bar__fill--mute" style="width:39.6%"></span></span>
+              <span class="pp-bar__value">0.396</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">XGBoost (cumulative + SMOTE)</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill" style="width:45%"></span></span>
+              <span class="pp-bar__value">0.450</span>
+            </div>
+          </div>
+          <p class="pp-bars__note">Macro-F1, best configuration per family — progress report ablation tables</p>
+
+          <div class="pp-block pp-prose">
+            <p>
+              <b>What the screening showed.</b> Strong, interpretable baselines held their own
+              against heavier models: kernel-approximated SVMs and tuned Random Forests bought
+              little over a plain linear SVM, while a cumulative (ordinal) XGBoost variant led
+              the field. SMOTE helped every minority class everywhere it was applied. The team
+              carried the two most complementary survivors — a linear model and an ordinal
+              gradient-boosted ensemble — into the full-dataset study.
+            </p>
+          </div>
+
+          <figure class="pp-fig pp-fig--span pp-fig--fit" data-title="Random Forest SHAP — fatal class"
+            data-caption="Preliminary (20k subset): per-class SHAP summary for the best Random Forest configuration, class 3 (fatal). Travel speed shows a negative SHAP value for fatal crashes — a confounding artifact of urban, low-speed pedestrian fatalities, not a causal protective effect. From the model-screening appendix of the progress report.">
+            <img src="../assets/cs512/rf-shap-fatal.png" alt="Random Forest SHAP summary for the fatal class" loading="lazy" />
+            <figcaption><b>Fig. S1</b> — Random Forest SHAP, fatal class (screening stage; 20k subset)</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== METHODS ========== -->
+  <section id="methods" class="section">
+    <div class="wrap">
+      <aside class="section__label">
+        <span class="num">04 —</span>
+        Methods
+        <span class="rule"></span>
+        pipeline
+      </aside>
+      <div class="section__body">
+        <h2 class="section__title">Methodology</h2>
+        <p class="section__intro">
+          Fixed train/validation/test splits; both oversampling settings; explainability
+          aggregated over a fixed evaluation subset; final models re-trained with reduced
+          features and re-evaluated on the held-out test set.
+        </p>
+
+        <div class="pp-pipeline">
+          <div class="pp-pipe">28 CRSS tables<small>crash · vehicle · person</small></div>
+          <span class="pp-pipe-arrow">→</span>
+          <div class="pp-pipe">Crash-level vector<small>163 features · indexed slots + aggregates</small></div>
+          <span class="pp-pipe-arrow">→</span>
+          <div class="pp-pipe">Train / val / test<small>71k / 15k / 15k</small></div>
+          <span class="pp-pipe-arrow">→</span>
+          <div class="pp-pipe">± SMOTE<small>train split only</small></div>
+          <span class="pp-pipe-arrow">→</span>
+          <div class="pp-pipe pp-pipe--accent">Linear SVM ∥ Ordinal XGBoost</div>
+          <span class="pp-pipe-arrow">→</span>
+          <div class="pp-pipe pp-pipe--accent">SHAP · LIME · DiCE</div>
+        </div>
+
+        <div class="pp-block pp-models">
+          <div class="pp-model">
+            <h4>Linear SVM</h4>
+            <ul>
+              <li><b>Class-weighted</b> (<code>class_weight=balanced</code>) to counter the 2.4% fatal class.</li>
+              <li><b>C tuned on validation</b> over a logarithmic grid; numeric features scaled, categoricals encoded.</li>
+              <li>Best macro-F1 among the linear baselines in the screening stage.</li>
+              <li>Gets <b>class-conditional explanations</b> — separate SHAP/LIME views per severity class.</li>
+            </ul>
+          </div>
+          <div class="pp-model">
+            <h4>Ordinal XGBoost</h4>
+            <ul>
+              <li><b>Cumulative decomposition</b> into three binary subproblems: P(y≥1), P(y≥2), P(y≥3).</li>
+              <li>Separate classifier per threshold, <b>early stopping</b> on validation, <code>scale_pos_weight</code> per binary distribution.</li>
+              <li>Class probabilities by subtraction — P(y=0)=1−p₁, P(y=1)=p₁−p₂, P(y=2)=p₂−p₃, P(y=3)=p₃ — argmax decision.</li>
+              <li>Respects the <b>ordering</b> of severity classes that plain multiclass ignores.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== EXPLAINABILITY ========== -->
+  <section id="explainability" class="section">
+    <div class="wrap">
+      <aside class="section__label">
+        <span class="num">05 —</span>
+        XAI
+        <span class="rule"></span>
+        SHAP LIME DiCE
+      </aside>
+      <div class="section__body">
+        <h2 class="section__title">Explainability</h2>
+        <p class="section__intro">
+          Three complementary lenses: SHAP explains the model globally, LIME explains single
+          predictions locally, and DiCE asks what would have to change for a prediction to move
+          away from <i>fatal</i>.
+        </p>
+
+        <div class="pp-tabs" role="tablist">
+          <button class="pp-tab active" data-tab="shap" role="tab">SHAP — global</button>
+          <button class="pp-tab" data-tab="lime" role="tab">LIME — local</button>
+          <button class="pp-tab" data-tab="dice" role="tab">DiCE — counterfactual</button>
+        </div>
+
+        <!-- SHAP -->
+        <div class="pp-panel active" data-panel="shap">
+          <div class="pp-prose">
+            <p>
+              Global feature attribution on the predictive feature space (mean absolute SHAP).
+              For XGBoost, importances are computed per ordinal threshold; the most influential
+              features include <code>NMACTION_NA</code>, <code>VEH_COUNT</code>,
+              <code>GVWR_AVG_1</code>, <code>ALCOHOL</code>, <code>DRDISTRACT_1</code>, and the
+              travel-speed slots <code>TRAV_SP_*</code>. The SVM is explained class-conditionally
+              — the fatal class is pushed upward by <code>TOTAL_COUNT</code> and
+              <code>NMOTHPRE_UNKNOWN</code>, and downward by <code>REGION</code> and the
+              45–60 age-share.
+            </p>
+          </div>
+          <div class="pp-block pp-figrow">
+            <figure class="pp-fig pp-fig--span" data-title="XGBoost SHAP — P(y≥1)"
+              data-caption="XGBoost Variant A (oversampled): SHAP beeswarm + mean |SHAP| bar chart for the first ordinal subproblem, P(y≥1) — any injury vs. no injury. Final report, Figure 2 (left).">
+              <img src="../assets/cs512/xgb-shap-1.png" alt="XGBoost SHAP summary for P(y≥1)" loading="lazy" />
+              <figcaption><b>Fig. 2a</b> — XGBoost Variant A, SHAP for P(y≥1): any injury</figcaption>
+            </figure>
+            <figure class="pp-fig" data-title="XGBoost SHAP — P(y≥2)"
+              data-caption="XGBoost Variant A (oversampled): SHAP summary for the second ordinal subproblem, P(y≥2) — severe or fatal. Final report, Figure 2 (center).">
+              <img src="../assets/cs512/xgb-shap-2.png" alt="XGBoost SHAP summary for P(y≥2)" loading="lazy" />
+              <figcaption><b>Fig. 2b</b> — SHAP for P(y≥2): severe or fatal</figcaption>
+            </figure>
+            <figure class="pp-fig" data-title="XGBoost SHAP — P(y≥3)"
+              data-caption="XGBoost Variant A (oversampled): SHAP summary for the third ordinal subproblem, P(y≥3) — the fatal threshold, where oversampling bought the largest gains. Final report, Figure 2 (right).">
+              <img src="../assets/cs512/xgb-shap-3.png" alt="XGBoost SHAP summary for P(y≥3)" loading="lazy" />
+              <figcaption><b>Fig. 2c</b> — SHAP for P(y≥3): the fatal threshold</figcaption>
+            </figure>
+            <figure class="pp-fig" data-title="SVM SHAP — class 0 (no injury)"
+              data-caption="Linear SVM: most important features by SHAP for class 0 (no injury). Red bars push toward the class, blue bars push away. Final report, Figure 5 (panel 1).">
+              <img src="../assets/cs512/svm-shap-0.png" alt="SVM SHAP top features for class 0" loading="lazy" />
+              <figcaption><b>Fig. 5a</b> — SVM SHAP, class 0 (no injury)</figcaption>
+            </figure>
+            <figure class="pp-fig" data-title="SVM SHAP — class 3 (fatal)"
+              data-caption="Linear SVM: most important features by SHAP for class 3 (fatal). TOTAL_COUNT and NMOTHPRE_UNKNOWN push toward fatal; REGION and AGE_45_60_PCT push away. Final report, Figure 5 (panel 4).">
+              <img src="../assets/cs512/svm-shap-3.png" alt="SVM SHAP top features for class 3" loading="lazy" />
+              <figcaption><b>Fig. 5b</b> — SVM SHAP, class 3 (fatal)</figcaption>
+            </figure>
+          </div>
+
+          <div class="pp-block pp-prelim">
+            <span class="pp-prelim__badge">Preliminary analysis — 20k subset (batch_1), progress stage</span>
+            <div class="pp-prose">
+              <p>
+                <b>Missingness itself is a signal.</b> An ablation from the progress stage removed
+                every <code>*_UNKNOWN</code> indicator from the XGBoost model. Use the toggle:
+                with the indicators present, the fatal-threshold model leans heavily on reporting
+                artifacts (<code>NMHELMET_UNKNOWN</code>, <code>NMACTION_UNKNOWN</code>); without
+                them, substantive factors like <code>ALCOHOL</code> dominate — at a small cost in
+                macro-F1 (0.45 → 0.44 on the subset).
+              </p>
+            </div>
+            <div class="pp-block pp-compare" id="pp-compare">
+              <div class="pp-compare__controls">
+                <button class="pp-compare__btn active" data-view="with">With _UNKNOWN indicators</button>
+                <button class="pp-compare__btn" data-view="without">Without _UNKNOWN indicators</button>
+              </div>
+              <div class="pp-compare__stage">
+                <img class="active" data-view="with" src="../assets/cs512/xgb-shap-p3-unknown.png"
+                  alt="SHAP summary for P(y≥3) including unknown indicators" loading="lazy" />
+                <img data-view="without" src="../assets/cs512/xgb-shap-p3-no-unknown.png"
+                  alt="SHAP summary for P(y≥3) after removing unknown indicators" loading="lazy" />
+              </div>
+              <p class="pp-compare__caption">
+                XGBoost SHAP for the fatal threshold P(y≥3), before / after removing *_UNKNOWN
+                features — progress report, Model 8 vs. Model 8′ (20k subset).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- LIME -->
+        <div class="pp-panel" data-panel="lime">
+          <div class="pp-prose">
+            <p>
+              Local, instance-level explanations on the imputed explanation-only representation.
+              XGBoost LIME weights were aggregated over a fixed set of 89 evaluation instances —
+              <code>VTRAFWAY_4</code>, <code>PEDESTRIAN_COUNT</code>, and
+              <code>P_CRASH1_4</code> recur most strongly — while the SVM was explained
+              class-conditionally for qualitative case studies.
+            </p>
+          </div>
+          <div class="pp-block pp-figrow">
+            <figure class="pp-fig" data-title="SVM LIME — class 3 (fatal)"
+              data-caption="Linear SVM: class-conditional LIME explanation for class 3 (fatal), showing the features that locally push individual predictions toward or away from fatal. Final report, Figure 7 (panel 4).">
+              <img src="../assets/cs512/svm-lime-3.png" alt="SVM LIME explanation for class 3" loading="lazy" />
+              <figcaption><b>Fig. 7</b> — SVM LIME, class 3 (fatal)</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <!-- DICE -->
+        <div class="pp-panel" data-panel="dice">
+          <div class="pp-prose">
+            <p>
+              DiCE generates counterfactuals targeting the fatal class: for 20 truly fatal test
+              crashes, three counterfactuals each, asking <i>what minimal changes move the
+              prediction away from fatal?</i> For XGBoost, <code>P_CRASH1_2</code>,
+              <code>MANEUVER_1</code>, and <code>DRIVER_DRUGS_PCT</code> are changed most often;
+              for the SVM, <code>PEDESTRIAN_COUNT</code>, <code>DRIVERRF_4</code>, and
+              <code>VEHICLECC_4</code> dominate. The report is explicit about the caveat: these
+              are <b>decision-boundary sensitivities, not causal mechanisms</b>.
+            </p>
+          </div>
+          <div class="pp-block pp-figrow pp-figrow--3">
+            <figure class="pp-fig" data-title="SVM DiCE — source class 0"
+              data-caption="SVM DiCE: most important counterfactual feature changes for moving predictions from class 0 (no injury) toward the fatal target — importance = change frequency × mean |delta|. Final report, Figure 8 (panel 1).">
+              <img src="../assets/cs512/dice-0.png" alt="SVM DiCE most important features, source class 0" loading="lazy" />
+              <figcaption><b>Fig. 8a</b> — DiCE, source class 0 → fatal</figcaption>
+            </figure>
+            <figure class="pp-fig" data-title="SVM DiCE — source class 1"
+              data-caption="SVM DiCE: most important counterfactual feature changes, source class 1 (minor) → fatal. Final report, Figure 8 (panel 2).">
+              <img src="../assets/cs512/dice-1.png" alt="SVM DiCE most important features, source class 1" loading="lazy" />
+              <figcaption><b>Fig. 8b</b> — DiCE, source class 1 → fatal</figcaption>
+            </figure>
+            <figure class="pp-fig" data-title="SVM DiCE — source class 2"
+              data-caption="SVM DiCE: most important counterfactual feature changes, source class 2 (severe) → fatal. Final report, Figure 8 (panel 3).">
+              <img src="../assets/cs512/dice-2.png" alt="SVM DiCE most important features, source class 2" loading="lazy" />
+              <figcaption><b>Fig. 8c</b> — DiCE, source class 2 → fatal</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RESULTS ========== -->
+  <section id="results" class="section">
+    <div class="wrap">
+      <aside class="section__label">
+        <span class="num">06 —</span>
+        Results
+        <span class="rule"></span>
+        full dataset
+      </aside>
+      <div class="section__body">
+        <h2 class="section__title">Results &amp; findings</h2>
+        <p class="section__intro">
+          All numbers below are the final, full-dataset results exactly as reported — validation
+          unless marked test.
+        </p>
+
+        <div class="pp-stats">
+          <div class="pp-stat">
+            <span class="pp-stat__value">≈0.59</span>
+            <span class="pp-stat__label">accuracy, both models (oversampled eval)</span>
+          </div>
+          <div class="pp-stat">
+            <span class="pp-stat__value">0.53–0.54</span>
+            <span class="pp-stat__label">macro-F1, both models (oversampled eval)</span>
+          </div>
+          <div class="pp-stat">
+            <span class="pp-stat__value">0.26 → 0.59</span>
+            <span class="pp-stat__label">fatal-class F1, XGBoost without → with SMOTE</span>
+          </div>
+          <div class="pp-stat">
+            <span class="pp-stat__value">163 → 154</span>
+            <span class="pp-stat__label">features after explanation-driven reduction (XGB)</span>
+          </div>
+        </div>
+
+        <div class="pp-block">
+          <figure class="pp-fig" data-title="Validation confusion matrices"
+            data-caption="Validation confusion matrices for XGBoost Variant A (oversampled), XGBoost Variant B (non-oversampled), and the Linear SVM (left to right). Oversampling visibly recovers the fatal row. Final report, Figure 1.">
+            <img src="../assets/cs512/confusion-matrices.png" alt="Validation confusion matrices for XGBoost Variant A, Variant B, and SVM" loading="lazy" />
+            <figcaption><b>Fig. 1</b> — Validation confusion matrices: XGBoost Var A · Var B · SVM</figcaption>
+          </figure>
+        </div>
+
+        <div class="pp-block">
+          <h3 class="pp-h3">Oversampling, class by class — XGBoost per-class F1</h3>
+          <div class="pp-bars">
+            <div class="pp-bars__legend">
+              <span><i></i>Variant A — oversampled</span>
+              <span><i class="mute"></i>Variant B — non-oversampled</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">C0 · no injury — A</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill" style="width:73.4%"></span></span>
+              <span class="pp-bar__value">0.734</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">C0 · no injury — B</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill pp-bar__fill--mute" style="width:73.4%"></span></span>
+              <span class="pp-bar__value">0.734</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">C1 · minor — A</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill" style="width:46%"></span></span>
+              <span class="pp-bar__value">0.460</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">C1 · minor — B</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill pp-bar__fill--mute" style="width:44.7%"></span></span>
+              <span class="pp-bar__value">0.447</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">C2 · severe — A</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill" style="width:31.5%"></span></span>
+              <span class="pp-bar__value">0.315</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">C2 · severe — B</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill pp-bar__fill--mute" style="width:28.9%"></span></span>
+              <span class="pp-bar__value">0.289</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">C3 · fatal — A</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill" style="width:59.5%"></span></span>
+              <span class="pp-bar__value">0.595</span>
+            </div>
+            <div class="pp-bar">
+              <span class="pp-bar__label">C3 · fatal — B</span>
+              <span class="pp-bar__track"><span class="pp-bar__fill pp-bar__fill--mute" style="width:26.4%"></span></span>
+              <span class="pp-bar__value">0.264</span>
+            </div>
+          </div>
+          <p class="pp-bars__note">Validation, XGBoost Variant A vs Variant B — final report, Table 8</p>
+        </div>
+
+        <div class="pp-block">
+          <div class="pp-acc">
+            <button class="pp-acc__head">Table — validation comparison, all finalists <span class="pp-acc__icon">[+]</span></button>
+            <div class="pp-acc__body">
+              <div class="pp-table-wrap">
+                <table class="pp-table">
+                  <thead>
+                    <tr><th>Model</th><th>Macro-F1</th><th>Weighted-F1</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>XGBoost Var A (oversampled)</td><td>0.5235</td><td>0.5849</td></tr>
+                    <tr><td>XGBoost Var B (non-oversampled)</td><td>0.4321</td><td>0.5616</td></tr>
+                    <tr><td>Linear SVM</td><td>0.5356</td><td>0.5678</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="pp-table-caption">Final report, Table 2</p>
+            </div>
+          </div>
+
+          <div class="pp-acc">
+            <button class="pp-acc__head">Table — XGBoost full vs reduced, validation <span class="pp-acc__icon">[+]</span></button>
+            <div class="pp-acc__body">
+              <div class="pp-table-wrap">
+                <table class="pp-table">
+                  <thead>
+                    <tr><th>Metric</th><th>Full (163 feat.)</th><th>Reduced (154 feat.)</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>F1 — C0 no injury</td><td>0.726334</td><td>0.725452</td></tr>
+                    <tr><td>F1 — C1 minor</td><td>0.422237</td><td>0.422542</td></tr>
+                    <tr><td>F1 — C2 severe</td><td>0.274283</td><td>0.274321</td></tr>
+                    <tr><td>F1 — C3 fatal</td><td>0.514220</td><td>0.507269</td></tr>
+                    <tr><td>Macro F1</td><td>0.484269</td><td>0.482396</td></tr>
+                    <tr><td>Weighted F1</td><td>0.555334</td><td>0.554659</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="pp-table-caption">Final report, Table 9 — reduction removes features consistently negligible across SHAP/LIME/DiCE</p>
+            </div>
+          </div>
+
+          <div class="pp-acc">
+            <button class="pp-acc__head">Table — final held-out test comparison <span class="pp-acc__icon">[+]</span></button>
+            <div class="pp-acc__body">
+              <div class="pp-table-wrap">
+                <table class="pp-table">
+                  <thead>
+                    <tr><th>Metric</th><th>XGBoost Full</th><th>XGBoost Reduced</th><th>SVM Full</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>F1 — C0 no injury</td><td>0.726334</td><td>0.725452</td><td>0.700000</td></tr>
+                    <tr><td>F1 — C1 minor</td><td>0.422237</td><td>0.422542</td><td>0.450000</td></tr>
+                    <tr><td>F1 — C2 severe</td><td>0.274283</td><td>0.274321</td><td>0.220000</td></tr>
+                    <tr><td>F1 — C3 fatal</td><td>0.514220</td><td>0.507269</td><td>0.400000</td></tr>
+                    <tr><td>Macro F1</td><td>0.484269</td><td>0.482396</td><td>0.445644</td></tr>
+                    <tr><td>Weighted F1</td><td>0.555334</td><td>0.554659</td><td>0.540000</td></tr>
+                    <tr><td># Features</td><td>163</td><td>154</td><td>163</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="pp-table-caption">Final report, Table 11 — evaluated on the test set</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pp-block">
+          <h3 class="pp-h3">Findings &amp; limitations</h3>
+          <ul class="pp-findings">
+            <li><b>Oversampling's benefit is concentrated on the fatal class</b> — fatal F1 rises
+              0.264 → 0.595 while the majority classes are essentially unchanged.</li>
+            <li><b>Both models struggle most with adjacent mid classes</b> — minor vs severe
+              confusion is the main residual error, as the confusion matrices show.</li>
+            <li><b>Explanation-driven feature elimination does not improve generalization</b>
+              (XGBoost test macro-F1 0.4843 → 0.4824; SVM validation 0.5356 → 0.5321 even after
+              cutting 163 → 55 features) — the signal is distributed across many features, so
+              SHAP/LIME/DiCE serve best as interpretation tools, not selection mechanisms.</li>
+            <li><b>Counterfactuals are not causes.</b> DiCE reflects model sensitivity at the
+              decision boundary, and the missingness markers (<code>*_UNKNOWN</code>) are
+              themselves predictive — both demand careful interpretation.</li>
+            <li><b>Future work:</b> more explicitly ordinal and cost-sensitive training to reduce
+              mid-class confusion, better calibration for minority-class decisions, and richer
+              contextual features.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== GALLERY ========== -->
+  <section id="gallery" class="section">
+    <div class="wrap">
+      <aside class="section__label">
+        <span class="num">07 —</span>
+        Figures
+        <span class="rule"></span>
+        gallery
+      </aside>
+      <div class="section__body">
+        <h2 class="section__title">Figure gallery</h2>
+        <p class="section__intro">
+          Every figure used on this page, with its original caption context. Click any figure to
+          inspect it at full size.
+        </p>
+
+        <div class="pp-gallery">
+          <figure class="pp-fig" data-title="Validation confusion matrices"
+            data-caption="Validation confusion matrices for XGBoost Variant A (oversampled), XGBoost Variant B (non-oversampled), and the Linear SVM (left to right). Final report, Figure 1.">
+            <img src="../assets/cs512/confusion-matrices.png" alt="Validation confusion matrices" loading="lazy" />
+            <figcaption><b>Fig. 1</b> — Confusion matrices, validation</figcaption>
+          </figure>
+          <figure class="pp-fig pp-fig--fit" data-title="Random Forest SHAP — fatal class"
+            data-caption="Preliminary (20k subset): Random Forest SHAP summary for the fatal class, from the model-screening appendix of the progress report.">
+            <img src="../assets/cs512/rf-shap-fatal.png" alt="Random Forest SHAP summary, fatal class" loading="lazy" />
+            <figcaption><b>Fig. S1</b> — RF SHAP, fatal (preliminary)</figcaption>
+          </figure>
+          <figure class="pp-fig" data-title="XGBoost SHAP — P(y≥1)"
+            data-caption="XGBoost Variant A: SHAP summary for P(y≥1), any injury vs. no injury. Final report, Figure 2 (left).">
+            <img src="../assets/cs512/xgb-shap-1.png" alt="XGBoost SHAP P(y≥1)" loading="lazy" />
+            <figcaption><b>Fig. 2a</b> — XGB SHAP, P(y≥1)</figcaption>
+          </figure>
+          <figure class="pp-fig" data-title="XGBoost SHAP — P(y≥2)"
+            data-caption="XGBoost Variant A: SHAP summary for P(y≥2), severe or fatal. Final report, Figure 2 (center).">
+            <img src="../assets/cs512/xgb-shap-2.png" alt="XGBoost SHAP P(y≥2)" loading="lazy" />
+            <figcaption><b>Fig. 2b</b> — XGB SHAP, P(y≥2)</figcaption>
+          </figure>
+          <figure class="pp-fig" data-title="XGBoost SHAP — P(y≥3)"
+            data-caption="XGBoost Variant A: SHAP summary for P(y≥3), the fatal threshold. Final report, Figure 2 (right).">
+            <img src="../assets/cs512/xgb-shap-3.png" alt="XGBoost SHAP P(y≥3)" loading="lazy" />
+            <figcaption><b>Fig. 2c</b> — XGB SHAP, P(y≥3)</figcaption>
+          </figure>
+          <figure class="pp-fig" data-title="XGBoost Reduced SHAP — P(y≥3)"
+            data-caption="XGBoost Reduced model (154 features): SHAP summary for P(y≥3) after explanation-driven feature elimination. Final report, Figure 4 (right).">
+            <img src="../assets/cs512/xgb-shap-reduced-3.png" alt="XGBoost reduced-model SHAP P(y≥3)" loading="lazy" />
+            <figcaption><b>Fig. 4</b> — XGB reduced, SHAP P(y≥3)</figcaption>
+          </figure>
+          <figure class="pp-fig" data-title="SVM SHAP — class 0"
+            data-caption="Linear SVM: most important features by SHAP for class 0 (no injury). Final report, Figure 5 (panel 1).">
+            <img src="../assets/cs512/svm-shap-0.png" alt="SVM SHAP class 0" loading="lazy" />
+            <figcaption><b>Fig. 5a</b> — SVM SHAP, class 0</figcaption>
+          </figure>
+          <figure class="pp-fig" data-title="SVM SHAP — class 3"
+            data-caption="Linear SVM: most important features by SHAP for class 3 (fatal). Final report, Figure 5 (panel 4).">
+            <img src="../assets/cs512/svm-shap-3.png" alt="SVM SHAP class 3" loading="lazy" />
+            <figcaption><b>Fig. 5b</b> — SVM SHAP, class 3</figcaption>
+          </figure>
+          <figure class="pp-fig" data-title="SVM LIME — class 3"
+            data-caption="Linear SVM: class-conditional LIME explanation for class 3 (fatal). Final report, Figure 7 (panel 4).">
+            <img src="../assets/cs512/svm-lime-3.png" alt="SVM LIME class 3" loading="lazy" />
+            <figcaption><b>Fig. 7</b> — SVM LIME, class 3</figcaption>
+          </figure>
+          <figure class="pp-fig" data-title="SVM DiCE — source class 0"
+            data-caption="SVM DiCE: most important counterfactual changes, source class 0 → fatal. Final report, Figure 8 (panel 1).">
+            <img src="../assets/cs512/dice-0.png" alt="SVM DiCE source class 0" loading="lazy" />
+            <figcaption><b>Fig. 8a</b> — DiCE, class 0 → fatal</figcaption>
+          </figure>
+          <figure class="pp-fig" data-title="SVM DiCE — source class 1"
+            data-caption="SVM DiCE: most important counterfactual changes, source class 1 → fatal. Final report, Figure 8 (panel 2).">
+            <img src="../assets/cs512/dice-1.png" alt="SVM DiCE source class 1" loading="lazy" />
+            <figcaption><b>Fig. 8b</b> — DiCE, class 1 → fatal</figcaption>
+          </figure>
+          <figure class="pp-fig" data-title="SVM DiCE — source class 2"
+            data-caption="SVM DiCE: most important counterfactual changes, source class 2 → fatal. Final report, Figure 8 (panel 3).">
+            <img src="../assets/cs512/dice-2.png" alt="SVM DiCE source class 2" loading="lazy" />
+            <figcaption><b>Fig. 8c</b> — DiCE, class 2 → fatal</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== MATERIALS ========== -->
+  <section id="materials" class="section">
+    <div class="wrap">
+      <aside class="section__label">
+        <span class="num">08 —</span>
+        Source
+        <span class="rule"></span>
+        materials
+      </aside>
+      <div class="section__body">
+        <h2 class="section__title">Materials</h2>
+        <p class="section__intro">
+          The full report as submitted for CS512 (Machine Learning), Sabancı University,
+          January 2026 — Sima Adleyba, Başak Çarhacıoğlu, Ahmet İhsan Gül.
+        </p>
+
+        <div class="pp-pdf">
+          <div>
+            <h3 class="pp-pdf__title">Model Selection and Explainability in Traffic Accident Severity Prediction</h3>
+            <p class="pp-pdf__meta">Final report · 11 pages · PDF · January 2026</p>
+          </div>
+          <div class="pp-pdf__actions">
+            <a class="pp-btn" href="../assets/cs512/cs512-traffic-accident-severity.pdf" download>Download ↓</a>
+            <a class="pp-btn pp-btn--ghost" href="../assets/cs512/cs512-traffic-accident-severity.pdf"
+              target="_blank" rel="noopener">View in browser ↗</a>
+          </div>
+        </div>
+
+        <div class="pp-block pp-prose">
+          <p>
+            Figures and numbers on this page are taken from the final report; blocks marked
+            “Preliminary analysis” come from the project's earlier progress stage, which ran on a
+            representative 20k subset before scaling to the full dataset. There is no public code
+            repository for this project.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ========== LIGHTBOX ========== -->
+<div id="lightbox" class="lightbox">
+  <div class="lightbox-inner">
+    <div class="lightbox-image">
+      <img id="lightbox-img" src="" alt="" />
+    </div>
+    <div class="lightbox-info">
+      <a href="#" class="lightbox-close" onclick="closeLightbox(); return false;">[×] close</a>
+      <h3 id="lightbox-title"></h3>
+      <p id="lightbox-meta" class="lightbox-meta"></p>
+      <p id="lightbox-caption" class="lightbox-caption"></p>
+      <div class="lightbox-nav">
+        <a href="#" onclick="prevLightbox(); return false;">← prev</a>
+        <a href="#" onclick="nextLightbox(); return false;">next →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <p class="footer-email">adleyba [at] sabanciuniv [dot] edu</p>
+    </div>
+    <p class="footer-volume">— 2026 / VOL. II</p>
+    <p class="footer-copy">© 2026 — SIMA ADLEYBA</p>
+  </div>
+</footer>
+
+<script>
+  // Nav scrolled state
+  const nav = document.getElementById('nav');
+  const onScroll = () => {
+    if (window.scrollY > 60) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Close mobile nav when clicking a link
+  document.querySelectorAll('#nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.getElementById('nav-links').classList.remove('open');
+    });
+  });
+
+  // ——— Sticky section nav: active-section highlight ———
+  const subnavLinks = document.querySelectorAll('.pp-subnav a');
+  const subnavSections = [...subnavLinks]
+    .map(a => document.querySelector(a.getAttribute('href')))
+    .filter(Boolean);
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      subnavLinks.forEach(a =>
+        a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id));
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  subnavSections.forEach(s => sectionObserver.observe(s));
+
+  // ——— Tabs ———
+  document.querySelectorAll('.pp-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.pp-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.pp-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelector('.pp-panel[data-panel="' + tab.dataset.tab + '"]').classList.add('active');
+    });
+  });
+
+  // ——— Accordions ———
+  document.querySelectorAll('.pp-acc__head').forEach(head => {
+    head.addEventListener('click', () => {
+      const acc = head.parentElement;
+      const open = acc.classList.toggle('open');
+      head.querySelector('.pp-acc__icon').textContent = open ? '[−]' : '[+]';
+    });
+  });
+
+  // ——— Before / after toggle ———
+  document.querySelectorAll('.pp-compare__btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const compare = btn.closest('.pp-compare');
+      compare.querySelectorAll('.pp-compare__btn').forEach(b => b.classList.remove('active'));
+      compare.querySelectorAll('.pp-compare__stage img').forEach(img =>
+        img.classList.toggle('active', img.dataset.view === btn.dataset.view));
+      btn.classList.add('active');
+    });
+  });
+
+  // ——— Lightbox (adapted from homepage) ———
+  let currentIndex = 0;
+  const items = document.querySelectorAll('.pp-fig');
+
+  items.forEach((item, index) => {
+    item.setAttribute('role', 'button');
+    item.tabIndex = 0;
+    item.addEventListener('click', () => openLightbox(index));
+    item.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openLightbox(index);
+      }
+    });
+  });
+
+  function openLightbox(index) {
+    currentIndex = index;
+    updateLightbox();
+    document.getElementById('lightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function prevLightbox() {
+    currentIndex = (currentIndex - 1 + items.length) % items.length;
+    updateLightbox();
+  }
+
+  function nextLightbox() {
+    currentIndex = (currentIndex + 1) % items.length;
+    updateLightbox();
+  }
+
+  function updateLightbox() {
+    const item = items[currentIndex];
+    const img = item.querySelector('img');
+    document.getElementById('lightbox-img').src = img.getAttribute('src');
+    document.getElementById('lightbox-img').alt = img.alt || '';
+    document.getElementById('lightbox-title').textContent = item.dataset.title || '';
+    document.getElementById('lightbox-meta').textContent =
+      item.closest('.pp-prelim') ? 'preliminary — 20k subset' : 'final report — full dataset';
+    document.getElementById('lightbox-caption').textContent = item.dataset.caption || '';
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (!document.getElementById('lightbox').classList.contains('active')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') prevLightbox();
+    if (e.key === 'ArrowRight') nextLightbox();
+  });
+  document.getElementById('lightbox').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('lightbox')) closeLightbox();
+  });
+</script>
+
+<!-- Analytics -->
+<script src="../analytics/config.js"></script>
+<script src="../analytics/tracker.js"></script>
+</body>
+</html>
