@@ -1,0 +1,1 @@
+import React from 'react';import ReactDOM from 'react-dom/client';import PcaApp from './PcaApp';ReactDOM.createRoot(document.getElementById('root')).render(<React.StrictMode><PcaApp/></React.StrictMode>);

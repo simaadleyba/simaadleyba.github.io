@@ -2,22 +2,22 @@ import { useState } from 'react';
 import './styles/global.css';
 
 const TOPICS = [
-  { num: '01', name: 'k-Nearest Neighbors', href: '/machinelearning/knn/', ready: true },
-  { num: '02', name: 'Decision Trees', href: '/machinelearning/decisiontrees/', ready: true },
-  { num: '03', name: 'Evaluation Metrics', href: '/machinelearning/evaluationmetrics/', ready: true },
-  { num: '04', name: 'Model Evaluation', href: '/machinelearning/modelevaluation/', ready: true },
-  { num: '05', name: 'MLE & MAP', href: '/machinelearning/mlemap/', ready: true },
-  { num: '06', name: 'Naive Bayes', href: '/machinelearning/naivebayes/', ready: true },
-  { num: '07', name: 'Logistic Regression', href: '/machinelearning/logisticregression/', ready: true },
-  { num: '08', name: 'Linear Regression', href: '/machinelearning/linearregression/', ready: true },
-  { num: '09', name: 'Handling Imbalanced Data', href: '/machinelearning/handlingimbalanceddata/', ready: true },
-  { num: '10', name: 'Handling Missing Data', href: '/machinelearning/handlingmissingdata/', ready: true },
-  { num: '11', name: 'Ensemble Learning', href: null },
-  { num: '12', name: 'SVM', href: null },
-  { num: '13', name: 'Clustering', href: null },
-  { num: '14', name: 'Spectral Clustering', href: null },
-  { num: '15', name: 'PCA', href: null },
-  { num: '16', name: 'Neural Networks', href: null },
+  { num: '01', name: 'k-Nearest Neighbors', href: '/machinelearning/knn/' },
+  { num: '02', name: 'Decision Trees', href: '/machinelearning/decisiontrees/' },
+  { num: '03', name: 'Evaluation Metrics', href: '/machinelearning/evaluationmetrics/' },
+  { num: '04', name: 'Model Evaluation', href: '/machinelearning/modelevaluation/' },
+  { num: '05', name: 'MLE & MAP', href: '/machinelearning/mlemap/' },
+  { num: '06', name: 'Naive Bayes', href: '/machinelearning/naivebayes/' },
+  { num: '07', name: 'Logistic Regression', href: '/machinelearning/logisticregression/' },
+  { num: '08', name: 'Linear Regression', href: '/machinelearning/linearregression/' },
+  { num: '09', name: 'Handling Imbalanced Data', href: '/machinelearning/handlingimbalanceddata/' },
+  { num: '10', name: 'Handling Missing Data', href: '/machinelearning/handlingmissingdata/' },
+  { num: '11', name: 'Ensemble Learning', href: '/machinelearning/ensemblelearning/' },
+  { num: '12', name: 'SVM', href: '/machinelearning/svm/' },
+  { num: '13', name: 'Clustering', href: '/machinelearning/clustering/' },
+  { num: '14', name: 'Spectral Clustering', href: '/machinelearning/spectralclustering/' },
+  { num: '15', name: 'PCA', href: '/machinelearning/pca/' },
+  { num: '16', name: 'Neural Networks', href: '/machinelearning/neuralnetworks/' },
 ];
 
 function Navbar() {
@@ -64,30 +64,15 @@ export default function HubApp() {
       <div className="container" style={{ paddingTop: '2.5rem', paddingBottom: '5rem' }}>
         <p style={{ color: 'var(--muted)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>
           Each topic is a self-contained page with derivations, formula cards, and interactive visualizations.
-          Topics marked <span style={{ background: 'var(--accent-bg)', color: 'var(--accent)', borderRadius: 4, padding: '0.05rem 0.4rem', fontSize: '0.75rem', fontWeight: 600 }}>available</span> are ready to read.
         </p>
 
         <div className="ml-topic-grid">
-          {TOPICS.map(({ num, name, href, ready }) => {
-            const inner = (
-              <>
+          {TOPICS.map(({ num, name, href }) => (
+              <a key={num} href={href} className="ml-topic-card">
                 <div className="ml-topic-num">{num}</div>
                 <div className="ml-topic-name">{name}</div>
-                <div className={`ml-topic-badge${ready ? '' : ' soon'}`}>
-                  {ready ? 'available' : 'coming soon'}
-                </div>
-              </>
-            );
-            return ready ? (
-              <a key={num} href={href} className="ml-topic-card">
-                {inner}
               </a>
-            ) : (
-              <div key={num} className="ml-topic-card coming-soon">
-                {inner}
-              </div>
-            );
-          })}
+          ))}
         </div>
       </div>
 
