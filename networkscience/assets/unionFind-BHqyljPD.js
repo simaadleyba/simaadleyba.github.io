@@ -1,0 +1,1 @@
+function c(i){const t=Array.from({length:i},(n,r)=>r),e=Array(i).fill(1);let o=i;function u(n){for(;t[n]!==n;)t[n]=t[t[n]],n=t[n];return n}function f(n,r){return n=u(n),r=u(r),n===r?!1:(e[n]<e[r]&&([n,r]=[r,n]),t[r]=n,e[n]+=e[r],o--,!0)}return{find:u,union:f,sizes:e,get count(){return o}}}export{c as m};

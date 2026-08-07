@@ -1,7 +1,19 @@
-import { useEffect, useRef, useState, Suspense, lazy } from 'react';
-import katex from 'katex';
+import { useState, lazy } from 'react';
 import TableOfContents from './components/TableOfContents';
 import FormulaCard from './components/FormulaCard';
+import { K, KB } from './components/Katex';
+import ArtifactWrapper from './components/ArtifactWrapper';
+import DegreeCorrelationsSection from './sections/DegreeCorrelationsSection';
+import ScaleFreePropertySection from './sections/ScaleFreePropertySection';
+import MeasuringPowerLawsSection from './sections/MeasuringPowerLawsSection';
+import FitnessModelSection from './sections/FitnessModelSection';
+import RobustnessSection from './sections/RobustnessSection';
+import CriticalExponentsSection from './sections/CriticalExponentsSection';
+import CommunityDetectionSection from './sections/CommunityDetectionSection';
+import EpidemicModelsSection from './sections/EpidemicModelsSection';
+import SocialContagionSection from './sections/SocialContagionSection';
+import SpectralGraphTheorySection from './sections/SpectralGraphTheorySection';
+import TopologicalDataAnalysisSection from './sections/TopologicalDataAnalysisSection';
 import './styles/global.css';
 
 // Lazy-load artifacts
@@ -12,28 +24,6 @@ const DegreeDistribution = lazy(() => import('./artifacts/DegreeDistribution'));
 const BetheLattice = lazy(() => import('./artifacts/BetheLattice'));
 const PowerLawExplorer = lazy(() => import('./artifacts/PowerLawExplorer'));
 const BAGrowthSimulator = lazy(() => import('./artifacts/BAGrowthSimulator'));
-
-// Inline KaTeX helper
-function K({ l }) {
-  const ref = useRef(null);
-  useEffect(() => {
-    if (ref.current) {
-      katex.render(l, ref.current, { throwOnError: false, displayMode: false });
-    }
-  }, [l]);
-  return <span ref={ref} />;
-}
-
-// Display KaTeX helper
-function KB({ l }) {
-  const ref = useRef(null);
-  useEffect(() => {
-    if (ref.current) {
-      katex.render(l, ref.current, { throwOnError: false, displayMode: true });
-    }
-  }, [l]);
-  return <div ref={ref} style={{ overflowX: 'auto', margin: '0.8rem 0' }} />;
-}
 
 // Navbar — matches main site design
 function Navbar() {
@@ -63,99 +53,6 @@ function Navbar() {
   );
 }
 
-// Artifact wrapper with fullscreen expand
-function ArtifactWrapper({ title, children }) {
-  const [expanded, setExpanded] = useState(false);
-
-  useEffect(() => {
-    document.body.style.overflow = expanded ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
-  }, [expanded]);
-
-  const content = (
-    <Suspense fallback={<div style={{ color: '#8b9bd4', fontSize: '0.9rem', padding: '1rem 0' }}>Loading interactive component...</div>}>
-      {children}
-    </Suspense>
-  );
-
-  const expandBtn = (
-    <button
-      onClick={() => setExpanded(e => !e)}
-      title={expanded ? 'Close' : 'Expand to full view'}
-      style={{
-        background: 'none',
-        border: '1px solid var(--border)',
-        borderRadius: '6px',
-        padding: '0.18rem 0.55rem',
-        cursor: 'pointer',
-        color: 'var(--muted)',
-        fontSize: '0.72rem',
-        fontFamily: 'inherit',
-        lineHeight: 1.4,
-      }}
-    >
-      {expanded ? '✕ Close' : '⤢ Expand'}
-    </button>
-  );
-
-  return (
-    <>
-      {/* Regular card */}
-      <div className="artifact-card" style={{ display: expanded ? 'none' : undefined }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
-          <h4 style={{ margin: 0 }}>{title}</h4>
-          {expandBtn}
-        </div>
-        {content}
-      </div>
-
-      {/* Fullscreen overlay */}
-      {expanded && (
-        <>
-          <div
-            onClick={() => setExpanded(false)}
-            style={{
-              position: 'fixed', inset: 0, zIndex: 1000,
-              background: 'rgba(20, 22, 32, 0.22)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
-            }}
-          />
-          <div style={{
-            position: 'fixed',
-            top: 'calc(3.2rem + 1.2rem)',
-            left: '1.5rem', right: '1.5rem', bottom: '1.5rem',
-            zIndex: 1001,
-            background: 'rgba(255, 255, 255, 0.90)',
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            border: '1px solid rgba(226, 228, 234, 0.85)',
-            borderRadius: '14px',
-            boxShadow: '0 24px 80px rgba(91, 110, 174, 0.18)',
-            display: 'flex', flexDirection: 'column',
-            overflow: 'hidden',
-          }}>
-            <div style={{
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              padding: '1rem 1.5rem',
-              borderBottom: '1px solid var(--border)',
-              flexShrink: 0,
-            }}>
-              <span style={{ color: 'var(--accent)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>
-                {title}
-              </span>
-              {expandBtn}
-            </div>
-            <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem' }}>
-              {content}
-            </div>
-          </div>
-        </>
-      )}
-    </>
-  );
-}
-
 export default function App() {
   return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
@@ -165,7 +62,7 @@ export default function App() {
         <div className="container">
           <div className="ns-title">Network Science</div>
           <div className="ns-subtitle">
-            Interactive study guide with visualizations, centrality measures, random graphs, Bethe lattices, and more.
+            Interactive study guide with visualizations, formulas, and simulations — network properties, random graphs, scale-free networks, robustness and percolation, community detection, spreading phenomena, spectral graph theory, and topological data analysis.
           </div>
         </div>
       </header>
@@ -1022,6 +919,18 @@ export default function App() {
                 <BAGrowthSimulator />
               </ArtifactWrapper>
             </section>
+
+            <DegreeCorrelationsSection />
+            <ScaleFreePropertySection />
+            <MeasuringPowerLawsSection />
+            <FitnessModelSection />
+            <RobustnessSection />
+            <CriticalExponentsSection />
+            <CommunityDetectionSection />
+            <EpidemicModelsSection />
+            <SocialContagionSection />
+            <SpectralGraphTheorySection />
+            <TopologicalDataAnalysisSection />
 
             {/* ── References ── */}
             <section id="references" className="ns-section">

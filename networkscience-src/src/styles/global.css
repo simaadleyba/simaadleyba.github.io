@@ -875,3 +875,22 @@ footer.footer {
   .formula-card { border-radius: 0; }
   .ml-topic-grid { grid-template-columns: 1fr; }
 }
+
+/* ── TOC overflow (added with sections 12–22) ── */
+.ns-toc {
+  max-height: calc(100vh - var(--nav-height) - 4rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+@media (max-width: 768px) {
+  .ns-toc { max-height: none; overflow-y: visible; }
+}
+
+/* ── Wide table overflow containment on narrow viewports ── */
+@media (max-width: 768px) {
+  .ns-section table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
