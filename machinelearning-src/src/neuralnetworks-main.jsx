@@ -1,1 +1,0 @@
-import React from 'react';import ReactDOM from 'react-dom/client';import NeuralNetworksApp from './NeuralNetworksApp';ReactDOM.createRoot(document.getElementById('root')).render(<React.StrictMode><NeuralNetworksApp/></React.StrictMode>);

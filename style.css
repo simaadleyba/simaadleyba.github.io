@@ -1948,8 +1948,9 @@ main .section:nth-of-type(even) { background: var(--paper-2); }
 
 .guides {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(1.5rem, 3vw, 2.5rem);
+  max-width: 900px;
 }
 
 .guide {
