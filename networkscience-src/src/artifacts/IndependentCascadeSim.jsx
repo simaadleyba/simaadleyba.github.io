@@ -120,8 +120,8 @@ export default function IndependentCascadeSim() {
         })}
         {NODES.map((n) => (
           <g key={n} onClick={() => toggleSeed(n)} style={{ cursor: 'pointer' }}>
-            <circle cx={IC_LAYOUT[n][0]} cy={IC_LAYOUT[n][1]} r="13" fill={active.has(n) ? '#245cff' : 'white'} stroke="#245cff" strokeWidth={seeds.has(n) ? 3 : 1.5} />
-            <text x={IC_LAYOUT[n][0]} y={IC_LAYOUT[n][1] + 4} textAnchor="middle" fill={active.has(n) ? 'white' : '#245cff'}>{n}</text>
+            <circle cx={IC_LAYOUT[n][0]} cy={IC_LAYOUT[n][1]} r="13" fill={active.has(n) ? '#405777' : 'white'} stroke="#405777" strokeWidth={seeds.has(n) ? 3 : 1.5} />
+            <text x={IC_LAYOUT[n][0]} y={IC_LAYOUT[n][1] + 4} textAnchor="middle" fill={active.has(n) ? 'white' : '#405777'}>{n}</text>
           </g>
         ))}
       </svg>
@@ -149,7 +149,7 @@ export default function IndependentCascadeSim() {
               <XAxis dataKey="node" tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis domain={[0, 1]} tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={{ background: 'white', border: '1px solid #e2e4ea', color: '#242424', fontSize: '0.75rem' }} />
-              <Bar dataKey="prob" fill="#4a90d9" name="activation probability" />
+              <Bar dataKey="prob" fill="#748da8" name="activation probability" />
             </BarChart>
           </ResponsiveContainer>
         </>

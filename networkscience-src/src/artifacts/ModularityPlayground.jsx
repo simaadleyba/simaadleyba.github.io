@@ -8,7 +8,7 @@ const presets = {
   one: { label: 'One community', labels: Array(10).fill(0) },
   singletons: { label: 'All singletons', labels: Array.from({ length: 10 }, (_, i) => i) },
 };
-const PALETTE = ['#4a90d9', '#e85d04', '#2d6a4f', '#7b2cbf', '#c1121f'];
+const PALETTE = ['#748da8', '#e85d04', '#2d6a4f', '#7b2cbf', '#c1121f'];
 
 function degrees() {
   const deg = new Array(10).fill(0);

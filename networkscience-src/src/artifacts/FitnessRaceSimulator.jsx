@@ -139,7 +139,7 @@ function runSimulation(N, m, dist, seed) {
   return { history, tracked, eta, fitted, C, pkChart };
 }
 
-const TRACK_COLORS = ['#4a90d9', '#2d6a4f', '#7b2cbf', '#e85d04', '#c1121f', '#101318'];
+const TRACK_COLORS = ['#748da8', '#2d6a4f', '#7b2cbf', '#e85d04', '#c1121f', '#101318'];
 
 export default function FitnessRaceSimulator() {
   const [n, setN] = useState(1200);
@@ -206,7 +206,7 @@ export default function FitnessRaceSimulator() {
           <YAxis tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false}
             label={{ value: 'log₁₀ P(k)', angle: -90, position: 'insideLeft', fontSize: 10 }} />
           <Tooltip contentStyle={{ background: 'white', border: '1px solid #e2e4ea', color: '#242424', fontSize: '0.75rem' }} />
-          <Scatter dataKey="logp" fill="#4a90d9" name="simulated P(k)" />
+          <Scatter dataKey="logp" fill="#748da8" name="simulated P(k)" />
           <Line dataKey="logpBA" stroke="#c1121f" strokeDasharray="4 3" dot={false} name="BA k⁻³ reference" />
         </ComposedChart>
       </ResponsiveContainer>

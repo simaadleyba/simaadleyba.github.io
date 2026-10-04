@@ -54,7 +54,7 @@ function computeGraphStats() {
 }
 const { diameter, avgPath } = computeGraphStats();
 
-const DISTANCE_COLORS = ['#f0c040','#4a90d9','#2d6a4f','#e85d04','#c1121f','#7b2d8b','#1a6b4a','#8b4513','#4682b4','#888888'];
+const DISTANCE_COLORS = ['#f0c040','#748da8','#2d6a4f','#e85d04','#c1121f','#7b2d8b','#1a6b4a','#8b4513','#4682b4','#888888'];
 
 const btnBase = { padding: '0.35rem 0.9rem', fontSize: '0.8rem', borderRadius: '6px', cursor: 'pointer' };
 
@@ -112,11 +112,11 @@ export default function PathExplorer() {
     }
     if (mode === 'bfs' && bfsData) {
       const d = bfsData.dist[id];
-      if (d !== undefined && d !== Infinity && d <= bfsStep) return DISTANCE_COLORS[d] || '#4a90d9';
+      if (d !== undefined && d !== Infinity && d <= bfsStep) return DISTANCE_COLORS[d] || '#748da8';
       return '#9099b8';
     }
     if (selected.includes(id)) return '#d95b8f';
-    return '#4a90d9';
+    return '#748da8';
   };
 
   const isPathEdge = (a, b) => result?.type === 'path' && result.path.length >= 2 &&

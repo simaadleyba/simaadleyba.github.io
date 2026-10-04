@@ -192,7 +192,7 @@ export default function FiniteSizeCollapse() {
               <YAxis tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={{ background: 'white', border: '1px solid #e2e4ea', color: '#242424', fontSize: '0.75rem' }} />
               {rawSets.map((data, i) => (
-                <Line key={SIZES[i]} data={data} dataKey={rawKey} stroke={['#4a90d9', '#e85d04', '#7b2cbf'][i]} dot={false} name={`L=${SIZES[i]}`} />
+                <Line key={SIZES[i]} data={data} dataKey={rawKey} stroke={['#748da8', '#e85d04', '#7b2cbf'][i]} dot={false} name={`L=${SIZES[i]}`} />
               ))}
             </ComposedChart>
           </ResponsiveContainer>
@@ -205,7 +205,7 @@ export default function FiniteSizeCollapse() {
               <YAxis tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={{ background: 'white', border: '1px solid #e2e4ea', color: '#242424', fontSize: '0.75rem' }} />
               {activeCollapsed.map((data, i) => (
-                <Line key={SIZES[i]} data={data} dataKey="y" stroke={['#4a90d9', '#e85d04', '#7b2cbf'][i]} dot={false} name={`L=${SIZES[i]}`} />
+                <Line key={SIZES[i]} data={data} dataKey="y" stroke={['#748da8', '#e85d04', '#7b2cbf'][i]} dot={false} name={`L=${SIZES[i]}`} />
               ))}
             </ComposedChart>
           </ResponsiveContainer>

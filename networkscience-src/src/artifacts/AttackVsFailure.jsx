@@ -94,11 +94,11 @@ export default function AttackVsFailure() {
           <XAxis dataKey="f" tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} />
           <YAxis domain={[0, 1]} tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} />
           <Tooltip contentStyle={{ background: 'white', border: '1px solid #e2e4ea', color: '#242424', fontSize: '0.75rem' }} />
-          <Line dataKey="erR" name="ER / random" stroke="#4a90d9" dot={false} />
+          <Line dataKey="erR" name="ER / random" stroke="#748da8" dot={false} />
           <Line dataKey="erA" name="ER / attack" stroke="#2d6a4f" dot={false} />
           <Line dataKey="baR" name="BA / random" stroke="#e85d04" dot={false} />
           <Line dataKey="baA" name="BA / attack" stroke="#c1121f" dot={false} />
-          <ReferenceLine x={erFc} stroke="#4a90d9" strokeDasharray="4 4" />
+          <ReferenceLine x={erFc} stroke="#748da8" strokeDasharray="4 4" />
           <ReferenceLine x={baFc} stroke="#e85d04" strokeDasharray="4 4" />
         </ComposedChart>
       </ResponsiveContainer>

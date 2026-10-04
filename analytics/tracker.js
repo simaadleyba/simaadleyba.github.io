@@ -14,7 +14,8 @@
     'use strict';
 
     // --- Guard: config must be loaded ---
-    if (typeof ANALYTICS_CONFIG === 'undefined' || !ANALYTICS_CONFIG.endpoint) {
+    if (typeof ANALYTICS_CONFIG === 'undefined' || !ANALYTICS_CONFIG.endpoint ||
+        ANALYTICS_CONFIG.endpoint === '__ANALYTICS_ENDPOINT__') {
         return;
     }
 

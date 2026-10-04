@@ -1,0 +1,129 @@
+/* Shared visual language with the academic homepage; project interactions stay in style.css. */
+.pp-page {
+  --paper: #f8f7f4;
+  --paper-2: #f3f2ef;
+  --paper-3: #e8e9e7;
+  --ink: #1c242a;
+  --ink-2: #29343a;
+  --ink-3: #4c575b;
+  --steel: #405777;
+  --fog: #626d73;
+  --line: #e2e1dc;
+  --line-2: #d4d5d1;
+  --mute: #626d73;
+  --mute-2: #566167;
+  --ff-display: "Google Sans Flex", Inter, Arial, sans-serif;
+  --ff-heading: "Google Sans Flex", Inter, Arial, sans-serif;
+  --ff-body: "Google Sans Flex", Inter, Arial, sans-serif;
+  --ff-mono: "Source Code Pro", ui-monospace, monospace;
+  --maxw: 1200px;
+  background: var(--paper);
+}
+.pp-page a:focus-visible,
+.pp-page button:focus-visible,
+.pp-page .pp-fig:focus-visible { outline: 2px solid var(--steel); outline-offset: 3px; }
+.pp-page nav#nav,
+.pp-page nav#nav.scrolled {
+  position: relative;
+  min-height: 70px;
+  padding: 0 clamp(22px, 4.5vw, 64px);
+  background: var(--paper);
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.pp-page .nav-mark { font: 600 14px/1 var(--ff-body); letter-spacing: 0; text-transform: none; white-space: nowrap; }
+.pp-page #nav-links { gap: clamp(18px, 2.2vw, 31px); }
+.pp-page #nav-links a { font: 500 13px/1.5 var(--ff-body); text-transform: none; letter-spacing: 0; opacity: 1; }
+.pp-page #nav-links a:hover { color: var(--steel); text-decoration: underline; }
+.pp-page #burger-icon { border-color: var(--line-2); border-radius: 0; }
+.pp-page .pp-hero {
+  padding: clamp(53px, 7vw, 92px) clamp(22px, 4.5vw, 64px) clamp(56px, 7vw, 82px);
+  background: var(--paper);
+  border-bottom: 0;
+}
+.pp-page .pp-hero__eyebrow { margin-bottom: 18px; color: var(--steel); font-size: 11px; letter-spacing: .08em; }
+.pp-page .pp-hero h1 { max-width: 950px; margin-bottom: 22px; font: 600 clamp(36px, 4.4vw, 58px)/1.08 var(--ff-heading); letter-spacing: -.045em; }
+.pp-page .pp-hero__meta { gap: 4px 28px; padding: 0; margin-bottom: 23px; border: 0; font: 400 13px/1.5 var(--ff-body); letter-spacing: 0; text-transform: none; }
+.pp-page .pp-hero__desc { max-width: 800px; margin-bottom: 25px; font-size: clamp(16px, 1.45vw, 18px); line-height: 1.6; }
+.pp-page .pp-hero__actions { gap: 12px 22px; }
+.pp-page .pp-btn,
+.pp-page .pp-btn--ghost { padding: 0 0 2px; color: var(--ink); border: 0; border-bottom: 1px solid var(--ink); font: 600 14px/1.5 var(--ff-body); letter-spacing: 0; text-transform: none; }
+.pp-page .pp-btn:hover,
+.pp-page .pp-btn--ghost:hover { color: var(--steel); background: transparent; border-color: var(--steel); }
+.pp-page .pp-subnav { top: 0; background: var(--paper); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.pp-page .pp-subnav__inner { width: min(calc(100% - 44px), 1072px); }
+.pp-page .pp-subnav a { padding: 12px 0; font: 500 12px/1.5 var(--ff-body); letter-spacing: 0; text-transform: none; }
+.pp-page .pp-subnav a.active { color: var(--steel); border-bottom-color: var(--steel); }
+.pp-page main { padding: 0; background: var(--paper); }
+.pp-page .section { border-top: 1px solid var(--line); padding: 44px 0 62px; scroll-margin-top: 45px; }
+.pp-page .section:first-of-type { border-top: 0; }
+.pp-page .wrap { grid-template-columns: 130px minmax(0, 1fr); gap: clamp(32px, 4vw, 70px); padding: 0 clamp(22px, 4.5vw, 64px); }
+.pp-page .section__label { position: static; color: var(--muted); font: 400 11px/1.5 var(--ff-mono); letter-spacing: .025em; text-transform: none; }
+.pp-page .section__label .num { color: var(--steel); font-weight: 600; }
+.pp-page .section__label .rule { display: none; }
+.pp-page .section__title { margin: 0 0 20px; font: 600 clamp(25px, 2.5vw, 34px)/1.2 var(--ff-heading); letter-spacing: -.035em; }
+.pp-page .section__intro { margin-bottom: 35px; font-size: 16px; }
+.pp-page .pp-h3 { font-size: clamp(20px, 2vw, 27px); font-weight: 600; }
+.pp-page .pp-cell,
+.pp-page .pp-stat,
+.pp-page .pp-model { border-top-color: var(--line-2); border-top-width: 1px; }
+.pp-page .pp-cell__label,
+.pp-page .pp-stat__label { letter-spacing: .025em; text-transform: none; }
+.pp-page .pp-tab { font: 500 13px/1.4 var(--ff-body); letter-spacing: 0; text-transform: none; }
+.pp-page .pp-acc__head { font-family: var(--ff-body); letter-spacing: 0; text-transform: none; }
+.pp-page .pp-fig,
+.pp-page .pp-pdf { background: transparent; box-shadow: none; border-color: var(--line); }
+.pp-page .pp-compare__btn { font-family: var(--ff-body); letter-spacing: 0; text-transform: none; }
+.pp-page footer.footer { background: var(--paper); color: var(--ink); border-top: 1px solid var(--line); }
+.pp-page .footer-inner { width: min(calc(100% - 44px), 1072px); max-width: none; margin: 0 auto; padding: 28px 0 36px; display: grid; grid-template-columns: 1fr auto auto; align-items: start; gap: 40px; }
+.pp-page .footer-name { font: 400 14px/1.5 var(--ff-body); }
+.pp-page .footer-inner nav { display: flex; flex-wrap: wrap; gap: 17px; }
+.pp-page .footer-inner nav a { color: var(--ink); font: 400 13px/1.5 var(--ff-body); border: 0; }
+.pp-page .footer-inner nav a:hover { color: var(--steel); text-decoration: underline; }
+.pp-page .footer-inner small { color: var(--muted); font: 400 12px/1.5 var(--ff-body); }
+@media (max-width: 900px) {
+  .pp-page .wrap { grid-template-columns: 1fr; gap: 22px; }
+  .pp-page .section__label { display: flex; gap: 8px; }
+  .pp-page .section__label .num { display: inline; margin: 0; }
+  .pp-page .pp-hero { padding-top: 55px; }
+}
+@media (max-width: 720px) {
+  .pp-page nav#nav,
+  .pp-page nav#nav.scrolled { min-height: 58px; }
+  .pp-page #nav-links { background: var(--paper); color: var(--ink); gap: 13px; padding: 18px 22px; }
+  .pp-page .pp-hero { padding: 45px 22px 55px; }
+  .pp-page .pp-subnav { top: 0; }
+  .pp-page .footer-inner { grid-template-columns: 1fr; gap: 17px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pp-page *, .pp-page *::before, .pp-page *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+/* Overrides for legacy narrow-screen navigation and dense internal rules. */
+.pp-page .nav-mark { width: auto; height: auto; display: inline; }
+.pp-page #nav-links { background: var(--paper); }
+.pp-page .pp-cell, .pp-page .pp-stat { border-top: 0; padding-top: 0; }
+/* Clear numbered headings and a quiet treatment for preliminary results. */
+.pp-page #overview .wrap { display: block; }
+.pp-page .pp-overview-heading { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: clamp(32px, 4vw, 70px); align-items: baseline; margin-bottom: 34px; }
+.pp-page .pp-overview-heading .num { color: var(--steel); font: 600 11px/1.5 var(--ff-mono); }
+.pp-page .pp-overview-heading .section__title { margin: 0; }
+.pp-page .pp-models-heading { display: flex; align-items: baseline; gap: 15px; margin: 44px 0 0; font: 600 22px/1.3 var(--ff-heading); letter-spacing: -.025em; }
+.pp-page .pp-models-heading span { color: var(--steel); font: 600 11px/1.5 var(--ff-mono); letter-spacing: 0; }
+.pp-page .pp-models-heading + .pp-models { margin-top: 21px; }
+.pp-page .pp-prelim { background: #f0efeb; border: 0; padding: clamp(22px, 2.5vw, 32px); }
+.pp-page .pp-prelim__note { margin: 0 0 20px; color: var(--muted); font: 400 14px/1.5 var(--ff-body); }
+.pp-page .pp-prelim .pp-fig, .pp-page .pp-prelim .pp-compare { background: transparent; }
+@media (max-width: 900px) { .pp-page .pp-overview-heading { grid-template-columns: 1fr; gap: 6px; } }
+@media (max-width: 560px) { .pp-page .pp-overview-heading { grid-template-columns: 38px 1fr; gap: 8px; margin-bottom: 27px; } }
+.pp-page .pp-findings { list-style: disc; padding-left: 20px; }
+.pp-page .pp-findings li { padding: 11px 0; }
+.pp-page .pp-findings li::before { content: none; }
+.pp-page .pp-cells { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 38px; }
+@media (max-width: 900px) { .pp-page .pp-cells { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .pp-page .pp-cells { grid-template-columns: 1fr; gap: 22px; } }
+.pp-page .pp-bars__note { color: var(--muted); font: 400 13px/1.5 var(--ff-body); letter-spacing: 0; text-transform: none; }
+.pp-page .pp-bars__legend { color: var(--muted); font: 400 12px/1.5 var(--ff-body); letter-spacing: 0; text-transform: none; }
+.pp-page .pp-pipe { border-color: var(--line-2); font: 500 12px/1.45 var(--ff-body); letter-spacing: 0; text-transform: none; }
+.pp-page .pp-pipe small { font: 400 11px/1.4 var(--ff-body); letter-spacing: 0; }

@@ -15,6 +15,7 @@ import SocialContagionSection from './sections/SocialContagionSection';
 import SpectralGraphTheorySection from './sections/SpectralGraphTheorySection';
 import TopologicalDataAnalysisSection from './sections/TopologicalDataAnalysisSection';
 import './styles/global.css';
+import './styles/theme.css';
 
 // Lazy-load artifacts
 const CentralityExplorer = lazy(() => import('./artifacts/CentralityExplorer'));
@@ -25,29 +26,25 @@ const BetheLattice = lazy(() => import('./artifacts/BetheLattice'));
 const PowerLawExplorer = lazy(() => import('./artifacts/PowerLawExplorer'));
 const BAGrowthSimulator = lazy(() => import('./artifacts/BAGrowthSimulator'));
 
-// Navbar — matches main site design
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <nav className="ns-nav">
-      <a className="nav-mark" href="/"><span className="dot"></span></a>
+    <nav className="ns-nav" aria-label="Main navigation">
+      <a className="nav-mark" href="/">Sima Adleyba</a>
       <button
         className="ns-nav-burger"
         aria-label="Toggle menu"
+        aria-expanded={menuOpen}
         onClick={() => setMenuOpen(o => !o)}
       >
         ☰
       </button>
       <div className={`ns-nav-links${menuOpen ? ' mobile-open' : ''}`}>
-        <a href="/#about" onClick={() => setMenuOpen(false)}>about</a>
-        <a href="/#research" onClick={() => setMenuOpen(false)}>research</a>
-        <a href="/#experience" onClick={() => setMenuOpen(false)}>experience</a>
-        <a href="/#education" onClick={() => setMenuOpen(false)}>education</a>
-        <a href="/#studyguides" onClick={() => setMenuOpen(false)}>study guides</a>
-        <a href="/#beyond" onClick={() => setMenuOpen(false)}>beyond</a>
-        <a href="/" target="_blank" rel="noopener" onClick={() => setMenuOpen(false)}>cv</a>
-        <span className="nav-pipe">|</span>
-        <a href="https://kimchikorelileriniskembesidir.com" className="field-notes" target="_blank" rel="noopener" onClick={() => setMenuOpen(false)}>personal blog</a>
+        <a href="/#research" onClick={() => setMenuOpen(false)}>Research</a>
+        <a href="/#experience" onClick={() => setMenuOpen(false)}>Experience</a>
+        <a href="/#education" onClick={() => setMenuOpen(false)}>Education</a>
+        <a href="/#teaching" onClick={() => setMenuOpen(false)}>Teaching</a>
+        <a href="/#writing" onClick={() => setMenuOpen(false)}>More</a>
       </div>
     </nav>
   );
@@ -60,7 +57,7 @@ export default function App() {
       {/* ── Header ── */}
       <header className="ns-header">
         <div className="container">
-          <div className="ns-title">Network Science</div>
+          <h1 className="ns-title">Network Science</h1>
           <div className="ns-subtitle">
             Interactive study guide with visualizations, formulas, and simulations — network properties, random graphs, scale-free networks, robustness and percolation, community detection, spreading phenomena, spectral graph theory, and topological data analysis.
           </div>
@@ -361,7 +358,7 @@ export default function App() {
                 title="Graph centralization"
                 latex="C = \frac{\sum_{i=1}^{|V|} [C_D(v^*) - C_D(v_i)]}{|V|^2 - 3|V| + 2}"
                 terms={[
-                  { symbol: 'C_D(v^*)', color: '#4a90d9', label: 'C_D(v*) — maximum centrality in the graph' },
+                  { symbol: 'C_D(v^*)', color: '#748da8', label: 'C_D(v*) — maximum centrality in the graph' },
                   { symbol: 'C_D(v_i)', color: '#2d6a4f', label: 'C_D(v_i) — centrality of node i' },
                 ]}
               />
@@ -374,7 +371,7 @@ export default function App() {
                 title="Closeness centrality"
                 latex="C_C(v) = \frac{N-1}{\sum_{u \neq v} d(v,u)}"
                 terms={[
-                  { symbol: 'N-1', color: '#4a90d9', label: 'N-1 — normalization (number of other nodes)' },
+                  { symbol: 'N-1', color: '#748da8', label: 'N-1 — normalization (number of other nodes)' },
                   { symbol: 'd(v,u)', color: '#e85d04', label: 'd(v,u) — shortest path distance from v to u' },
                 ]}
               />
@@ -388,7 +385,7 @@ export default function App() {
                 title="Betweenness centrality"
                 latex="C_B(v) = \sum_{s \neq v \neq t} \frac{\sigma_{st}(v)}{\sigma_{st}}"
                 terms={[
-                  { symbol: '\\sigma_{st}', color: '#4a90d9', label: 'σ_st — total number of shortest paths from s to t' },
+                  { symbol: '\\sigma_{st}', color: '#748da8', label: 'σ_st — total number of shortest paths from s to t' },
                   { symbol: '\\sigma_{st}(v)', color: '#e85d04', label: 'σ_st(v) — shortest paths from s to t through v' },
                 ]}
               />
@@ -406,7 +403,7 @@ export default function App() {
                 title="Eigenvector centrality"
                 latex="x_v = \frac{1}{\lambda} \sum_{t \in N(v)} x_t"
                 terms={[
-                  { symbol: 'x_v', color: '#4a90d9', label: 'x_v — centrality score of node v' },
+                  { symbol: 'x_v', color: '#748da8', label: 'x_v — centrality score of node v' },
                   { symbol: '\\lambda', color: '#2d6a4f', label: 'λ — leading eigenvalue of the adjacency matrix' },
                   { symbol: 'x_t', color: '#e85d04', label: 'x_t — centrality of neighbor t' },
                   { symbol: 'N(v)', color: '#c1121f', label: 'N(v) — set of neighbors of v' },
@@ -422,7 +419,7 @@ export default function App() {
                 title="PageRank"
                 latex="PR(p_i) = \frac{1-d}{N} + d \sum_{p_j \in M(p_i)} \frac{PR(p_j)}{L(p_j)}"
                 terms={[
-                  { symbol: '\\frac{1-d}{N}', color: '#4a90d9', label: '(1-d)/N — uniform teleportation probability' },
+                  { symbol: '\\frac{1-d}{N}', color: '#748da8', label: '(1-d)/N — uniform teleportation probability' },
                   { symbol: 'd', color: '#2d6a4f', label: 'd — damping factor (typically 0.85)' },
                   { symbol: 'M(p_i)', color: '#e85d04', label: 'M(p_i) — pages with links pointing to p_i' },
                   { symbol: 'L(p_j)', color: '#c1121f', label: 'L(p_j) — number of outbound links from p_j' },
@@ -484,7 +481,7 @@ export default function App() {
                 title="Average nearest-neighbor degree"
                 latex="k_{nn}(k_i) = \frac{1}{k_i} \sum_{j=1}^{N} A_{ij} k_j"
                 terms={[
-                  { symbol: 'k_i', color: '#4a90d9', label: 'k_i — degree of node i' },
+                  { symbol: 'k_i', color: '#748da8', label: 'k_i — degree of node i' },
                   { symbol: 'A_{ij}', color: '#2d6a4f', label: 'A_ij — adjacency matrix entry (1 if edge exists)' },
                   { symbol: 'k_j', color: '#e85d04', label: 'k_j — degree of neighbor j' },
                 ]}
@@ -499,7 +496,7 @@ export default function App() {
                 title="Degree correlation coefficient (Newman)"
                 latex="r = \frac{\sum_{jk} jk(e_{jk} - q_j q_k)}{\sigma_r^2}, \quad -1 \leq r \leq 1"
                 terms={[
-                  { symbol: 'e_{jk}', color: '#4a90d9', label: 'e_jk — observed joint degree probability' },
+                  { symbol: 'e_{jk}', color: '#748da8', label: 'e_jk — observed joint degree probability' },
                   { symbol: 'q_j q_k', color: '#2d6a4f', label: 'q_j·q_k — expected value under no correlation' },
                   { symbol: '\\sigma_r^2', color: '#e85d04', label: 'σ_r² — variance normalization factor' },
                 ]}
@@ -542,7 +539,7 @@ export default function App() {
                 title="Total node count (k > 2)"
                 latex="N(d) = 1 + \frac{k\bigl[(k-1)^d - 1\bigr]}{k-2}"
                 terms={[
-                  { symbol: 'k', color: '#4a90d9', label: 'k — coordination number (branching factor)' },
+                  { symbol: 'k', color: '#748da8', label: 'k — coordination number (branching factor)' },
                   { symbol: 'd', color: '#e85d04', label: 'd — depth of the lattice from the root' },
                   { symbol: 'N(d)', color: '#2d6a4f', label: 'N(d) — total number of nodes at depth ≤ d' },
                 ]}
@@ -583,7 +580,7 @@ export default function App() {
                 terms={[
                   { symbol: 'C', color: '#2d6a4f', label: 'C — normalization constant' },
                   { symbol: 'k_{\\min}', color: '#e85d04', label: 'k_min — minimum degree (lower cutoff)' },
-                  { symbol: '\\alpha', color: '#4a90d9', label: 'α — power law exponent (typically 2 < α < 3)' },
+                  { symbol: '\\alpha', color: '#748da8', label: 'α — power law exponent (typically 2 < α < 3)' },
                 ]}
               />
 
@@ -650,7 +647,7 @@ export default function App() {
                 title="Preferential attachment probability"
                 latex="\Pi(i) = \frac{k_i}{\sum_j k_j}"
                 terms={[
-                  { symbol: 'k_i', color: '#4a90d9', label: 'k_i — current degree of node i' },
+                  { symbol: 'k_i', color: '#748da8', label: 'k_i — current degree of node i' },
                   { symbol: '\\sum_j k_j', color: '#e85d04', label: 'Σ k_j — total degree (= 2L at step t)' },
                 ]}
               />
@@ -711,7 +708,7 @@ export default function App() {
                 latex="\frac{k}{2mt} \cdot N \cdot P(k,t) \cdot m = \frac{k}{2} P(k,t)"
                 terms={[
                   { symbol: '\\frac{k}{2mt}', color: '#7b2cbf', label: 'k/2mt — preferential attachment probability for a degree-k node' },
-                  { symbol: 'N \\cdot P(k,t)', color: '#4a90d9', label: 'N·P(k,t) — total number of degree-k nodes in the network' },
+                  { symbol: 'N \\cdot P(k,t)', color: '#748da8', label: 'N·P(k,t) — total number of degree-k nodes in the network' },
                   { symbol: 'm', color: '#2d6a4f', label: 'm — number of links the new node adds' },
                   { symbol: '\\frac{k}{2} P(k,t)', color: '#e85d04', label: '(k/2)P(k,t) — simplified result: rate of links going to degree-k nodes' },
                 ]}
@@ -751,7 +748,7 @@ export default function App() {
                 title="Recursion relation"
                 latex="P(k) = \frac{k-1}{k+2}\,P(k-1)"
                 terms={[
-                  { symbol: 'P(k)', color: '#4a90d9', label: 'P(k) — probability of degree k' },
+                  { symbol: 'P(k)', color: '#748da8', label: 'P(k) — probability of degree k' },
                   { symbol: 'k-1', color: '#2d6a4f', label: 'k−1 — degree of the "source" state (gaining a link)' },
                   { symbol: 'k+2', color: '#c1121f', label: 'k+2 — denominator from 1 + k/2 = (k+2)/2' },
                   { symbol: 'P(k-1)', color: '#e85d04', label: 'P(k−1) — probability of degree k−1 (feeds into P(k))' },
@@ -779,7 +776,7 @@ export default function App() {
                 latex="P(k) = \frac{2m(m+1)}{k(k+1)(k+2)}"
                 terms={[
                   { symbol: '2m(m+1)', color: '#2d6a4f', label: '2m(m+1) — numerator, depends only on m' },
-                  { symbol: 'k(k+1)(k+2)', color: '#4a90d9', label: 'k(k+1)(k+2) — three consecutive integers ≈ k³ for large k' },
+                  { symbol: 'k(k+1)(k+2)', color: '#748da8', label: 'k(k+1)(k+2) — three consecutive integers ≈ k³ for large k' },
                 ]}
               />
               <p>For large <K l="k" /> the numerator is a constant, so:</p>
@@ -893,7 +890,7 @@ export default function App() {
                 title="General empirical finding"
                 latex="\Pi(k) \approx A + k^{\alpha}, \quad \alpha \leq 1"
                 terms={[
-                  { symbol: 'A', color: '#4a90d9', label: 'A — constant offset (baseline attractiveness)' },
+                  { symbol: 'A', color: '#748da8', label: 'A — constant offset (baseline attractiveness)' },
                   { symbol: 'k^{\\alpha}', color: '#e85d04', label: 'k^α — degree-dependent term' },
                   { symbol: '\\alpha', color: '#c1121f', label: 'α — attachment exponent (α = 1 recovers BA)' },
                 ]}
@@ -942,17 +939,11 @@ export default function App() {
         </div>
       </div>
 
-      {/* ── Footer — full width, outside grid ── */}
       <footer className="footer">
-        <div className="footer-bg" aria-hidden="true"></div>
         <div className="footer-inner">
-          <div className="footer-left">
-            <p className="footer-email">adleyba [at] sabanciuniv [dot] edu</p>
-            <p style={{ margin: "0.5rem 0 0", fontSize: "0.78rem", opacity: 0.6, fontFamily: "var(--ff-mono)" }}>
-              Network Science Study Guide · Built with React + KaTeX
-            </p>
-          </div>
-          <p className="footer-copy">© 2026 — SIMA ADLEYBA</p>
+          <span className="footer-name">Sima Adleyba</span>
+          <nav aria-label="Footer links"><a href="mailto:adleyba@sabanciuniv.edu">Email</a><a href="https://drive.google.com/file/d/1bKKPqpawtg8KkHUVMwFSEyIhC_7X-m1o/view?usp=sharing">CV</a><a href="https://scholar.google.com/citations?user=NkopPHwAAAAJ&amp;hl=en">Scholar</a><a href="https://arxiv.org/abs/2609.31297">arXiv</a><a href="https://github.com/simaadleyba">GitHub</a></nav>
+          <small>© 2026</small>
         </div>
       </footer>
     </div>

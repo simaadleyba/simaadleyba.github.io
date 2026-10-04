@@ -109,7 +109,7 @@ function girvanNewmanHistory() {
   return history;
 }
 
-const PALETTE = ['#4a90d9', '#e85d04', '#2d6a4f', '#7b2cbf', '#c1121f', '#101318', '#245cff', '#aebfff'];
+const PALETTE = ['#748da8', '#e85d04', '#2d6a4f', '#7b2cbf', '#c1121f', '#101318', '#405777', '#b8c5d1'];
 
 export default function KarateClubExplorer() {
   const [algorithm, setAlgorithm] = useState('ground');
@@ -189,7 +189,7 @@ export default function KarateClubExplorer() {
                 <XAxis dataKey="step" tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} />
                 <Tooltip contentStyle={{ background: 'white', border: '1px solid #e2e4ea', color: '#242424', fontSize: '0.75rem' }} />
-                <Line dataKey="Q" dot={false} stroke="#245cff" />
+                <Line dataKey="Q" dot={false} stroke="#405777" />
                 {bestStep && <ReferenceDot x={bestStep.step} y={bestStep.Q} r={5} fill="#c1121f" stroke="none" />}
               </ComposedChart>
             </ResponsiveContainer>

@@ -134,7 +134,7 @@ export default function WattsCascade() {
       <svg viewBox="0 0 380 300" role="img" style={{ width: '100%', background: 'var(--accent-bg)', borderRadius: '8px', marginTop: '0.6rem' }}>
         <title>Watts threshold cascade</title>
         {d.edges.map(([a, b], i) => <line key={i} x1={d.pos[a].x} y1={d.pos[a].y} x2={d.pos[b].x} y2={d.pos[b].y} stroke="#ccd2df" />)}
-        {d.pos.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r="3.5" fill={failed.has(i) ? '#c1121f' : '#aebfff'} />)}
+        {d.pos.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r="3.5" fill={failed.has(i) ? '#c1121f' : '#b8c5d1'} />)}
       </svg>
       <div style={{ padding: '0.6rem', background: 'var(--accent-bg)', borderRadius: '8px', marginTop: '0.4rem' }}>
         round {Math.min(round, d.states.length - 1)} · failed {failed.size}/{n} ({(failed.size / n * 100).toFixed(1)}%) · final cascade {d.states.at(-1).size}
@@ -151,7 +151,7 @@ export default function WattsCascade() {
               <XAxis dataKey="logS" type="number" tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} label={{ value: 'log₁₀ S', position: 'insideBottomRight', fontSize: 10 }} />
               <YAxis tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} label={{ value: 'log₁₀ P(S)', angle: -90, position: 'insideLeft', fontSize: 10 }} />
               <Tooltip contentStyle={{ background: 'white', border: '1px solid #e2e4ea', color: '#242424', fontSize: '0.75rem' }} />
-              <Bar dataKey="logP" fill="#4a90d9" name="P(S)" />
+              <Bar dataKey="logP" fill="#748da8" name="P(S)" />
               <Line dataKey="logPRef" stroke="#c1121f" strokeDasharray="4 3" dot={false} name="S⁻¹·⁵ reference" />
             </ComposedChart>
           </ResponsiveContainer>

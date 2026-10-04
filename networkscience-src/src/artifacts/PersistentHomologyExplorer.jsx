@@ -210,16 +210,16 @@ export default function PersistentHomologyExplorer() {
         {d.tri.slice(0, 1200).map((tr, i) => {
           const ids = tr.map((e) => d.edges[e]).flat();
           const u = [...new Set(ids)];
-          return u.length === 3 ? <polygon key={i} points={u.map((x) => pts[x].join(',')).join(' ')} fill="rgba(36,92,255,.10)" /> : null;
+          return u.length === 3 ? <polygon key={i} points={u.map((x) => pts[x].join(',')).join(' ')} fill="rgba(64,87,119,.10)" /> : null;
         })}
         {d.edges.map(([a, b], i) => (
-          <line key={i} x1={pts[a][0]} y1={pts[a][1]} x2={pts[b][0]} y2={pts[b][1]} stroke="#aebfff" />
+          <line key={i} x1={pts[a][0]} y1={pts[a][1]} x2={pts[b][0]} y2={pts[b][1]} stroke="#b8c5d1" />
         ))}
         {hoverIdx != null && pts[hoverIdx] && (
           <circle cx={pts[hoverIdx][0]} cy={pts[hoverIdx][1]} r={eps} fill="none" stroke="#c1121f" strokeWidth="1" strokeDasharray="3 2" />
         )}
         {pts.map(([x, y], i) => (
-          <circle key={i} cx={x} cy={y} r="3.5" fill="#245cff"
+          <circle key={i} cx={x} cy={y} r="3.5" fill="#405777"
             onMouseEnter={() => setHoverIdx(i)} onMouseLeave={() => setHoverIdx(null)} />
         ))}
       </svg>
@@ -240,7 +240,7 @@ export default function PersistentHomologyExplorer() {
           const x2 = 10 + (Number.isFinite(death) ? (death / maxD) * 340 : 340);
           return (
             <rect key={i} x={x1} y={6 + i * rowH} width={Math.max(1, x2 - x1)} height={Math.max(1, rowH - 0.5)}
-              fill={Number.isFinite(death) ? '#4a90d9' : '#2d6a4f'} />
+              fill={Number.isFinite(death) ? '#748da8' : '#2d6a4f'} />
           );
         })}
         {sweep.map((s, i) => {

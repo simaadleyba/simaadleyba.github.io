@@ -53,7 +53,7 @@ function computeRadialLayout(nodes, width, height) {
   return positions;
 }
 
-const DEPTH_COLORS = ['#f0c040','#4a90d9','#2d6a4f','#e85d04','#c1121f','#7b2d8b','#1a6b4a'];
+const DEPTH_COLORS = ['#f0c040','#748da8','#2d6a4f','#e85d04','#c1121f','#7b2d8b','#1a6b4a'];
 
 export default function BetheLattice() {
   const [k, setK] = useState(3);

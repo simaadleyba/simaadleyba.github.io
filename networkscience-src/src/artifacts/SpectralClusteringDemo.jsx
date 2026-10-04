@@ -5,7 +5,7 @@ import { kmeans } from '../utils/kmeans';
 import { mulberry32 } from '../utils/random';
 
 const N = 34;
-const PALETTE = ['#4a90d9', '#e85d04', '#2d6a4f', '#7b2cbf', '#c1121f'];
+const PALETTE = ['#748da8', '#e85d04', '#2d6a4f', '#7b2cbf', '#c1121f'];
 
 function buildGraph() {
   const A = Array.from({ length: N }, () => Array(N).fill(0));

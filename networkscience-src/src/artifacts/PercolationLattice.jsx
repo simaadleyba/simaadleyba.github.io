@@ -113,7 +113,7 @@ export default function PercolationLattice() {
         <title>Site percolation lattice</title>
         {d.on.map((v, i) => v && (
           <rect key={i} x={i % L} y={Math.floor(i / L)} width="1" height="1"
-            fill={d.uf.find(i) === d.spanning ? '#245cff' : ['#aebfff', '#8ea8e8', '#c3cff5'][d.uf.find(i) % 3]} />
+            fill={d.uf.find(i) === d.spanning ? '#405777' : ['#b8c5d1', '#aab9c8', '#d6dfe7'][d.uf.find(i) % 3]} />
         ))}
       </svg>
 
@@ -161,7 +161,7 @@ export default function PercolationLattice() {
                 <YAxis tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} />
                 <Tooltip contentStyle={{ background: 'white', border: '1px solid #e2e4ea', color: '#242424', fontSize: '0.75rem' }} />
                 <ReferenceLine x={PC} stroke="#c1121f" strokeDasharray="4 3" label={{ value: 'p_c', fontSize: 10, fill: '#c1121f' }} />
-                <Line dataKey="Pinf" stroke="#245cff" dot={false} name="P∞" />
+                <Line dataKey="Pinf" stroke="#405777" dot={false} name="P∞" />
               </ComposedChart>
             </ResponsiveContainer>
           </div>

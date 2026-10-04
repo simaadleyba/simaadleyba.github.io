@@ -102,7 +102,7 @@ export default function ExposureCurveLab() {
               <XAxis dataKey="k" tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} label={{ value: 'k adopting neighbours', position: 'insideBottomRight', fontSize: 9 }} />
               <YAxis domain={[0, 1]} tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={{ background: 'white', border: '1px solid #e2e4ea', color: '#242424', fontSize: '0.75rem' }} />
-              <Line dataKey="p" stroke="#245cff" dot={false} name="P(adopt|k)" />
+              <Line dataKey="p" stroke="#405777" dot={false} name="P(adopt|k)" />
               <Line dataKey="twitter" stroke="#c1121f" strokeDasharray="4 4" dot={false} name="Twitter hashtag shape (ref.)" />
             </ComposedChart>
           </ResponsiveContainer>
@@ -133,7 +133,7 @@ export default function ExposureCurveLab() {
                   <XAxis dataKey="t" tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} label={{ value: 'round', position: 'insideBottomRight', fontSize: 9 }} />
                   <YAxis domain={[0, 1]} tick={{ fill: '#5b5b5b', fontSize: 10 }} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={{ background: 'white', border: '1px solid #e2e4ea', color: '#242424', fontSize: '0.75rem' }} />
-                  <Line dataKey="lattice" stroke="#4a90d9" dot={false} name="clustered lattice" />
+                  <Line dataKey="lattice" stroke="#748da8" dot={false} name="clustered lattice" />
                   <Line dataKey="random" stroke="#e85d04" dot={false} name="random regular" />
                 </ComposedChart>
               </ResponsiveContainer>
