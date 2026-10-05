@@ -6,16 +6,11 @@
 // and logs them to the active Google Sheet.
 //
 // SETUP:
-// 1. Create a new Google Sheet (this will store your analytics data)
-// 2. Go to Extensions > Apps Script
-// 3. Delete any existing code and paste this entire file
-// 4. Click Deploy > New deployment
-// 5. Choose "Web app" as the type
-// 6. Set "Execute as" to "Me"
-// 7. Set "Who has access" to "Anyone"
-// 8. Click Deploy and authorize when prompted
-// 9. Copy the web app URL
-// 10. Paste the URL into analytics/config.js as the endpoint value
+// 1. Open the existing analytics spreadsheet and choose Extensions > Apps Script.
+// 2. Replace the script with this file, then save it.
+// 3. Choose Deploy > Manage deployments, edit the web app, and select New version.
+// 4. Keep "Execute as" set to "Me" and access set to "Anyone", then deploy.
+// 5. Put the /exec URL in analytics/config.js; Pages validates it on deployment.
 //
 // The sheet will automatically get headers on the first event.
 // Each row = one event (page view or link click).
@@ -56,11 +51,13 @@ function doPost(e) {
 
         if (ip) {
             try {
-                var geoResponse = UrlFetchApp.fetch('http://ip-api.com/json/' + ip + '?fields=country,city,regionName');
+                var geoResponse = UrlFetchApp.fetch('https://ipwho.is/' + encodeURIComponent(ip) + '?fields=success,country,city,region');
                 var geo = JSON.parse(geoResponse.getContentText());
-                country = geo.country || '';
-                city = geo.city || '';
-                region = geo.regionName || '';
+                if (geo.success) {
+                    country = geo.country || '';
+                    city = geo.city || '';
+                    region = geo.region || '';
+                }
             } catch (geoErr) {
                 // Geo lookup failed, continue without location
             }

@@ -13,9 +13,17 @@
 (function () {
     'use strict';
 
+    // Keep local preview visits out of the production spreadsheet.
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return;
+    }
+
     // --- Guard: config must be loaded ---
     if (typeof ANALYTICS_CONFIG === 'undefined' || !ANALYTICS_CONFIG.endpoint ||
         ANALYTICS_CONFIG.endpoint === '__ANALYTICS_ENDPOINT__') {
+        if (window.location.hostname === 'simaadleyba.com') {
+            console.error('Analytics endpoint is not configured.');
+        }
         return;
     }
 
