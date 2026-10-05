@@ -6,6 +6,11 @@ export default defineConfig({
   base: '/networkscience/',
   build: {
     outDir: '../networkscience',
-    emptyOutDir: true,
+    emptyOutDir: false,
+    rollupOptions: {
+      output: {
+        inlineDynamicImports: true,
+      },
+    },
   }
 })
